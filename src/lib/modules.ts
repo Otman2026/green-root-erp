@@ -6,7 +6,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "intelligence" | "system";
+export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "intelligence" | "knowledge" | "system";
 
 export interface AppModule {
   key: string;
