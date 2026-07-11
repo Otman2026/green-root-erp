@@ -89,7 +89,13 @@ export const MODULES: AppModule[] = [
   { key: "system-health", path: "/system-health", labelKey: "sys.title", icon: ShieldAlert, color: "settings", group: "system", roles: ["admin","owner"] },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
-  { key: "system",      path: "/system",      labelKey: "sys.owner",       icon: ShieldAlert,     color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system",               path: "/system",               labelKey: "sys.owner",       icon: ShieldAlert,     color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system-organizations", path: "/system/organizations", labelKey: "sys.orgs",        icon: Building2,       color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system-licenses",      path: "/system/licenses",      labelKey: "sys.licenses",    icon: KeyRound,        color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system-plans",         path: "/system/plans",         labelKey: "sys.plans",       icon: Package,         color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system-users",         path: "/system/users",         labelKey: "sys.users",       icon: Users,           color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system-permissions",   path: "/system/permissions",   labelKey: "sys.perms",       icon: Lock,            color: "settings",    group: "system",     roles: ["system_owner"] },
+  { key: "system-audit",         path: "/system/audit",         labelKey: "sys.audit",       icon: ScrollText,      color: "settings",    group: "system",     roles: ["system_owner"] },
 
 ];
 
