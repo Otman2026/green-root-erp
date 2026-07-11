@@ -1,6 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/module-placeholder";
-import { MODULES } from "@/lib/modules";
+import { SprayCan } from "lucide-react";
+import { ProductsByCategory } from "@/components/products/products-by-category";
+
 export const Route = createFileRoute("/_authenticated/pesticides")({
-  component: () => <ModulePlaceholder module={MODULES.find((m) => m.key === "pesticides")!} />,
+  component: () => (
+    <ProductsByCategory
+      slug="pesticides"
+      titleAr="المبيدات"
+      subtitleAr="إدارة المبيدات الحشرية والفطرية"
+      icon={SprayCan}
+      colorVar="pesticides"
+      defaultCategoryName="Pesticides"
+      defaultCategoryNameAr="المبيدات"
+    />
+  ),
 });
