@@ -4734,6 +4734,7 @@ export type Database = {
       }
       is_org_member: { Args: { _org: string; _uid?: string }; Returns: boolean }
       is_org_owner: { Args: { _org: string; _uid?: string }; Returns: boolean }
+      is_read_only: { Args: never; Returns: boolean }
       is_system_owner: { Args: { _uid?: string }; Returns: boolean }
       license_is_active: { Args: { _org: string }; Returns: boolean }
       pos_apply_customer_updates: {
