@@ -14,6 +14,469 @@ export type Database = {
   }
   public: {
     Tables: {
+      agri_disease_images: {
+        Row: {
+          caption: string | null
+          created_at: string
+          disease_id: string
+          id: string
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          disease_id: string
+          id?: string
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          disease_id?: string
+          id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_disease_images_disease_id_fkey"
+            columns: ["disease_id"]
+            isOneToOne: false
+            referencedRelation: "agri_diseases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_diseases: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name_ar: string
+          name_en: string | null
+          name_fr: string | null
+          prevention: string | null
+          refs: Json | null
+          scientific_name: string | null
+          severity: number | null
+          stages: Json | null
+          symptoms: string | null
+          type: Database["public"]["Enums"]["agri_disease_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name_ar: string
+          name_en?: string | null
+          name_fr?: string | null
+          prevention?: string | null
+          refs?: Json | null
+          scientific_name?: string | null
+          severity?: number | null
+          stages?: Json | null
+          symptoms?: string | null
+          type: Database["public"]["Enums"]["agri_disease_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string | null
+          name_fr?: string | null
+          prevention?: string | null
+          refs?: Json | null
+          scientific_name?: string | null
+          severity?: number | null
+          stages?: Json | null
+          symptoms?: string | null
+          type?: Database["public"]["Enums"]["agri_disease_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      agri_pest_images: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          pest_id: string
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          pest_id: string
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          pest_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_pest_images_pest_id_fkey"
+            columns: ["pest_id"]
+            isOneToOne: false
+            referencedRelation: "agri_pests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_pests: {
+        Row: {
+          created_at: string
+          damage: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          life_cycle: string | null
+          name_ar: string
+          name_en: string | null
+          name_fr: string | null
+          refs: Json | null
+          scientific_name: string | null
+          severity: number | null
+          type: Database["public"]["Enums"]["agri_pest_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          damage?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          life_cycle?: string | null
+          name_ar: string
+          name_en?: string | null
+          name_fr?: string | null
+          refs?: Json | null
+          scientific_name?: string | null
+          severity?: number | null
+          type: Database["public"]["Enums"]["agri_pest_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          damage?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          life_cycle?: string | null
+          name_ar?: string
+          name_en?: string | null
+          name_fr?: string | null
+          refs?: Json | null
+          scientific_name?: string | null
+          severity?: number | null
+          type?: Database["public"]["Enums"]["agri_pest_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      agri_plant_categories: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          kind: Database["public"]["Enums"]["agri_plant_kind"]
+          name_ar: string
+          name_en: string | null
+          name_fr: string | null
+          parent_id: string | null
+          sort: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["agri_plant_kind"]
+          name_ar: string
+          name_en?: string | null
+          name_fr?: string | null
+          parent_id?: string | null
+          sort?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["agri_plant_kind"]
+          name_ar?: string
+          name_en?: string | null
+          name_fr?: string | null
+          parent_id?: string | null
+          sort?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plant_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_plant_diseases: {
+        Row: {
+          disease_id: string
+          plant_id: string
+        }
+        Insert: {
+          disease_id: string
+          plant_id: string
+        }
+        Update: {
+          disease_id?: string
+          plant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_diseases_disease_id_fkey"
+            columns: ["disease_id"]
+            isOneToOne: false
+            referencedRelation: "agri_diseases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_plant_diseases_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_plant_pests: {
+        Row: {
+          pest_id: string
+          plant_id: string
+        }
+        Insert: {
+          pest_id: string
+          plant_id: string
+        }
+        Update: {
+          pest_id?: string
+          plant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_pests_pest_id_fkey"
+            columns: ["pest_id"]
+            isOneToOne: false
+            referencedRelation: "agri_pests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_plant_pests_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_plant_varieties: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          plant_id: string
+          traits: Json | null
+          updated_at: string
+          yield: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          plant_id: string
+          traits?: Json | null
+          updated_at?: string
+          yield?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          plant_id?: string
+          traits?: Json | null
+          updated_at?: string
+          yield?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_varieties_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_plants: {
+        Row: {
+          category_id: string | null
+          climate: string | null
+          common_name_ar: string
+          common_name_en: string | null
+          common_name_fr: string | null
+          created_at: string
+          cycle: string | null
+          description: string | null
+          family: string | null
+          growth_stages: Json | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          scientific_name: string | null
+          season: string | null
+          soil: string | null
+          updated_at: string
+          water_needs: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          climate?: string | null
+          common_name_ar: string
+          common_name_en?: string | null
+          common_name_fr?: string | null
+          created_at?: string
+          cycle?: string | null
+          description?: string | null
+          family?: string | null
+          growth_stages?: Json | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          scientific_name?: string | null
+          season?: string | null
+          soil?: string | null
+          updated_at?: string
+          water_needs?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          climate?: string | null
+          common_name_ar?: string
+          common_name_en?: string | null
+          common_name_fr?: string | null
+          created_at?: string
+          cycle?: string | null
+          description?: string | null
+          family?: string | null
+          growth_stages?: Json | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          scientific_name?: string | null
+          season?: string | null
+          soil?: string | null
+          updated_at?: string
+          water_needs?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plants_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plant_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_treatment_products: {
+        Row: {
+          product_id: string
+          treatment_id: string
+        }
+        Insert: {
+          product_id: string
+          treatment_id: string
+        }
+        Update: {
+          product_id?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_treatment_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_treatment_products_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "agri_treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_treatments: {
+        Row: {
+          active_ingredient: string | null
+          created_at: string
+          description: string | null
+          dosage: string | null
+          frequency: string | null
+          id: string
+          method: Database["public"]["Enums"]["agri_treatment_method"]
+          notes: string | null
+          safety_period: string | null
+          target_id: string | null
+          target_type: Database["public"]["Enums"]["agri_treatment_target"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active_ingredient?: string | null
+          created_at?: string
+          description?: string | null
+          dosage?: string | null
+          frequency?: string | null
+          id?: string
+          method: Database["public"]["Enums"]["agri_treatment_method"]
+          notes?: string | null
+          safety_period?: string | null
+          target_id?: string | null
+          target_type: Database["public"]["Enums"]["agri_treatment_target"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active_ingredient?: string | null
+          created_at?: string
+          description?: string | null
+          dosage?: string | null
+          frequency?: string | null
+          id?: string
+          method?: Database["public"]["Enums"]["agri_treatment_method"]
+          notes?: string | null
+          safety_period?: string | null
+          target_id?: string | null
+          target_type?: Database["public"]["Enums"]["agri_treatment_target"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       branch_members: {
         Row: {
           branch_id: string
@@ -1960,6 +2423,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      agri_can_write: { Args: never; Returns: boolean }
       has_permission: {
         Args: { _perm: string; _user_id: string }
         Returns: boolean
@@ -1973,6 +2437,42 @@ export type Database = {
       }
     }
     Enums: {
+      agri_disease_type:
+        | "fungal"
+        | "bacterial"
+        | "viral"
+        | "physiological"
+        | "nutrient_deficiency"
+        | "climatic"
+      agri_pest_type:
+        | "insect"
+        | "mite"
+        | "worm"
+        | "nematode"
+        | "rodent"
+        | "bird"
+        | "mollusk"
+        | "weed"
+        | "other"
+      agri_plant_kind:
+        | "crop"
+        | "fruit_tree"
+        | "vegetable"
+        | "grain"
+        | "herb"
+        | "industrial"
+        | "fodder"
+        | "forest"
+        | "ornamental"
+        | "indoor"
+        | "outdoor"
+      agri_treatment_method:
+        | "chemical"
+        | "biological"
+        | "cultural"
+        | "mechanical"
+        | "organic"
+      agri_treatment_target: "disease" | "pest" | "deficiency"
       app_role:
         | "admin"
         | "manager"
@@ -2143,6 +2643,46 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      agri_disease_type: [
+        "fungal",
+        "bacterial",
+        "viral",
+        "physiological",
+        "nutrient_deficiency",
+        "climatic",
+      ],
+      agri_pest_type: [
+        "insect",
+        "mite",
+        "worm",
+        "nematode",
+        "rodent",
+        "bird",
+        "mollusk",
+        "weed",
+        "other",
+      ],
+      agri_plant_kind: [
+        "crop",
+        "fruit_tree",
+        "vegetable",
+        "grain",
+        "herb",
+        "industrial",
+        "fodder",
+        "forest",
+        "ornamental",
+        "indoor",
+        "outdoor",
+      ],
+      agri_treatment_method: [
+        "chemical",
+        "biological",
+        "cultural",
+        "mechanical",
+        "organic",
+      ],
+      agri_treatment_target: ["disease", "pest", "deficiency"],
       app_role: [
         "admin",
         "manager",
