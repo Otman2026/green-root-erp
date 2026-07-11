@@ -82,6 +82,7 @@ import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAgriDiseasesRouteImport } from './routes/_authenticated/agri.diseases'
 import { Route as AuthenticatedAccountingTaxesRouteImport } from './routes/_authenticated/accounting.taxes'
 import { Route as AuthenticatedAccountingReportsRouteImport } from './routes/_authenticated/accounting.reports'
+import { Route as AuthenticatedAccountingPeriodsRouteImport } from './routes/_authenticated/accounting.periods'
 import { Route as AuthenticatedAccountingLedgerRouteImport } from './routes/_authenticated/accounting.ledger'
 import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_authenticated/accounting.journal'
 import { Route as AuthenticatedAccountingChartRouteImport } from './routes/_authenticated/accounting.chart'
@@ -476,6 +477,12 @@ const AuthenticatedAccountingReportsRoute =
     path: '/reports',
     getParentRoute: () => AuthenticatedAccountingRoute,
   } as any)
+const AuthenticatedAccountingPeriodsRoute =
+  AuthenticatedAccountingPeriodsRouteImport.update({
+    id: '/periods',
+    path: '/periods',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
 const AuthenticatedAccountingLedgerRoute =
   AuthenticatedAccountingLedgerRouteImport.update({
     id: '/ledger',
@@ -544,6 +551,7 @@ export interface FileRoutesByFullPath {
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
@@ -620,6 +628,7 @@ export interface FileRoutesByTo {
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
@@ -699,6 +708,7 @@ export interface FileRoutesById {
   '/_authenticated/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/_authenticated/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/_authenticated/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/_authenticated/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/_authenticated/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
@@ -778,6 +788,7 @@ export interface FileRouteTypes {
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
+    | '/accounting/periods'
     | '/accounting/reports'
     | '/accounting/taxes'
     | '/agri/diseases'
@@ -854,6 +865,7 @@ export interface FileRouteTypes {
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
+    | '/accounting/periods'
     | '/accounting/reports'
     | '/accounting/taxes'
     | '/agri/diseases'
@@ -932,6 +944,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/chart'
     | '/_authenticated/accounting/journal'
     | '/_authenticated/accounting/ledger'
+    | '/_authenticated/accounting/periods'
     | '/_authenticated/accounting/reports'
     | '/_authenticated/accounting/taxes'
     | '/_authenticated/agri/diseases'
@@ -1481,6 +1494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingReportsRouteImport
       parentRoute: typeof AuthenticatedAccountingRoute
     }
+    '/_authenticated/accounting/periods': {
+      id: '/_authenticated/accounting/periods'
+      path: '/periods'
+      fullPath: '/accounting/periods'
+      preLoaderRoute: typeof AuthenticatedAccountingPeriodsRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
     '/_authenticated/accounting/ledger': {
       id: '/_authenticated/accounting/ledger'
       path: '/ledger'
@@ -1509,6 +1529,7 @@ interface AuthenticatedAccountingRouteChildren {
   AuthenticatedAccountingChartRoute: typeof AuthenticatedAccountingChartRoute
   AuthenticatedAccountingJournalRoute: typeof AuthenticatedAccountingJournalRoute
   AuthenticatedAccountingLedgerRoute: typeof AuthenticatedAccountingLedgerRoute
+  AuthenticatedAccountingPeriodsRoute: typeof AuthenticatedAccountingPeriodsRoute
   AuthenticatedAccountingReportsRoute: typeof AuthenticatedAccountingReportsRoute
   AuthenticatedAccountingTaxesRoute: typeof AuthenticatedAccountingTaxesRoute
 }
@@ -1518,6 +1539,7 @@ const AuthenticatedAccountingRouteChildren: AuthenticatedAccountingRouteChildren
     AuthenticatedAccountingChartRoute: AuthenticatedAccountingChartRoute,
     AuthenticatedAccountingJournalRoute: AuthenticatedAccountingJournalRoute,
     AuthenticatedAccountingLedgerRoute: AuthenticatedAccountingLedgerRoute,
+    AuthenticatedAccountingPeriodsRoute: AuthenticatedAccountingPeriodsRoute,
     AuthenticatedAccountingReportsRoute: AuthenticatedAccountingReportsRoute,
     AuthenticatedAccountingTaxesRoute: AuthenticatedAccountingTaxesRoute,
   }

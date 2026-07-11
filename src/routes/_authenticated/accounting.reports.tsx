@@ -82,6 +82,7 @@ function ReportsPage() {
           <TabsTrigger value="trial">{t("acc.trialBalance")}</TabsTrigger>
           <TabsTrigger value="pnl">{t("acc.pnl")}</TabsTrigger>
           <TabsTrigger value="bs">{t("acc.balanceSheet")}</TabsTrigger>
+          <TabsTrigger value="cf">{t("acc.cashflow")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="trial">
