@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Wallet, BookOpen, FileText, ScrollText, Banknote,
-  PiggyBank, Building, Receipt, TrendingUp, BarChart3,
+  PiggyBank, Building, Receipt, TrendingUp, BarChart3, Percent, CalendarRange,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
@@ -34,13 +34,15 @@ function AccountingHub() {
   }, []);
 
   const cards = [
-    { to: "/accounting/chart",   icon: BookOpen,    label: t("acc.chart") },
-    { to: "/accounting/journal", icon: FileText,    label: t("acc.journal") },
-    { to: "/accounting/ledger",  icon: ScrollText,  label: t("acc.ledger") },
-    { to: "/accounting/reports", icon: BarChart3,   label: t("acc.reports") },
-    { to: "/cash-boxes",         icon: PiggyBank,   label: t("acc.cashBoxes") },
-    { to: "/banks",              icon: Building,    label: t("acc.banks") },
-    { to: "/checks",             icon: Receipt,     label: t("acc.checks") },
+    { to: "/accounting/chart",   icon: BookOpen,     label: t("acc.chart") },
+    { to: "/accounting/journal", icon: FileText,     label: t("acc.journal") },
+    { to: "/accounting/ledger",  icon: ScrollText,   label: t("acc.ledger") },
+    { to: "/accounting/reports", icon: BarChart3,    label: t("acc.reports") },
+    { to: "/accounting/taxes",   icon: Percent,      label: t("acc.taxes") },
+    { to: "/accounting/periods", icon: CalendarRange, label: t("acc.periods") },
+    { to: "/cash-boxes",         icon: PiggyBank,    label: t("acc.cashBoxes") },
+    { to: "/banks",              icon: Building,     label: t("acc.banks") },
+    { to: "/checks",             icon: Receipt,      label: t("acc.checks") },
   ];
 
   const profit = kpi.revenue - kpi.expenses;

@@ -80,6 +80,7 @@ import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
 import { Route as AuthenticatedAgriDiseasesRouteImport } from './routes/_authenticated/agri.diseases'
+import { Route as AuthenticatedAccountingTaxesRouteImport } from './routes/_authenticated/accounting.taxes'
 import { Route as AuthenticatedAccountingReportsRouteImport } from './routes/_authenticated/accounting.reports'
 import { Route as AuthenticatedAccountingLedgerRouteImport } from './routes/_authenticated/accounting.ledger'
 import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_authenticated/accounting.journal'
@@ -463,6 +464,12 @@ const AuthenticatedAgriDiseasesRoute =
     path: '/diseases',
     getParentRoute: () => AuthenticatedAgriRoute,
   } as any)
+const AuthenticatedAccountingTaxesRoute =
+  AuthenticatedAccountingTaxesRouteImport.update({
+    id: '/taxes',
+    path: '/taxes',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
 const AuthenticatedAccountingReportsRoute =
   AuthenticatedAccountingReportsRouteImport.update({
     id: '/reports',
@@ -538,6 +545,7 @@ export interface FileRoutesByFullPath {
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
+  '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -613,6 +621,7 @@ export interface FileRoutesByTo {
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
+  '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -691,6 +700,7 @@ export interface FileRoutesById {
   '/_authenticated/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/_authenticated/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
   '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
+  '/_authenticated/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -769,6 +779,7 @@ export interface FileRouteTypes {
     | '/accounting/journal'
     | '/accounting/ledger'
     | '/accounting/reports'
+    | '/accounting/taxes'
     | '/agri/diseases'
     | '/agri/pests'
     | '/agri/plants'
@@ -844,6 +855,7 @@ export interface FileRouteTypes {
     | '/accounting/journal'
     | '/accounting/ledger'
     | '/accounting/reports'
+    | '/accounting/taxes'
     | '/agri/diseases'
     | '/agri/pests'
     | '/agri/plants'
@@ -921,6 +933,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/journal'
     | '/_authenticated/accounting/ledger'
     | '/_authenticated/accounting/reports'
+    | '/_authenticated/accounting/taxes'
     | '/_authenticated/agri/diseases'
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
@@ -1454,6 +1467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgriDiseasesRouteImport
       parentRoute: typeof AuthenticatedAgriRoute
     }
+    '/_authenticated/accounting/taxes': {
+      id: '/_authenticated/accounting/taxes'
+      path: '/taxes'
+      fullPath: '/accounting/taxes'
+      preLoaderRoute: typeof AuthenticatedAccountingTaxesRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
     '/_authenticated/accounting/reports': {
       id: '/_authenticated/accounting/reports'
       path: '/reports'
@@ -1490,6 +1510,7 @@ interface AuthenticatedAccountingRouteChildren {
   AuthenticatedAccountingJournalRoute: typeof AuthenticatedAccountingJournalRoute
   AuthenticatedAccountingLedgerRoute: typeof AuthenticatedAccountingLedgerRoute
   AuthenticatedAccountingReportsRoute: typeof AuthenticatedAccountingReportsRoute
+  AuthenticatedAccountingTaxesRoute: typeof AuthenticatedAccountingTaxesRoute
 }
 
 const AuthenticatedAccountingRouteChildren: AuthenticatedAccountingRouteChildren =
@@ -1498,6 +1519,7 @@ const AuthenticatedAccountingRouteChildren: AuthenticatedAccountingRouteChildren
     AuthenticatedAccountingJournalRoute: AuthenticatedAccountingJournalRoute,
     AuthenticatedAccountingLedgerRoute: AuthenticatedAccountingLedgerRoute,
     AuthenticatedAccountingReportsRoute: AuthenticatedAccountingReportsRoute,
+    AuthenticatedAccountingTaxesRoute: AuthenticatedAccountingTaxesRoute,
   }
 
 const AuthenticatedAccountingRouteWithChildren =
