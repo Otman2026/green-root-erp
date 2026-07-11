@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/dashboards/finance")({ component: FinanceDashboard });
 
@@ -25,6 +26,7 @@ function FinanceDashboard() {
         supabase.from("cash_movements").select("amount,direction,created_at").gte("created_at", from.toISOString()),
         supabase.from("receipts").select("amount,direction,received_at").gte("received_at", from.toISOString()),
       ]);
+      reportSupabaseErrors("المالية", boxes, banks, dC, dS, moves, recs);
       const cash = (boxes.data ?? []).reduce((s: number, r: any) => s + Number(r.balance ?? 0), 0);
       const bank = (banks.data ?? []).reduce((s: number, r: any) => s + Number(r.balance ?? 0), 0);
       const debtsC = (dC.data ?? []).reduce((s: number, r: any) => s + Number(r.balance ?? 0), 0);

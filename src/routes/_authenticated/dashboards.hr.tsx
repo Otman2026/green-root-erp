@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/dashboards/hr")({ component: HRDashboard });
 
@@ -26,6 +27,7 @@ function HRDashboard() {
         supabase.from("hr_leaves").select("id,start_date,end_date,status").eq("status","approved"),
         supabase.from("hr_payroll").select("net_pay").gte("period_start", new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0,10)),
       ]);
+      reportSupabaseErrors("الموارد البشرية", emps, atts, leaves, pay);
       const edata = emps.data ?? [];
       const todayStr = today.toISOString().slice(0,10);
       const presentToday = (atts.data ?? []).filter((a: any) => a.date === todayStr).length;

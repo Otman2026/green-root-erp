@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/dashboards/sales")({ component: SalesDashboard });
 
@@ -24,6 +25,7 @@ function SalesDashboard() {
         supabase.from("sales").select("customer_id,total,customers(name)").eq("type","sale").neq("status","void").not("customer_id","is",null).limit(1000),
         supabase.from("sales").select("balance").eq("type","sale").neq("status","void").gt("balance", 0),
       ]);
+      reportSupabaseErrors("المبيعات", sales, items, custs, unpaid);
       const byDay: Record<string, number> = {};
       for (let i = 0; i < 30; i++) { const d = new Date(from); d.setDate(from.getDate() + i); byDay[d.toISOString().slice(5,10)] = 0; }
       let sum = 0; const rows = sales.data ?? [];

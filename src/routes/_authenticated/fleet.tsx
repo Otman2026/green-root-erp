@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Truck, Users, Route as RouteIcon, Fuel, Wrench, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/fleet")({ component: FleetHub });
 
@@ -20,6 +21,7 @@ function FleetHub() {
         (supabase as any).from("fleet_trips").select("distance").gte("trip_date", from),
         (supabase as any).from("fleet_fuel_logs").select("total_cost").gte("date", from),
       ]);
+      reportSupabaseErrors("الأسطول", v, d, tr, f);
       setKpi({
         vehicles: v.count ?? 0,
         drivers: d.count ?? 0,

@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/accounting")({ component: AccountingHub });
 
@@ -24,6 +25,7 @@ function AccountingHub() {
         (supabase as any).from("cash_boxes").select("balance"),
         (supabase as any).from("bank_accounts").select("balance"),
       ]);
+      reportSupabaseErrors("المحاسبة", rev, exp, cash, bank);
       setKpi({
         revenue: (rev.data ?? []).reduce((s: number, r: any) => s + Number(r.credit ?? 0), 0),
         expenses: (exp.data ?? []).reduce((s: number, r: any) => s + Number(r.debit ?? 0), 0),

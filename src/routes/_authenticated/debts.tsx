@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney, toCSV, downloadFile } from "@/lib/format";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/debts")({ component: DebtsPage });
 
@@ -23,6 +24,7 @@ function DebtsPage() {
         supabase.from("customers").select("id,name,phone,balance,credit_limit").gt("balance", 0).order("balance", { ascending: false }),
         supabase.from("suppliers").select("id,name,phone,balance").gt("balance", 0).order("balance", { ascending: false }),
       ]);
+      reportSupabaseErrors("الديون", c, s);
       setCustomers((c.data ?? []) as any); setSuppliers((s.data ?? []) as any);
     })();
   }, []);
