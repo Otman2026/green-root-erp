@@ -157,3 +157,62 @@ function UsersPage() {
     </div>
   );
 }
+
+function AddEmployeeDialog({ onCreated }: { onCreated: () => void }) {
+  const { t } = useI18n();
+  const createFn = useServerFn(createEmployee);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({
+    email: "", password: "", fullName: "", username: "", phone: "", role: "employee",
+  });
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await createFn({ data: form });
+      toast.success("تم إنشاء حساب الموظف");
+      setOpen(false);
+      setForm({ email: "", password: "", fullName: "", username: "", phone: "", role: "employee" });
+      onCreated();
+    } catch (err: any) {
+      toast.error(err?.message ?? "فشل الإنشاء");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button><UserPlus className="me-2 h-4 w-4" /> {t("common.add") ?? "إضافة"} موظف</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>إضافة حساب موظف جديد</DialogTitle></DialogHeader>
+        <form onSubmit={submit} className="space-y-3">
+          <div><Label>الاسم الكامل *</Label><Input required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>
+          <div><Label>البريد الإلكتروني *</Label><Input required type="email" dir="ltr" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+          <div><Label>كلمة السر * (8 أحرف على الأقل)</Label><Input required type="password" dir="ltr" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>اسم المستخدم</Label><Input dir="ltr" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} /></div>
+            <div><Label>الهاتف</Label><Input dir="ltr" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+          </div>
+          <div>
+            <Label>الدور *</Label>
+            <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+            <Button type="submit" disabled={busy}>{busy ? "جاري الإنشاء..." : "إنشاء الحساب"}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
