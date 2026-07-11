@@ -1,95 +1,63 @@
-# المرحلة 4 — نظام المبيعات الاحترافي (POS) وما يتبعه
+# Phase 5 — Agricultural Knowledge Base
 
-هدف المرحلة: بناء طبقات جديدة **فوق** النظام الحالي، دون حذف أي جدول أو صفحة أو علاقة. جميع الوحدات السابقة (المنتجات، المخزون، الفروع، المستودعات، المستخدمين، الصلاحيات، اللغات) تبقى كما هي وتُربط تلقائياً بالوحدات الجديدة.
+Adds a new independent module on top of the existing system. No existing table, page, module, or logic is touched.
 
-## 1) قاعدة البيانات (ترحيلات إضافية فقط)
+## 1) New database tables (all with GRANT + RLS + updated_at trigger)
 
-جداول جديدة في `public` — كل جدول: GRANT + RLS + سياسات عبر `has_role`/`auth.uid()` + trigger `updated_at`.
+**Reference / taxonomy**
+- `agri_plant_categories` — name_ar/fr/en, kind (`crop|fruit_tree|vegetable|grain|herb|industrial|fodder|forest|ornamental|indoor|outdoor`), parent_id, icon, sort
+- `agri_plants` — scientific_name, common_name_ar/fr/en, category_id, family, cycle (annual/perennial), season, climate, soil, water_needs, growth_stages (jsonb), description, image_url, is_active
+- `agri_plant_varieties` — plant_id, name, traits (jsonb), yield, notes
 
-- **العملاء (CRM):** `customers` (name, phone, email, city, address, activity_type, crops[], farm_area, customer_type[retail|wholesale|semi_wholesale|vip], loyalty_points, credit_limit, balance, notes)
-- **الولاء:** `loyalty_rules`, `loyalty_transactions`, `coupons` (code, discount_type, value, valid_from/to, usage_limit, per_customer), `coupon_redemptions`
-- **العروض والأسعار:** `price_lists` + `price_list_items` (per product/category/customer_type + qty tiers + season)
-- **المبيعات:**
-  - `sales` (invoice_no, type[sale|quote|return|credit_note|debit_note], customer_id, branch_id, warehouse_id, cashier_id, status[draft|confirmed|paid|partial|void], subtotal, discount, tax, total, paid, balance, payment_status, notes, meta)
-  - `sale_items` (sale_id, product_id, qty, unit_price, discount, tax, total, cost_snapshot)
-  - `sale_payments` (sale_id, method[cash|card|transfer|check|mixed|credit], amount, reference, paid_at)
-  - `sale_installments` (sale_id, due_date, amount, paid_amount, status)
-- **المشتريات:**
-  - `purchase_orders` (po_no, supplier_id, status[draft|approved|ordered|received|invoiced|closed], subtotal, tax, total, notes)
-  - `purchase_order_items`
-  - `purchase_receipts` + `purchase_receipt_items` (استلام مع فحص كمية/سعر/جودة)
-  - `supplier_invoices` + `supplier_payments`
-- **الديون والمحاسبة الخفيفة:**
-  - `receipts` (نوع=in/out, party_type=customer/supplier, party_id, amount, method, reference, notes) — سندات قبض/صرف
-  - `account_statements` view (اختياري: مبنية عبر SQL view)
-- **الترابط مع المخزون:** trigger على `sale_items` INSERT/DELETE → إضافة سطر إلى `stock_movements` نوع `sale`/`return`. trigger على `purchase_receipt_items` → `stock_movements` نوع `purchase`. المخزون يتحدّث تلقائياً عبر trigger `apply_stock_movement` القائم.
+**Diseases**
+- `agri_diseases` — name_ar/fr/en, type (`fungal|bacterial|viral|physiological|nutrient_deficiency|climatic`), scientific_name, description, symptoms, severity (1–5), stages (jsonb), prevention, references (jsonb)
+- `agri_disease_images` — disease_id, url, caption
+- `agri_plant_diseases` — plant_id, disease_id (many-to-many)
 
-## 2) الواجهات (صفحات جديدة)
+**Pests**
+- `agri_pests` — name_ar/fr/en, type (`insect|mite|worm|nematode|rodent|bird|mollusk|weed|other`), scientific_name, description, life_cycle, damage, severity, image_url, references (jsonb)
+- `agri_pest_images` — pest_id, url, caption
+- `agri_plant_pests` — plant_id, pest_id
 
-- `/pos` — شاشة نقطة البيع (شبكة منتجات + بحث فوري بالاسم/باركود/QR/فئة/شركة/مادة فعالة، سلة، عميل، خصم، كوبون، طرق أداء متعددة، طباعة سريعة، اختصارات لوحة المفاتيح، وضع بيع سريع/عادي/جملة/نصف جملة/آجل/تقسيط)
-- `/sales` — قائمة الفواتير + تعديل/إلغاء/مرتجع/طباعة/PDF/إرسال
-- `/sales/quotes` — عروض الأسعار (تحويلها إلى فاتورة)
-- `/customers` — CRM كامل (استبدال الـ placeholder الحالي): قائمة + بطاقة عميل بتبويبات (فواتير، ديون، مدفوعات، أرباح، أكثر المنتجات شراءً، مقترحات)
-- `/loyalty` — قواعد النقاط + كوبونات + عروض موسمية
-- `/pricing` — قوائم أسعار وعروض حسب الكمية/العميل/المنتج
-- `/purchases` — طلبات شراء + اعتماد + أوامر شراء + استلام + فواتير مورد + مرتجعات
-- `/suppliers` — CRM موردين كامل (تفعيل الصفحة الحالية): بطاقة مورد بتبويبات
-- `/debts` — ديون العملاء والموردين + أقساط + تنبيهات + كشف حساب
-- `/receipts` — سندات قبض/صرف
-- `/accounting` — لوحة محاسبية مبسطة (تجميع من receipts + sales + purchases)
-- تحسين `/dashboard`: بطاقات KPI (مبيعات اليوم/الشهر، أرباح، أكثر/أقل مبيعاً، أفضل العملاء، أفضل الموردين، عدد الفواتير، الديون، التحصيلات) + مخططات recharts.
+**Treatments / recommendations**
+- `agri_treatments` — target_type (`disease|pest|deficiency`), target_id, method (`chemical|biological|cultural|mechanical|organic`), title, description, active_ingredient, dosage, frequency, safety_period, notes
+- `agri_treatment_products` — treatment_id, product_id (link to existing `products` when the shop sells it) — optional catalog bridge
 
-## 3) الطباعة والتصدير
+All tables:
+- `GRANT SELECT` to `authenticated` (public catalog read).
+- `GRANT INSERT/UPDATE/DELETE` to `authenticated` gated by RLS to roles `admin`, `owner`, `manager`, `agronomist` (new role added to `app_role` enum if missing? — no enum change: reuse `admin`/`owner`/`manager`).
+- `GRANT ALL` to `service_role`.
+- `updated_at` trigger reusing existing `public.update_updated_at_column()`.
 
-- مكوّن مشترك `PrintableInvoice` + `usePrint()` (window.print مع CSS `@media print`).
-- تصدير PDF عبر `jspdf` + `jspdf-autotable` (فاتورة/كشف حساب/عروض).
-- تصدير Excel عبر `xlsx` (تقارير المبيعات/المشتريات/الديون).
-- ملصقات المنتجات + Barcode/QR (استعمال المكتبات الموجودة).
-- إرسال بريد إلكتروني: عبر edge/server function باستخدام مفتاح Resend (سنطلبه عند الحاجة).
-- إرسال WhatsApp: رابط `wa.me/<phone>?text=<message>` (بدون Twilio).
+## 2) New pages (under `_authenticated`)
 
-## 4) الصلاحيات
+- `/agri` — hub with 4 cards (Plants, Diseases, Pests, Treatments)
+- `/agri/plants` — list + filter by category/kind + search AR/FR/EN + detail drawer (varieties, linked diseases, linked pests, growth stages)
+- `/agri/diseases` — list + filter by type/severity + detail (symptoms, images, prevention, treatments, affected plants)
+- `/agri/pests` — same shape as diseases
+- `/agri/treatments` — list filtered by target, link to shop products
 
-- إضافة صلاحيات: `pos.use`, `sales.manage`, `sales.void`, `purchases.manage`, `purchases.approve`, `customers.manage`, `suppliers.manage`, `debts.manage`, `receipts.manage`, `loyalty.manage`, `pricing.manage`, `discounts.override`.
-- توزيعها على الأدوار الجديدة (cashier=pos.use، sales_manager=sales.*، purchases_manager=purchases.*، accountant=receipts+debts، owner/admin=الكل).
-- كل زر حساس يتحقق عبر `has_permission`.
+All pages: CRUD dialogs for admins; read-only cards for others. Images uploaded to a new **private** Storage bucket `agri-images` (signed URLs on read).
 
-## 5) الترابط التلقائي
+## 3) i18n
+Add keys under `agri.*` in `src/lib/i18n.tsx` (AR/FR/EN).
 
-- بيع/مرتجع → حركة مخزون + قيد محاسبي + تحديث رصيد العميل + نقاط ولاء.
-- استلام مشتريات → حركة مخزون + رصيد المورد.
-- دفعة → تحديث `balance` وفتح/إغلاق الفاتورة تلقائياً.
-- كل عملية مرتبطة بالفرع/المستودع/المستخدم الحالي.
+## 4) Modules registry
+Append `agri` group in `src/lib/modules.ts` so the sidebar shows the new section automatically. No existing entry removed.
 
-## 6) الاختبار (قبل اعتماد المرحلة)
+## 5) Seed data (optional, small starter set)
+A migration seeds ~15 common Moroccan crops (wheat, barley, tomato, potato, olive, citrus, date palm, almond, apple, grape, onion, pepper, carrot, alfalfa, mint) with a handful of well-known diseases/pests each, so the pages aren't empty. Users can add/edit freely.
 
-سيناريو E2E مباشر داخل التطبيق:
-1. إنشاء عميل + مورد + قائمة أسعار + كوبون.
-2. إنشاء طلب شراء → اعتماد → استلام → التحقق من زيادة المخزون.
-3. عرض سعر → تحويله لفاتورة POS → أداء مختلط (نقد + بطاقة) + كوبون → التحقق من نقص المخزون ونقاط الولاء.
-4. مرتجع جزئي → التحقق من رجوع المخزون والرصيد.
-5. بيع آجل + تقسيط → تسجيل دفعة → كشف حساب.
-6. طباعة فاتورة + PDF + Excel + WhatsApp.
-7. Dashboard: التحقق من تحديث KPIs.
+## 6) Safety
+- No `DROP`, no `ALTER` on existing tables.
+- No changes to existing RLS, functions, or triggers except adding new ones scoped to new tables.
+- New storage bucket only.
 
-## تفاصيل تقنية
+## 7) Testing after build
+- Create/edit/delete plant, disease, pest, treatment as admin.
+- Search AR/FR/EN.
+- Link disease to plant, pest to plant, treatment to disease.
+- Upload image, view via signed URL.
+- Verify existing pages (POS, sales, inventory, users…) still work unchanged.
 
-- **Server functions:** `src/lib/sales.functions.ts`, `purchases.functions.ts`, `customers.functions.ts`, `suppliers.functions.ts`, `loyalty.functions.ts`, `receipts.functions.ts` مع `requireSupabaseAuth` وفحص صلاحيات.
-- **UI:** إعادة استخدام shadcn (Table, Dialog, Command للبحث السريع، Tabs، Sheet لسلة POS الجانبية).
-- **i18n:** إضافة مفاتيح الترجمة الجديدة (AR/FR/EN).
-- **Sidebar/modules:** إضافة `pos`, `quotes`, `purchases`, `loyalty`, `pricing`, `debts`, `receipts` مع الحفاظ على الوحدات القائمة.
-- **الحفاظ التام:** لا `DROP`، لا تعديل أعمدة قائمة، لا تغيير لـ RLS الحالي.
-
-## التنفيذ المتسلسل داخل المرحلة
-
-بسبب حجم العمل، سأنفّذها على دفعات:
-
-1. الترحيل الشامل (كل الجداول + triggers + صلاحيات).
-2. Server functions + i18n + sidebar/modules.
-3. صفحات: `/customers` (CRM) + `/suppliers` (CRM) + `/pricing` + `/loyalty`.
-4. `/purchases` كامل (طلب→اعتماد→استلام→فاتورة مورد→مرتجع).
-5. `/pos` + `/sales` + `/sales/quotes` + طباعة/PDF/Excel/WhatsApp.
-6. `/debts` + `/receipts` + `/accounting` + Dashboard KPIs.
-7. جولة اختبار وإصلاح.
-
-هل أبدأ التنفيذ بهذا الترتيب؟
+Shall I proceed with this scope, or trim/expand any part first?
