@@ -41,6 +41,7 @@ import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authen
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedHrRouteImport } from './routes/_authenticated/hr'
+import { Route as AuthenticatedHelpRouteImport } from './routes/_authenticated/help'
 import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
 import { Route as AuthenticatedFertilizersRouteImport } from './routes/_authenticated/fertilizers'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
@@ -259,6 +260,11 @@ const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
 const AuthenticatedHrRoute = AuthenticatedHrRouteImport.update({
   id: '/hr',
   path: '/hr',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHelpRoute = AuthenticatedHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFleetRoute = AuthenticatedFleetRouteImport.update({
@@ -599,6 +605,7 @@ export interface FileRoutesByFullPath {
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
   '/fleet': typeof AuthenticatedFleetRouteWithChildren
+  '/help': typeof AuthenticatedHelpRoute
   '/hr': typeof AuthenticatedHrRouteWithChildren
   '/inventory': typeof AuthenticatedInventoryRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -687,6 +694,7 @@ export interface FileRoutesByTo {
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
   '/fleet': typeof AuthenticatedFleetRouteWithChildren
+  '/help': typeof AuthenticatedHelpRoute
   '/hr': typeof AuthenticatedHrRouteWithChildren
   '/inventory': typeof AuthenticatedInventoryRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -777,6 +785,7 @@ export interface FileRoutesById {
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/fertilizers': typeof AuthenticatedFertilizersRoute
   '/_authenticated/fleet': typeof AuthenticatedFleetRouteWithChildren
+  '/_authenticated/help': typeof AuthenticatedHelpRoute
   '/_authenticated/hr': typeof AuthenticatedHrRouteWithChildren
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -868,6 +877,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/fertilizers'
     | '/fleet'
+    | '/help'
     | '/hr'
     | '/inventory'
     | '/loyalty'
@@ -956,6 +966,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/fertilizers'
     | '/fleet'
+    | '/help'
     | '/hr'
     | '/inventory'
     | '/loyalty'
@@ -1045,6 +1056,7 @@ export interface FileRouteTypes {
     | '/_authenticated/equipment'
     | '/_authenticated/fertilizers'
     | '/_authenticated/fleet'
+    | '/_authenticated/help'
     | '/_authenticated/hr'
     | '/_authenticated/inventory'
     | '/_authenticated/loyalty'
@@ -1345,6 +1357,13 @@ declare module '@tanstack/react-router' {
       path: '/hr'
       fullPath: '/hr'
       preLoaderRoute: typeof AuthenticatedHrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/help': {
+      id: '/_authenticated/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof AuthenticatedHelpRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/fleet': {
@@ -1895,6 +1914,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedFertilizersRoute: typeof AuthenticatedFertilizersRoute
   AuthenticatedFleetRoute: typeof AuthenticatedFleetRouteWithChildren
+  AuthenticatedHelpRoute: typeof AuthenticatedHelpRoute
   AuthenticatedHrRoute: typeof AuthenticatedHrRouteWithChildren
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
@@ -1944,6 +1964,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedFertilizersRoute: AuthenticatedFertilizersRoute,
   AuthenticatedFleetRoute: AuthenticatedFleetRouteWithChildren,
+  AuthenticatedHelpRoute: AuthenticatedHelpRoute,
   AuthenticatedHrRoute: AuthenticatedHrRouteWithChildren,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,

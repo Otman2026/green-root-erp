@@ -5,7 +5,7 @@ import {
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
   Briefcase, CalendarCheck, CalendarX, Bell, Barcode, History, CreditCard,
-  Route as RouteIcon, Fuel, MapPin, Percent, CalendarRange, KeyRound, ScrollText, Lock,
+  Route as RouteIcon, Fuel, MapPin, Percent, CalendarRange, KeyRound, ScrollText, Lock, LifeBuoy,
   type LucideIcon,
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
@@ -89,6 +89,7 @@ export const MODULES: AppModule[] = [
   { key: "system-health", path: "/system-health", labelKey: "sys.title", icon: ShieldAlert, color: "settings", group: "system", roles: ["admin","owner"] },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
+  { key: "help",        path: "/help",        labelKey: "nav.help",        icon: LifeBuoy,        color: "settings",    group: "system" },
   { key: "system",               path: "/system",               labelKey: "sys.owner",       icon: ShieldAlert,     color: "settings",    group: "system",     roles: ["system_owner"] },
   { key: "system-organizations", path: "/system/organizations", labelKey: "sys.orgs",        icon: Building2,       color: "settings",    group: "system",     roles: ["system_owner"] },
   { key: "system-licenses",      path: "/system/licenses",      labelKey: "sys.licenses",    icon: KeyRound,        color: "settings",    group: "system",     roles: ["system_owner"] },
