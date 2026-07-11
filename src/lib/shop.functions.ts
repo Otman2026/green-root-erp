@@ -55,7 +55,7 @@ export const placeStorefrontOrder = createServerFn({ method: "POST" })
           email: data.customer.email || null,
           address: data.customer.address || null,
           city: data.customer.city || null,
-          customer_type: "individual",
+          customer_type: "retail",
           is_active: true,
         })
         .select("id")
@@ -78,7 +78,7 @@ export const placeStorefrontOrder = createServerFn({ method: "POST" })
       .from("sales")
       .insert({
         invoice_no: invoiceNo,
-        type: "invoice",
+        type: "sale",
         status: "draft",
         customer_id: customerId,
         subtotal,
@@ -87,7 +87,7 @@ export const placeStorefrontOrder = createServerFn({ method: "POST" })
         total: subtotal,
         paid: 0,
         balance: subtotal,
-        payment_method: "cash_on_delivery",
+        payment_method: "cash",
         notes: data.notes || null,
         meta: { source: "storefront" },
       })

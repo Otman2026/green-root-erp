@@ -9,9 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShopIndexRouteImport } from './routes/shop.index'
+import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
+import { Route as ShopCartRouteImport } from './routes/shop.cart'
 import { Route as AuthenticatedWarehousesRouteImport } from './routes/_authenticated/warehouses'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
@@ -43,6 +47,7 @@ import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
+import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as AuthenticatedSalesRepsVisitsRouteImport } from './routes/_authenticated/sales-reps.visits'
 import { Route as AuthenticatedSalesRepsListRouteImport } from './routes/_authenticated/sales-reps.list'
 import { Route as AuthenticatedSalesRepsCommissionsRouteImport } from './routes/_authenticated/sales-reps.commissions'
@@ -66,6 +71,11 @@ import { Route as AuthenticatedAccountingLedgerRouteImport } from './routes/_aut
 import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_authenticated/accounting.journal'
 import { Route as AuthenticatedAccountingChartRouteImport } from './routes/_authenticated/accounting.chart'
 
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -79,6 +89,21 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCheckoutRoute = ShopCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCartRoute = ShopCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => ShopRoute,
 } as any)
 const AuthenticatedWarehousesRoute = AuthenticatedWarehousesRouteImport.update({
   id: '/warehouses',
@@ -236,6 +261,11 @@ const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ShopProductIdRoute = ShopProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
+  getParentRoute: () => ShopRoute,
+} as any)
 const AuthenticatedSalesRepsVisitsRoute =
   AuthenticatedSalesRepsVisitsRouteImport.update({
     id: '/visits',
@@ -366,6 +396,7 @@ const AuthenticatedAccountingChartRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/shop': typeof ShopRouteWithChildren
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
@@ -397,6 +428,9 @@ export interface FileRoutesByFullPath {
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
+  '/shop/cart': typeof ShopCartRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/': typeof ShopIndexRoute
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
@@ -419,6 +453,7 @@ export interface FileRoutesByFullPath {
   '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -454,6 +489,9 @@ export interface FileRoutesByTo {
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
+  '/shop/cart': typeof ShopCartRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop': typeof ShopIndexRoute
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
@@ -476,12 +514,14 @@ export interface FileRoutesByTo {
   '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/shop': typeof ShopRouteWithChildren
   '/_authenticated/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
   '/_authenticated/ai': typeof AuthenticatedAiRoute
@@ -513,6 +553,9 @@ export interface FileRoutesById {
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/warehouses': typeof AuthenticatedWarehousesRoute
+  '/shop/cart': typeof ShopCartRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/': typeof ShopIndexRoute
   '/_authenticated/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/_authenticated/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/_authenticated/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
@@ -535,12 +578,14 @@ export interface FileRoutesById {
   '/_authenticated/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/_authenticated/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/_authenticated/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/shop'
     | '/accounting'
     | '/agri'
     | '/ai'
@@ -572,6 +617,9 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/users'
     | '/warehouses'
+    | '/shop/cart'
+    | '/shop/checkout'
+    | '/shop/'
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
@@ -594,6 +642,7 @@ export interface FileRouteTypes {
     | '/sales-reps/commissions'
     | '/sales-reps/list'
     | '/sales-reps/visits'
+    | '/shop/product/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -629,6 +678,9 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/users'
     | '/warehouses'
+    | '/shop/cart'
+    | '/shop/checkout'
+    | '/shop'
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
@@ -651,11 +703,13 @@ export interface FileRouteTypes {
     | '/sales-reps/commissions'
     | '/sales-reps/list'
     | '/sales-reps/visits'
+    | '/shop/product/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/shop'
     | '/_authenticated/accounting'
     | '/_authenticated/agri'
     | '/_authenticated/ai'
@@ -687,6 +741,9 @@ export interface FileRouteTypes {
     | '/_authenticated/suppliers'
     | '/_authenticated/users'
     | '/_authenticated/warehouses'
+    | '/shop/cart'
+    | '/shop/checkout'
+    | '/shop/'
     | '/_authenticated/accounting/chart'
     | '/_authenticated/accounting/journal'
     | '/_authenticated/accounting/ledger'
@@ -709,16 +766,25 @@ export interface FileRouteTypes {
     | '/_authenticated/sales-reps/commissions'
     | '/_authenticated/sales-reps/list'
     | '/_authenticated/sales-reps/visits'
+    | '/shop/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ShopRoute: typeof ShopRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -739,6 +805,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/shop/': {
+      id: '/shop/'
+      path: '/'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/checkout': {
+      id: '/shop/checkout'
+      path: '/checkout'
+      fullPath: '/shop/checkout'
+      preLoaderRoute: typeof ShopCheckoutRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/cart': {
+      id: '/shop/cart'
+      path: '/cart'
+      fullPath: '/shop/cart'
+      preLoaderRoute: typeof ShopCartRouteImport
+      parentRoute: typeof ShopRoute
     }
     '/_authenticated/warehouses': {
       id: '/_authenticated/warehouses'
@@ -956,6 +1043,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/accounting'
       preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/shop/product/$id': {
+      id: '/shop/product/$id'
+      path: '/product/$id'
+      fullPath: '/shop/product/$id'
+      preLoaderRoute: typeof ShopProductIdRouteImport
+      parentRoute: typeof ShopRoute
     }
     '/_authenticated/sales-reps/visits': {
       id: '/_authenticated/sales-reps/visits'
@@ -1282,10 +1376,27 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface ShopRouteChildren {
+  ShopCartRoute: typeof ShopCartRoute
+  ShopCheckoutRoute: typeof ShopCheckoutRoute
+  ShopIndexRoute: typeof ShopIndexRoute
+  ShopProductIdRoute: typeof ShopProductIdRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopCartRoute: ShopCartRoute,
+  ShopCheckoutRoute: ShopCheckoutRoute,
+  ShopIndexRoute: ShopIndexRoute,
+  ShopProductIdRoute: ShopProductIdRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ShopRoute: ShopRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
