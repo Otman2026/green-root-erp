@@ -1,12 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { TrendingUp, ShoppingCart, Package, Users, Wallet, Receipt, CircleDollarSign, Truck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/hooks/use-auth";
-import { MODULES } from "@/lib/modules";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
@@ -64,8 +64,6 @@ function Dashboard() {
     { icon: Receipt, tk: "receipts.title", value: fmtMoney(stats.receiptsToday), color: "mod-accounting" },
   ];
 
-  const modules = MODULES.filter((m) => m.key !== "dashboard");
-
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-4">
       <div>
@@ -108,24 +106,7 @@ function Dashboard() {
           <div className="mt-2 text-xs text-muted-foreground">Month sales total</div>
         </Card>
       </div>
-
-      <div>
-        <h2 className="mb-3 text-sm font-semibold text-muted-foreground">{t("dashboard.modules")}</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {modules.map((m) => { const Icon = m.icon; return (
-            <Link key={m.key} to={m.path} className="group">
-              <Card className="card-elevated p-4 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg" style={{ backgroundColor: `color-mix(in oklab, var(--color-mod-${m.color}) 15%, transparent)` }}>
-                    <Icon className="h-5 w-5" style={{ color: `var(--color-mod-${m.color})` }} />
-                  </div>
-                  <div className="min-w-0"><div className="truncate font-semibold">{t(m.labelKey)}</div></div>
-                </div>
-              </Card>
-            </Link>
-          ); })}
-        </div>
-      </div>
     </div>
   );
 }
+
