@@ -74,6 +74,7 @@ import { Route as AuthenticatedDashboardsSalesRouteImport } from './routes/_auth
 import { Route as AuthenticatedDashboardsHrRouteImport } from './routes/_authenticated/dashboards.hr'
 import { Route as AuthenticatedDashboardsFleetRouteImport } from './routes/_authenticated/dashboards.fleet'
 import { Route as AuthenticatedDashboardsFinanceRouteImport } from './routes/_authenticated/dashboards.finance'
+import { Route as AuthenticatedDashboardsExecutiveRouteImport } from './routes/_authenticated/dashboards.executive'
 import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authenticated/agri.treatments'
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
@@ -427,6 +428,12 @@ const AuthenticatedDashboardsFinanceRoute =
     path: '/dashboards/finance',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDashboardsExecutiveRoute =
+  AuthenticatedDashboardsExecutiveRouteImport.update({
+    id: '/dashboards/executive',
+    path: '/dashboards/executive',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAgriTreatmentsRoute =
   AuthenticatedAgriTreatmentsRouteImport.update({
     id: '/treatments',
@@ -527,6 +534,7 @@ export interface FileRoutesByFullPath {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/dashboards/executive': typeof AuthenticatedDashboardsExecutiveRoute
   '/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
   '/dashboards/fleet': typeof AuthenticatedDashboardsFleetRoute
   '/dashboards/hr': typeof AuthenticatedDashboardsHrRoute
@@ -600,6 +608,7 @@ export interface FileRoutesByTo {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/dashboards/executive': typeof AuthenticatedDashboardsExecutiveRoute
   '/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
   '/dashboards/fleet': typeof AuthenticatedDashboardsFleetRoute
   '/dashboards/hr': typeof AuthenticatedDashboardsHrRoute
@@ -676,6 +685,7 @@ export interface FileRoutesById {
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/_authenticated/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/_authenticated/dashboards/executive': typeof AuthenticatedDashboardsExecutiveRoute
   '/_authenticated/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
   '/_authenticated/dashboards/fleet': typeof AuthenticatedDashboardsFleetRoute
   '/_authenticated/dashboards/hr': typeof AuthenticatedDashboardsHrRoute
@@ -752,6 +762,7 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/dashboards/executive'
     | '/dashboards/finance'
     | '/dashboards/fleet'
     | '/dashboards/hr'
@@ -825,6 +836,7 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/dashboards/executive'
     | '/dashboards/finance'
     | '/dashboards/fleet'
     | '/dashboards/hr'
@@ -900,6 +912,7 @@ export interface FileRouteTypes {
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
     | '/_authenticated/agri/treatments'
+    | '/_authenticated/dashboards/executive'
     | '/_authenticated/dashboards/finance'
     | '/_authenticated/dashboards/fleet'
     | '/_authenticated/dashboards/hr'
@@ -1386,6 +1399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardsFinanceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboards/executive': {
+      id: '/_authenticated/dashboards/executive'
+      path: '/dashboards/executive'
+      fullPath: '/dashboards/executive'
+      preLoaderRoute: typeof AuthenticatedDashboardsExecutiveRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/agri/treatments': {
       id: '/_authenticated/agri/treatments'
       path: '/treatments'
@@ -1581,6 +1601,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedToolsImportExportRoute: typeof AuthenticatedToolsImportExportRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedWarehousesRoute: typeof AuthenticatedWarehousesRoute
+  AuthenticatedDashboardsExecutiveRoute: typeof AuthenticatedDashboardsExecutiveRoute
   AuthenticatedDashboardsFinanceRoute: typeof AuthenticatedDashboardsFinanceRoute
   AuthenticatedDashboardsFleetRoute: typeof AuthenticatedDashboardsFleetRoute
   AuthenticatedDashboardsHrRoute: typeof AuthenticatedDashboardsHrRoute
@@ -1627,6 +1648,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedToolsImportExportRoute: AuthenticatedToolsImportExportRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedWarehousesRoute: AuthenticatedWarehousesRoute,
+  AuthenticatedDashboardsExecutiveRoute: AuthenticatedDashboardsExecutiveRoute,
   AuthenticatedDashboardsFinanceRoute: AuthenticatedDashboardsFinanceRoute,
   AuthenticatedDashboardsFleetRoute: AuthenticatedDashboardsFleetRoute,
   AuthenticatedDashboardsHrRoute: AuthenticatedDashboardsHrRoute,
