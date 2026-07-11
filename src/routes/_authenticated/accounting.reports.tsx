@@ -17,6 +17,8 @@ function ReportsPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [lines, setLines] = useState<any[]>([]);
+  const [cashIn, setCashIn] = useState(0);
+  const [cashOut, setCashOut] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -27,6 +29,26 @@ function ReportsPage() {
       if (from) list = list.filter((r: any) => r.journal_entries.entry_date >= from);
       if (to)   list = list.filter((r: any) => r.journal_entries.entry_date <= to);
       setLines(list);
+
+      // Cash flow from cash_movements + bank_transactions
+      const [cm, bt] = await Promise.all([
+        (supabase as any).from("cash_movements").select("direction,amount,tx_date"),
+        (supabase as any).from("bank_transactions").select("direction,amount,tx_date"),
+      ]);
+      let inSum = 0, outSum = 0;
+      const inRange = (d: string | null) => (!d ? false : (!from || d >= from) && (!to || d <= to));
+      for (const r of cm.data ?? []) {
+        if (!inRange(r.tx_date)) continue;
+        if (r.direction === "in") inSum += Number(r.amount || 0);
+        else outSum += Number(r.amount || 0);
+      }
+      for (const r of bt.data ?? []) {
+        if (!inRange(r.tx_date)) continue;
+        if (r.direction === "in") inSum += Number(r.amount || 0);
+        else outSum += Number(r.amount || 0);
+      }
+      setCashIn(inSum);
+      setCashOut(outSum);
     })();
   }, [from, to]);
 
@@ -82,6 +104,7 @@ function ReportsPage() {
           <TabsTrigger value="trial">{t("acc.trialBalance")}</TabsTrigger>
           <TabsTrigger value="pnl">{t("acc.pnl")}</TabsTrigger>
           <TabsTrigger value="bs">{t("acc.balanceSheet")}</TabsTrigger>
+          <TabsTrigger value="cf">{t("acc.cashflow")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="trial">
@@ -170,6 +193,30 @@ function ReportsPage() {
               </Table>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="cf">
+          <Card className="space-y-3 p-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div className="rounded-md bg-emerald-500/10 p-4">
+                <div className="text-xs text-muted-foreground">{t("acc.inflow")}</div>
+                <div className="mt-1 text-2xl font-bold text-emerald-600">{fmtMoney(cashIn)}</div>
+              </div>
+              <div className="rounded-md bg-rose-500/10 p-4">
+                <div className="text-xs text-muted-foreground">{t("acc.outflow")}</div>
+                <div className="mt-1 text-2xl font-bold text-rose-600">{fmtMoney(cashOut)}</div>
+              </div>
+              <div className={`rounded-md p-4 ${cashIn - cashOut >= 0 ? "bg-emerald-500/10" : "bg-rose-500/10"}`}>
+                <div className="text-xs text-muted-foreground">{t("acc.netCash")}</div>
+                <div className={`mt-1 text-2xl font-bold ${cashIn - cashOut >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                  {fmtMoney(cashIn - cashOut)}
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t("dash.finance.cashflow")} — {t("acc.cashBoxes")} + {t("acc.banks")}
+            </p>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

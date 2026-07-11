@@ -80,7 +80,9 @@ import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
 import { Route as AuthenticatedAgriDiseasesRouteImport } from './routes/_authenticated/agri.diseases'
+import { Route as AuthenticatedAccountingTaxesRouteImport } from './routes/_authenticated/accounting.taxes'
 import { Route as AuthenticatedAccountingReportsRouteImport } from './routes/_authenticated/accounting.reports'
+import { Route as AuthenticatedAccountingPeriodsRouteImport } from './routes/_authenticated/accounting.periods'
 import { Route as AuthenticatedAccountingLedgerRouteImport } from './routes/_authenticated/accounting.ledger'
 import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_authenticated/accounting.journal'
 import { Route as AuthenticatedAccountingChartRouteImport } from './routes/_authenticated/accounting.chart'
@@ -463,10 +465,22 @@ const AuthenticatedAgriDiseasesRoute =
     path: '/diseases',
     getParentRoute: () => AuthenticatedAgriRoute,
   } as any)
+const AuthenticatedAccountingTaxesRoute =
+  AuthenticatedAccountingTaxesRouteImport.update({
+    id: '/taxes',
+    path: '/taxes',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
 const AuthenticatedAccountingReportsRoute =
   AuthenticatedAccountingReportsRouteImport.update({
     id: '/reports',
     path: '/reports',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
+const AuthenticatedAccountingPeriodsRoute =
+  AuthenticatedAccountingPeriodsRouteImport.update({
+    id: '/periods',
+    path: '/periods',
     getParentRoute: () => AuthenticatedAccountingRoute,
   } as any)
 const AuthenticatedAccountingLedgerRoute =
@@ -537,7 +551,9 @@ export interface FileRoutesByFullPath {
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
+  '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -612,7 +628,9 @@ export interface FileRoutesByTo {
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
+  '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -690,7 +708,9 @@ export interface FileRoutesById {
   '/_authenticated/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/_authenticated/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/_authenticated/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/_authenticated/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
+  '/_authenticated/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
   '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -768,7 +788,9 @@ export interface FileRouteTypes {
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
+    | '/accounting/periods'
     | '/accounting/reports'
+    | '/accounting/taxes'
     | '/agri/diseases'
     | '/agri/pests'
     | '/agri/plants'
@@ -843,7 +865,9 @@ export interface FileRouteTypes {
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
+    | '/accounting/periods'
     | '/accounting/reports'
+    | '/accounting/taxes'
     | '/agri/diseases'
     | '/agri/pests'
     | '/agri/plants'
@@ -920,7 +944,9 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/chart'
     | '/_authenticated/accounting/journal'
     | '/_authenticated/accounting/ledger'
+    | '/_authenticated/accounting/periods'
     | '/_authenticated/accounting/reports'
+    | '/_authenticated/accounting/taxes'
     | '/_authenticated/agri/diseases'
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
@@ -1454,11 +1480,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgriDiseasesRouteImport
       parentRoute: typeof AuthenticatedAgriRoute
     }
+    '/_authenticated/accounting/taxes': {
+      id: '/_authenticated/accounting/taxes'
+      path: '/taxes'
+      fullPath: '/accounting/taxes'
+      preLoaderRoute: typeof AuthenticatedAccountingTaxesRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
     '/_authenticated/accounting/reports': {
       id: '/_authenticated/accounting/reports'
       path: '/reports'
       fullPath: '/accounting/reports'
       preLoaderRoute: typeof AuthenticatedAccountingReportsRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
+    '/_authenticated/accounting/periods': {
+      id: '/_authenticated/accounting/periods'
+      path: '/periods'
+      fullPath: '/accounting/periods'
+      preLoaderRoute: typeof AuthenticatedAccountingPeriodsRouteImport
       parentRoute: typeof AuthenticatedAccountingRoute
     }
     '/_authenticated/accounting/ledger': {
@@ -1489,7 +1529,9 @@ interface AuthenticatedAccountingRouteChildren {
   AuthenticatedAccountingChartRoute: typeof AuthenticatedAccountingChartRoute
   AuthenticatedAccountingJournalRoute: typeof AuthenticatedAccountingJournalRoute
   AuthenticatedAccountingLedgerRoute: typeof AuthenticatedAccountingLedgerRoute
+  AuthenticatedAccountingPeriodsRoute: typeof AuthenticatedAccountingPeriodsRoute
   AuthenticatedAccountingReportsRoute: typeof AuthenticatedAccountingReportsRoute
+  AuthenticatedAccountingTaxesRoute: typeof AuthenticatedAccountingTaxesRoute
 }
 
 const AuthenticatedAccountingRouteChildren: AuthenticatedAccountingRouteChildren =
@@ -1497,7 +1539,9 @@ const AuthenticatedAccountingRouteChildren: AuthenticatedAccountingRouteChildren
     AuthenticatedAccountingChartRoute: AuthenticatedAccountingChartRoute,
     AuthenticatedAccountingJournalRoute: AuthenticatedAccountingJournalRoute,
     AuthenticatedAccountingLedgerRoute: AuthenticatedAccountingLedgerRoute,
+    AuthenticatedAccountingPeriodsRoute: AuthenticatedAccountingPeriodsRoute,
     AuthenticatedAccountingReportsRoute: AuthenticatedAccountingReportsRoute,
+    AuthenticatedAccountingTaxesRoute: AuthenticatedAccountingTaxesRoute,
   }
 
 const AuthenticatedAccountingRouteWithChildren =

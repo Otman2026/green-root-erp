@@ -5,7 +5,7 @@ import {
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
   Briefcase, CalendarCheck, CalendarX, Bell, Barcode, History, CreditCard,
-  Route as RouteIcon, Fuel, MapPin,
+  Route as RouteIcon, Fuel, MapPin, Percent, CalendarRange,
   type LucideIcon,
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
@@ -51,6 +51,8 @@ export const MODULES: AppModule[] = [
   { key: "receipts",    path: "/receipts",    labelKey: "nav.receipts",    icon: Receipt,         color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant","cashier"] },
   { key: "debts",       path: "/debts",       labelKey: "nav.debts",       icon: CircleDollarSign,color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant"] },
   { key: "accounting",  path: "/accounting",  labelKey: "nav.accounting",  icon: Wallet,          color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant"] },
+  { key: "acc-taxes",   path: "/accounting/taxes",   labelKey: "acc.taxes",   icon: Percent,       color: "accounting", group: "finance", roles: ["admin","owner","manager","accountant"] },
+  { key: "acc-periods", path: "/accounting/periods", labelKey: "acc.periods", icon: CalendarRange, color: "accounting", group: "finance", roles: ["admin","owner","manager","accountant"] },
   { key: "cash-boxes",  path: "/cash-boxes",  labelKey: "nav.cashBoxes",   icon: CircleDollarSign,color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant","cashier"] },
   { key: "banks",       path: "/banks",       labelKey: "nav.banks",       icon: Building2,       color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant"] },
   { key: "checks",      path: "/checks",      labelKey: "nav.checks",      icon: Receipt,         color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant","cashier"] },
