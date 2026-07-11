@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
 export type AppRole =
+  | "system_owner"
   | "admin" | "owner" | "manager" | "branch_manager"
   | "warehouse_keeper" | "seller" | "cashier" | "accountant"
   | "purchases_manager" | "sales_manager" | "delivery"
