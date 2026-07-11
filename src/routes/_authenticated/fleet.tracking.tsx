@@ -30,18 +30,18 @@ function TrackingPage() {
   const [manualLng, setManualLng] = useState("");
 
   async function load() {
-    const { data } = await (supabase as any).from("fleet_vehicles").select("*").not("last_lat","is",null).not("last_lng","is",null);
+    const { data } = await supabase.from("fleet_vehicles").select("*").not("last_lat","is",null).not("last_lng","is",null);
     setVehicles(data ?? []);
   }
   useEffect(() => {
     load();
-    const ch = (supabase as any).channel("fleet_gps").on("postgres_changes", { event: "INSERT", schema: "public", table: "fleet_gps_positions" }, load).subscribe();
-    return () => { (supabase as any).removeChannel(ch); };
+    const ch = supabase.channel("fleet_gps").on("postgres_changes", { event: "INSERT", schema: "public", table: "fleet_gps_positions" }, load).subscribe();
+    return () => { supabase.removeChannel(ch); };
   }, []);
 
   async function pushPosition() {
     if (!selected || !manualLat || !manualLng) { toast.error(t("common.fillAll")); return; }
-    const { error } = await (supabase as any).from("fleet_gps_positions").insert({
+    const { error } = await supabase.from("fleet_gps_positions").insert({
       vehicle_id: selected, lat: Number(manualLat), lng: Number(manualLng),
     });
     if (error) { toast.error(error.message); return; }

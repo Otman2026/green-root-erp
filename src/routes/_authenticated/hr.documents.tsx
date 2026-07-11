@@ -23,8 +23,8 @@ function DocumentsPage() {
 
   async function load() {
     const [{ data: d }, { data: e }] = await Promise.all([
-      (supabase as any).from("hr_documents").select("*, hr_employees(full_name)").order("created_at", { ascending: false }),
-      (supabase as any).from("hr_employees").select("id,full_name").order("full_name"),
+      supabase.from("hr_documents").select("*, hr_employees(full_name)").order("created_at", { ascending: false }),
+      supabase.from("hr_employees").select("id,full_name").order("full_name"),
     ]);
     setRows(d ?? []); setEmployees(e ?? []);
   }
@@ -32,13 +32,13 @@ function DocumentsPage() {
 
   async function save() {
     if (!form.employee_id || !form.title) { toast.error(t("common.fillAll")); return; }
-    const { error } = await (supabase as any).from("hr_documents").insert({ ...form, expiry_date: form.expiry_date || null });
+    const { error } = await supabase.from("hr_documents").insert({ ...form, expiry_date: form.expiry_date || null });
     if (error) { toast.error(error.message); return; }
     setOpen(false); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("hr_documents").delete().eq("id", id);
+    await supabase.from("hr_documents").delete().eq("id", id);
     load();
   }
 

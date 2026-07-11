@@ -30,9 +30,9 @@ function EmployeesPage() {
 
   async function load() {
     const [{ data: e }, { data: d }, { data: p }] = await Promise.all([
-      (supabase as any).from("hr_employees").select("*, hr_departments(name), hr_positions(title)").order("created_at", { ascending: false }),
-      (supabase as any).from("hr_departments").select("*").order("name"),
-      (supabase as any).from("hr_positions").select("*").order("title"),
+      supabase.from("hr_employees").select("*, hr_departments(name), hr_positions(title)").order("created_at", { ascending: false }),
+      supabase.from("hr_departments").select("*").order("name"),
+      supabase.from("hr_positions").select("*").order("title"),
     ]);
     setRows(e ?? []); setDepts(d ?? []); setPositions(p ?? []);
   }
@@ -53,17 +53,17 @@ function EmployeesPage() {
     if (!form.full_name) { toast.error(t("hr.emp.nameRequired")); return; }
     const payload = { ...form, base_salary: Number(form.base_salary || 0) };
     if (edit) {
-      const { error } = await (supabase as any).from("hr_employees").update(payload).eq("id", edit.id);
+      const { error } = await supabase.from("hr_employees").update(payload).eq("id", edit.id);
       if (error) { toast.error(error.message); return; }
     } else {
-      const { error } = await (supabase as any).from("hr_employees").insert(payload);
+      const { error } = await supabase.from("hr_employees").insert(payload);
       if (error) { toast.error(error.message); return; }
     }
     setOpen(false); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    const { error } = await (supabase as any).from("hr_employees").delete().eq("id", id);
+    const { error } = await supabase.from("hr_employees").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.deleted")); load();
   }

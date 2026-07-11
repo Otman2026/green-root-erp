@@ -139,22 +139,21 @@ function POSPage() {
         amount: paidNum, user_id: user?.id ?? null,
       });
     }
-    if (customerId && paidNum < total) {
-      const owed = total - paidNum;
-      await supabase.from("customers").update({ balance: (customers.find((c) => c.id === customerId)?.balance ?? 0) + owed }).eq("id", customerId);
+    const owed = customerId && paidNum < total ? total - paidNum : 0;
+    const pts = customerId ? Math.floor(total / 100) : 0;
+    if (customerId && (owed !== 0 || pts !== 0)) {
+      await supabase.rpc("pos_apply_customer_updates", {
+        _customer_id: customerId,
+        _balance_delta: owed,
+        _points_delta: pts,
+      });
     }
     if (coupon) {
       await supabase.from("coupon_redemptions").insert({ coupon_id: coupon.id, customer_id: customerId || null, sale_id: sale.id, discount_amount: couponDiscount });
       await supabase.from("coupons").update({ used_count: (coupon.used_count ?? 0) + 1 }).eq("id", coupon.id);
     }
-    // loyalty: 1 point per 100 spent
-    if (customerId) {
-      const pts = Math.floor(total / 100);
-      if (pts > 0) {
-        await supabase.from("loyalty_transactions").insert({ customer_id: customerId, sale_id: sale.id, points: pts, reason: "sale" });
-        const cur = customers.find((c) => c.id === customerId)?.loyalty_points ?? 0;
-        await supabase.from("customers").update({ loyalty_points: cur + pts }).eq("id", customerId);
-      }
+    if (customerId && pts > 0) {
+      await supabase.from("loyalty_transactions").insert({ customer_id: customerId, sale_id: sale.id, points: pts, reason: "sale" });
     }
 
     toast.success(`${t("auth.success")} — ${sale.invoice_no}`);

@@ -24,8 +24,8 @@ function LeavesPage() {
 
   async function load() {
     const [{ data: l }, { data: e }] = await Promise.all([
-      (supabase as any).from("hr_leaves").select("*, hr_employees(full_name)").order("created_at", { ascending: false }),
-      (supabase as any).from("hr_employees").select("id,full_name").eq("status", "active").order("full_name"),
+      supabase.from("hr_leaves").select("*, hr_employees(full_name)").order("created_at", { ascending: false }),
+      supabase.from("hr_employees").select("id,full_name").eq("status", "active").order("full_name"),
     ]);
     setRows(l ?? []); setEmployees(e ?? []);
   }
@@ -34,13 +34,13 @@ function LeavesPage() {
   async function save() {
     if (!form.employee_id || !form.from_date || !form.to_date) { toast.error(t("common.fillAll")); return; }
     const days = Math.max(1, Math.round((new Date(form.to_date).getTime() - new Date(form.from_date).getTime()) / 86400000) + 1);
-    const { error } = await (supabase as any).from("hr_leaves").insert({ ...form, days, status: "pending" });
+    const { error } = await supabase.from("hr_leaves").insert({ ...form, days, status: "pending" });
     if (error) { toast.error(error.message); return; }
     setOpen(false); toast.success(t("common.saved")); load();
   }
 
   async function setStatus(id: string, status: string) {
-    const { error } = await (supabase as any).from("hr_leaves").update({ status }).eq("id", id);
+    const { error } = await supabase.from("hr_leaves").update({ status }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     load();
   }

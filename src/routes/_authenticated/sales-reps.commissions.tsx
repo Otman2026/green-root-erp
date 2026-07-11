@@ -22,7 +22,7 @@ function CommissionsPage() {
   const [rows, setRows] = useState<any[]>([]);
 
   async function load() {
-    const { data } = await (supabase as any).from("sales_commissions")
+    const { data } = await supabase.from("sales_commissions")
       .select("*, sales_reps(full_name,commission_rate,monthly_target)")
       .eq("period_year", year).eq("period_month", month)
       .order("commission_amount", { ascending: false });
@@ -31,12 +31,12 @@ function CommissionsPage() {
   useEffect(() => { load(); }, [year, month]);
 
   async function generate() {
-    const { data: reps } = await (supabase as any).from("sales_reps").select("id,commission_rate,monthly_target").eq("status", "active");
+    const { data: reps } = await supabase.from("sales_reps").select("id,commission_rate,monthly_target").eq("status", "active");
     if (!reps?.length) { toast.error(t("reps.noReps")); return; }
     const from = `${year}-${String(month).padStart(2, "0")}-01`;
     const toD = new Date(year, month, 0, 23, 59, 59).toISOString();
 
-    const { data: sales } = await (supabase as any)
+    const { data: sales } = await supabase
       .from("sales")
       .select("sales_rep_id,total")
       .gte("created_at", from).lte("created_at", toD)
@@ -62,13 +62,13 @@ function CommissionsPage() {
       };
     });
 
-    const { error } = await (supabase as any).from("sales_commissions").upsert(rows, { onConflict: "rep_id,period_year,period_month" });
+    const { error } = await supabase.from("sales_commissions").upsert(rows, { onConflict: "rep_id,period_year,period_month" });
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.saved")); load();
   }
 
   async function markPaid(id: string) {
-    const { error } = await (supabase as any).from("sales_commissions").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", id);
+    const { error } = await supabase.from("sales_commissions").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     load();
   }

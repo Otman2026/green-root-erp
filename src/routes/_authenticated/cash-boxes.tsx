@@ -30,11 +30,11 @@ function CashBoxesPage() {
   const [mov, setMov] = useState<any>({ direction: "in", amount: 0, tx_date: todayISO(), reason: "", counter_box_id: "" });
 
   const loadBoxes = async () => {
-    const { data } = await (supabase as any).from("cash_boxes").select("*").order("name");
+    const { data } = await supabase.from("cash_boxes").select("*").order("name");
     setBoxes((data ?? []) as Box[]);
   };
   const loadMovs = async (boxId: string) => {
-    const { data } = await (supabase as any).from("cash_movements").select("*").eq("box_id", boxId).order("tx_date", { ascending: false }).limit(100);
+    const { data } = await supabase.from("cash_movements").select("*").eq("box_id", boxId).order("tx_date", { ascending: false }).limit(100);
     setMovs(data ?? []);
   };
   useEffect(() => { loadBoxes(); }, []);
@@ -42,7 +42,7 @@ function CashBoxesPage() {
 
   const saveBox = async () => {
     if (!newBox.name.trim()) return;
-    const { error } = await (supabase as any).from("cash_boxes").insert({ name: newBox.name, code: newBox.code || null, currency: newBox.currency });
+    const { error } = await supabase.from("cash_boxes").insert({ name: newBox.name, code: newBox.code || null, currency: newBox.currency });
     if (error) return toast.error(error.message);
     setOpenBox(false); setNewBox({ name: "", code: "", currency: "MAD" }); loadBoxes();
   };
@@ -50,12 +50,12 @@ function CashBoxesPage() {
     if (!selected || !mov.amount) return;
     const payload: any = { box_id: selected.id, direction: mov.direction, amount: Number(mov.amount), tx_date: mov.tx_date, reason: mov.reason || null };
     if (mov.direction === "transfer" && mov.counter_box_id) { payload.direction = "out"; payload.counter_box_id = mov.counter_box_id; }
-    const { error } = await (supabase as any).from("cash_movements").insert(payload);
+    const { error } = await supabase.from("cash_movements").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("✓"); setOpenMov(false); setMov({ direction: "in", amount: 0, tx_date: todayISO(), reason: "", counter_box_id: "" });
     loadBoxes(); loadMovs(selected.id);
     // refresh selected balance
-    const b = (await (supabase as any).from("cash_boxes").select("*").eq("id", selected.id).single()).data;
+    const b = (await supabase.from("cash_boxes").select("*").eq("id", selected.id).single()).data;
     if (b) setSelected(b);
   };
 

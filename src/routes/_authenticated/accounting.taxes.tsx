@@ -33,7 +33,7 @@ function TaxesPage() {
   const [isDefault, setIsDefault] = useState(false);
 
   const load = async () => {
-    const { data } = await (supabase as any)
+    const { data } = await supabase
       .from("tax_rates")
       .select("*")
       .order("created_at", { ascending: false });
@@ -48,7 +48,7 @@ function TaxesPage() {
     if (!name.trim()) return;
     const r = Number(rate);
     if (Number.isNaN(r)) return;
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from("tax_rates")
       .insert({ name: name.trim(), rate: r, is_default: isDefault, is_active: true });
     if (error) return toast.error(error.message);
@@ -60,13 +60,13 @@ function TaxesPage() {
   };
 
   const toggle = async (id: string, field: "is_active" | "is_default", val: boolean) => {
-    const { error } = await (supabase as any).from("tax_rates").update({ [field]: val }).eq("id", id);
+    const { error } = await supabase.from("tax_rates").update({ [field]: val } as any).eq("id", id);
     if (error) return toast.error(error.message);
     load();
   };
 
   const remove = async (id: string) => {
-    const { error } = await (supabase as any).from("tax_rates").delete().eq("id", id);
+    const { error } = await supabase.from("tax_rates").delete().eq("id", id);
     if (error) return toast.error(error.message);
     load();
   };

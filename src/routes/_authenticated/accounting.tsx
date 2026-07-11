@@ -20,10 +20,10 @@ function AccountingHub() {
   useEffect(() => {
     (async () => {
       const [rev, exp, cash, bank] = await Promise.all([
-        (supabase as any).from("journal_lines").select("credit,accounts!inner(type)").eq("accounts.type","revenue"),
-        (supabase as any).from("journal_lines").select("debit,accounts!inner(type)").eq("accounts.type","expense"),
-        (supabase as any).from("cash_boxes").select("balance"),
-        (supabase as any).from("bank_accounts").select("balance"),
+        supabase.from("journal_lines").select("credit,accounts!inner(type)").eq("accounts.type","revenue"),
+        supabase.from("journal_lines").select("debit,accounts!inner(type)").eq("accounts.type","expense"),
+        supabase.from("cash_boxes").select("balance"),
+        supabase.from("bank_accounts").select("balance"),
       ]);
       reportSupabaseErrors("المحاسبة", rev, exp, cash, bank);
       setKpi({

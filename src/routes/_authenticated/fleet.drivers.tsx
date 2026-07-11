@@ -25,8 +25,8 @@ function DriversPage() {
 
   async function load() {
     const [{ data: d }, { data: e }] = await Promise.all([
-      (supabase as any).from("fleet_drivers").select("*, hr_employees(full_name)").order("created_at", { ascending: false }),
-      (supabase as any).from("hr_employees").select("id,full_name").order("full_name"),
+      supabase.from("fleet_drivers").select("*, hr_employees(full_name)").order("created_at", { ascending: false }),
+      supabase.from("hr_employees").select("id,full_name").order("full_name"),
     ]);
     setRows(d ?? []); setEmployees(e ?? []);
   }
@@ -39,15 +39,15 @@ function DriversPage() {
     if (!form.full_name) { toast.error(t("common.fillAll")); return; }
     const payload = { ...form, license_expiry: form.license_expiry || null };
     const q = edit
-      ? (supabase as any).from("fleet_drivers").update(payload).eq("id", edit.id)
-      : (supabase as any).from("fleet_drivers").insert(payload);
+      ? supabase.from("fleet_drivers").update(payload).eq("id", edit.id)
+      : supabase.from("fleet_drivers").insert(payload);
     const { error } = await q;
     if (error) { toast.error(error.message); return; }
     setOpen(false); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("fleet_drivers").delete().eq("id", id);
+    await supabase.from("fleet_drivers").delete().eq("id", id);
     load();
   }
 
