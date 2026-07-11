@@ -43,8 +43,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" side={dir === "rtl" ? "right" : "left"}>
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2 px-2 py-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg gradient-primary text-primary-foreground">
-            <Sprout className="h-5 w-5" />
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white p-1 shadow-sm ring-1 ring-border">
+            <img src={logo} alt="Haytam AGRI" className="h-full w-full object-contain" width={36} height={36} />
           </div>
           {!collapsed && (
             <div className="flex min-w-0 flex-col">
