@@ -57,7 +57,7 @@ function SystemHealth() {
     URL.revokeObjectURL(url);
   };
 
-  const totalRows = Object.values(counts).reduce((s, v) => s + (v ?? 0), 0);
+  const totalRows = Object.values(counts).reduce<number>((s, v) => s + (v ?? 0), 0);
   const failing = Object.entries(counts).filter(([, v]) => v === null).map(([k]) => k);
 
   return (
@@ -85,7 +85,7 @@ function SystemHealth() {
             <div className="text-xs text-muted-foreground">{t("sys.totalRows")}</div>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="mt-1 text-xl font-bold">{totalRows.toLocaleString()}</div>
+          <div className="mt-1 text-xl font-bold">{(totalRows ?? 0).toLocaleString()}</div>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
