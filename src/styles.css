@@ -374,4 +374,83 @@ body.license-readonly button[type="submit"]:not([data-allow-readonly]) {
   }
 }
 
+/* ===== Global card beautification =====
+ * Cards get a subtle top accent, gradient tint and hover elevation.
+ * Applies wherever shadcn `bg-card` is used (all modules & pages).
+ */
+@layer base {
+  .bg-card {
+    position: relative;
+    background-image:
+      linear-gradient(180deg,
+        color-mix(in oklch, var(--primary) 4%, var(--card)) 0%,
+        var(--card) 55%),
+      linear-gradient(180deg, var(--card), var(--card));
+    box-shadow:
+      0 1px 2px 0 oklch(0 0 0 / 4%),
+      0 8px 24px -12px color-mix(in oklch, var(--primary) 20%, transparent);
+    transition: box-shadow 220ms ease, transform 220ms ease, border-color 220ms ease;
+  }
+  .bg-card::before {
+    content: "";
+    position: absolute; inset: 0 0 auto 0;
+    height: 3px;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    background: linear-gradient(90deg,
+      var(--primary),
+      color-mix(in oklch, var(--mod-dashboard) 70%, var(--primary)),
+      color-mix(in oklch, var(--mod-ai) 70%, var(--primary)));
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .bg-card:hover {
+    box-shadow:
+      0 2px 4px 0 oklch(0 0 0 / 5%),
+      0 16px 40px -14px color-mix(in oklch, var(--primary) 32%, transparent);
+    border-color: color-mix(in oklch, var(--primary) 25%, var(--border));
+  }
+}
+
+/* ===== Recharts theming — use design tokens on every chart ===== */
+@layer base {
+  .recharts-cartesian-grid line {
+    stroke: color-mix(in oklch, var(--muted-foreground) 20%, transparent);
+    stroke-dasharray: 3 4;
+  }
+  .recharts-cartesian-axis-line,
+  .recharts-cartesian-axis-tick-line {
+    stroke: color-mix(in oklch, var(--muted-foreground) 35%, transparent);
+  }
+  .recharts-cartesian-axis-tick-value {
+    fill: var(--muted-foreground);
+    font-size: 11px;
+  }
+  .recharts-default-tooltip {
+    background: color-mix(in oklch, var(--popover) 92%, transparent) !important;
+    border: 1px solid color-mix(in oklch, var(--primary) 30%, var(--border)) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 32px -12px oklch(0 0 0 / 25%) !important;
+    color: var(--popover-foreground) !important;
+    backdrop-filter: blur(8px);
+  }
+  .recharts-tooltip-label { color: var(--foreground) !important; font-weight: 600; }
+  .recharts-legend-item-text { color: var(--muted-foreground) !important; }
+  .recharts-surface { overflow: visible; }
+}
+
+/* Colorful KPI card fallback (when no tone provided) */
+@utility kpi-tinted {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg,
+      color-mix(in oklch, var(--primary) 10%, var(--card)) 0%,
+      var(--card) 100%);
+  border: 1px solid color-mix(in oklch, var(--primary) 20%, var(--border));
+}
+
+
+
 
