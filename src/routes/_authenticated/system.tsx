@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Building2, KeyRound, Package as PackageIcon, ScrollText, Users } from "lucide-react";
+import { Shield, Building2, KeyRound, Package as PackageIcon, ScrollText, Users, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/system")({
   ssr: false,
