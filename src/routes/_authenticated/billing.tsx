@@ -64,7 +64,7 @@ function BillingPage() {
     setOpenPlan(false); setEditPlan(null); load();
   };
 
-  const delPlan = async (id: string) => { if (!confirm("?")) return; await supabase.from("plans").delete().eq("id", id); load(); };
+  const delPlan = async (id: string) => { if (!confirm(t("common.confirmDelete"))) return; await supabase.from("plans").delete().eq("id", id); load(); };
 
   const saveSub = async () => {
     if (!newSub.user_id || !newSub.plan_id) return toast.error(t("common.done"));

@@ -64,7 +64,7 @@ function SalesPage() {
   };
 
   const doReturn = async (s: Sale) => {
-    if (!confirm("Create return for this sale?")) return;
+    if (!confirm(t("sales.confirmReturn"))) return;
     const { data: origItems } = await supabase.from("sale_items").select("*").eq("sale_id", s.id);
     const { data: ret, error } = await supabase.from("sales").insert({
       type: "return", status: "confirmed", customer_id: s.customer_id,

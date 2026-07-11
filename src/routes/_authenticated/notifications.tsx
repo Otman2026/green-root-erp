@@ -27,7 +27,7 @@ function NotificationsPage() {
 
   const markRead = async (id: string) => { await supabase.from("notifications").update({ read: true }).eq("id", id); load(); };
   const markAll = async () => { if (!user) return; await supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false); toast.success(t("common.done")); load(); };
-  const del = async (id: string) => { await supabase.from("notifications").delete().eq("id", id); load(); };
+  const del = async (id: string) => { if (!confirm(t("common.confirmDelete"))) return; await supabase.from("notifications").delete().eq("id", id); load(); };
   const clearAll = async () => { if (!user) return; if (!confirm(t("notif.confirmClear"))) return; await supabase.from("notifications").delete().eq("user_id", user.id); load(); };
 
   const shown = filter === "unread" ? items.filter((n) => !n.read) : items;
