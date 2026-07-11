@@ -7,7 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
-import { fmtMoney, fmtDateTime, printHtml } from "@/lib/format";
+import { fmtMoney, fmtDateTime } from "@/lib/format";
+import { printDocument } from "@/lib/print-templates";
 
 export const Route = createFileRoute("/_authenticated/quotes")({ component: QuotesPage });
 
@@ -45,12 +46,20 @@ function QuotesPage() {
   };
 
   const print = async (q: any) => {
-    const { data: its } = await supabase.from("sale_items").select("*, products(name)").eq("sale_id", q.id);
-    const rowsHtml = (its ?? []).map((l: any) => `<tr><td>${l.products?.name ?? "—"}</td><td class="r">${l.qty}</td><td class="r">${fmtMoney(l.unit_price)}</td><td class="r">${fmtMoney(l.total)}</td></tr>`).join("");
-    printHtml(`<div class="head"><div><h2>Haytam AGRI</h2><div class="muted">Quote</div></div><div><b>${q.invoice_no}</b><div class="muted">${fmtDateTime(q.created_at)}</div></div></div>
-      <div><b>Customer:</b> ${customers[q.customer_id ?? ""] ?? "—"}</div>
-      <table><thead><tr><th>Product</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Total</th></tr></thead><tbody>${rowsHtml}</tbody></table>
-      <div class="totals"><div class="grand"><span>Total</span><span>${fmtMoney(q.total)}</span></div></div>`);
+    const { data: its } = await supabase.from("sale_items").select("*, products(name,sku)").eq("sale_id", q.id);
+    const party = q.customer_id
+      ? (await supabase.from("customers").select("name,phone,address").eq("id", q.customer_id).maybeSingle()).data
+      : null;
+    await printDocument({
+      type: "quote", docNo: q.invoice_no, date: q.created_at, party,
+      lines: (its ?? []).map((l: any) => ({
+        name: l.products?.name ?? "—", sku: l.products?.sku ?? null,
+        qty: Number(l.qty), unit_price: Number(l.unit_price),
+        discount: Number(l.discount ?? 0), tax: Number(l.tax ?? 0), total: Number(l.total),
+      })),
+      subtotal: Number(q.subtotal ?? q.total), tax: Number(q.tax ?? 0),
+      discount: Number(q.discount ?? 0), total: Number(q.total),
+    });
   };
 
   return (

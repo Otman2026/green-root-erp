@@ -14,7 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
-import { fmtMoney, fmtDateTime, printHtml } from "@/lib/format";
+import { fmtMoney, fmtDateTime } from "@/lib/format";
+import { printDocument } from "@/lib/print-templates";
 
 export const Route = createFileRoute("/_authenticated/receipts")({ component: ReceiptsPage });
 
@@ -47,15 +48,13 @@ function ReceiptsPage() {
 
   const partyName = (r: any) => (r.party_type === "customer" ? customers : suppliers).find((x) => x.id === r.party_id)?.name ?? "—";
 
-  const print = (r: any) => {
-    printHtml(`<div class="head"><div><h2>Haytam AGRI</h2><div class="muted">${t(`receipts.${r.direction}`)}</div></div><div><b>${r.receipt_no}</b><div class="muted">${fmtDateTime(r.received_at)}</div></div></div>
-      <table><tbody>
-        <tr><th>${t("receipts.party")}</th><td>${partyName(r)}</td></tr>
-        <tr><th>${t("receipts.amount")}</th><td class="r"><b>${fmtMoney(r.amount)}</b></td></tr>
-        <tr><th>${t("receipts.method")}</th><td>${r.method}</td></tr>
-        ${r.reference ? `<tr><th>Reference</th><td>${r.reference}</td></tr>` : ""}
-        ${r.notes ? `<tr><th>${t("common.notes")}</th><td>${r.notes}</td></tr>` : ""}
-      </tbody></table>`);
+  const print = async (r: any) => {
+    await printDocument({
+      type: "receipt", docNo: r.receipt_no, date: r.received_at,
+      party: { name: partyName(r) },
+      lines: [{ name: `${t(`receipts.${r.direction}`)} — ${r.method}${r.reference ? ` (${r.reference})` : ""}`, qty: 1, unit_price: Number(r.amount), total: Number(r.amount) }],
+      total: Number(r.amount), notes: r.notes,
+    });
   };
 
   return (
