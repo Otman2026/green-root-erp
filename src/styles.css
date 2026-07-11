@@ -343,9 +343,10 @@ body.license-readonly button[type="submit"]:not([data-allow-readonly]) {
   color: white;
   box-shadow: 0 12px 32px -14px oklch(0 0 0 / 22%);
   transition: transform 220ms ease, box-shadow 220ms ease;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px -16px oklch(0 0 0 / 28%);
+  }
 }
-@utility kpi-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px -16px oklch(0 0 0 / 28%);
-}
+
 
