@@ -1,8 +1,10 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "haytam-agri",
+  "version": "1.0.0",
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
