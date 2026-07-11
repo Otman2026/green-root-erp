@@ -2234,6 +2234,54 @@ export type Database = {
         }
         Relationships: []
       }
+      plans: {
+        Row: {
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json
+          id: string
+          is_active: boolean
+          max_users: number | null
+          name: string
+          price_monthly: number
+          price_yearly: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          max_users?: number | null
+          name: string
+          price_monthly?: number
+          price_yearly?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          max_users?: number | null
+          name?: string
+          price_monthly?: number
+          price_yearly?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       price_list_items: {
         Row: {
           category_id: string | null
@@ -3689,6 +3737,56 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          billing_cycle: string
+          cancel_at: string | null
+          created_at: string
+          current_period_end: string | null
+          id: string
+          notes: string | null
+          plan_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_cycle?: string
+          cancel_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          notes?: string | null
+          plan_id: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          billing_cycle?: string
+          cancel_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          notes?: string | null
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supplier_invoices: {
         Row: {
           balance: number
@@ -4186,6 +4284,12 @@ export type Database = {
         | "adjustment"
         | "stocktake"
       stock_transfer_status: "draft" | "in_transit" | "completed" | "cancelled"
+      subscription_status:
+        | "trial"
+        | "active"
+        | "past_due"
+        | "cancelled"
+        | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4406,6 +4510,13 @@ export const Constants = {
         "stocktake",
       ],
       stock_transfer_status: ["draft", "in_transit", "completed", "cancelled"],
+      subscription_status: [
+        "trial",
+        "active",
+        "past_due",
+        "cancelled",
+        "expired",
+      ],
     },
   },
 } as const
