@@ -33,7 +33,10 @@ import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedChecksRouteImport } from './routes/_authenticated/checks'
+import { Route as AuthenticatedCashBoxesRouteImport } from './routes/_authenticated/cash-boxes'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
+import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/banks'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
@@ -166,9 +169,24 @@ const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedChecksRoute = AuthenticatedChecksRouteImport.update({
+  id: '/checks',
+  path: '/checks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCashBoxesRoute = AuthenticatedCashBoxesRouteImport.update({
+  id: '/cash-boxes',
+  path: '/cash-boxes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBranchesRoute = AuthenticatedBranchesRouteImport.update({
   id: '/branches',
   path: '/branches',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBanksRoute = AuthenticatedBanksRouteImport.update({
+  id: '/banks',
+  path: '/banks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
@@ -239,7 +257,10 @@ export interface FileRoutesByFullPath {
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
+  '/banks': typeof AuthenticatedBanksRoute
   '/branches': typeof AuthenticatedBranchesRoute
+  '/cash-boxes': typeof AuthenticatedCashBoxesRoute
+  '/checks': typeof AuthenticatedChecksRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/debts': typeof AuthenticatedDebtsRoute
@@ -276,7 +297,10 @@ export interface FileRoutesByTo {
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
+  '/banks': typeof AuthenticatedBanksRoute
   '/branches': typeof AuthenticatedBranchesRoute
+  '/cash-boxes': typeof AuthenticatedCashBoxesRoute
+  '/checks': typeof AuthenticatedChecksRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/debts': typeof AuthenticatedDebtsRoute
@@ -315,7 +339,10 @@ export interface FileRoutesById {
   '/_authenticated/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
   '/_authenticated/ai': typeof AuthenticatedAiRoute
+  '/_authenticated/banks': typeof AuthenticatedBanksRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
+  '/_authenticated/cash-boxes': typeof AuthenticatedCashBoxesRoute
+  '/_authenticated/checks': typeof AuthenticatedChecksRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/debts': typeof AuthenticatedDebtsRoute
@@ -354,7 +381,10 @@ export interface FileRouteTypes {
     | '/accounting'
     | '/agri'
     | '/ai'
+    | '/banks'
     | '/branches'
+    | '/cash-boxes'
+    | '/checks'
     | '/customers'
     | '/dashboard'
     | '/debts'
@@ -391,7 +421,10 @@ export interface FileRouteTypes {
     | '/accounting'
     | '/agri'
     | '/ai'
+    | '/banks'
     | '/branches'
+    | '/cash-boxes'
+    | '/checks'
     | '/customers'
     | '/dashboard'
     | '/debts'
@@ -429,7 +462,10 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting'
     | '/_authenticated/agri'
     | '/_authenticated/ai'
+    | '/_authenticated/banks'
     | '/_authenticated/branches'
+    | '/_authenticated/cash-boxes'
+    | '/_authenticated/checks'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/debts'
@@ -637,11 +673,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/checks': {
+      id: '/_authenticated/checks'
+      path: '/checks'
+      fullPath: '/checks'
+      preLoaderRoute: typeof AuthenticatedChecksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/cash-boxes': {
+      id: '/_authenticated/cash-boxes'
+      path: '/cash-boxes'
+      fullPath: '/cash-boxes'
+      preLoaderRoute: typeof AuthenticatedCashBoxesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/branches': {
       id: '/_authenticated/branches'
       path: '/branches'
       fullPath: '/branches'
       preLoaderRoute: typeof AuthenticatedBranchesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/banks': {
+      id: '/_authenticated/banks'
+      path: '/banks'
+      fullPath: '/banks'
+      preLoaderRoute: typeof AuthenticatedBanksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/ai': {
@@ -765,7 +822,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRouteWithChildren
   AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
+  AuthenticatedBanksRoute: typeof AuthenticatedBanksRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
+  AuthenticatedCashBoxesRoute: typeof AuthenticatedCashBoxesRoute
+  AuthenticatedChecksRoute: typeof AuthenticatedChecksRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
@@ -793,7 +853,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountingRoute: AuthenticatedAccountingRouteWithChildren,
   AuthenticatedAgriRoute: AuthenticatedAgriRouteWithChildren,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
+  AuthenticatedBanksRoute: AuthenticatedBanksRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
+  AuthenticatedCashBoxesRoute: AuthenticatedCashBoxesRoute,
+  AuthenticatedChecksRoute: AuthenticatedChecksRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,
