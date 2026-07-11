@@ -1,49 +1,94 @@
-# المرحلة 3 — ترقية Haytam AGRI إلى Enterprise ERP
 
-النطاق ضخم جداً (70+ صفحة، 85 جدول). تنفيذه دفعة واحدة سيؤدي إلى انحدار في الجودة وأخطاء. أقترح تقسيمه إلى **6 موجات (Waves)** كل واحدة قابلة للتسليم والاختبار على حدة، دون أي حذف لبيانات أو وحدات.
+# المرحلة الرابعة – نظام SaaS احترافي
 
-## Wave 1 — البنية التحتية المشتركة (Foundation)
-لا تغيير مرئي كبير، لكنه يوحّد كل الصفحات لاحقاً.
-- `DataTable` موحّد: بحث فوري، فرز، فلترة، pagination، إظهار/إخفاء أعمدة، تثبيت، تصدير Excel/PDF/CSV، طباعة.
-- `FormShell` موحّد: Zod validation، رسائل خطأ AR، حفظ تلقائي اختياري.
-- `PageHeader` + `EmptyState` + `KpiCard` + `ChartCard` (Recharts).
-- محرك بحث عام (`Cmd+K` / `Ctrl+K`) عبر Products/Customers/Suppliers/Sales/Invoices.
-- Hook `useExport` (Excel/PDF/CSV/Print).
+⚠️ **بدون حذف أي وحدة أو صفحة أو بيانات موجودة.** جميع الجداول الحالية تبقى كما هي، ونضيف فوقها طبقة العزل (tenant) والتراخيص.
 
-## Wave 2 — Dashboard احترافي
-استبدال `dashboard.tsx` الحالي بلوحة كاملة:
-- 8 بطاقات KPI (مبيعات اليوم/الشهر، أرباح، عملاء نشطون، فواتير مستحقة، مخزون منخفض، قرب انتهاء الصلاحية، رصيد الصندوق).
-- رسم بياني: مبيعات آخر 30 يوم، أفضل 10 منتجات، أفضل 10 عملاء، أفضل 5 موردين.
-- قوائم مباشرة: آخر 10 عمليات، منتجات منخفضة، منتجات قريبة الانتهاء، فواتير مستحقة.
-- تنبيهات ذكية أعلى الصفحة.
+## 1. قاعدة البيانات (Migration واحدة كبيرة)
 
-## Wave 3 — ترقية الجداول الأساسية
-تطبيق `DataTable` الموحّد على:
-- Products, Customers, Suppliers, Sales, Purchases, Inventory, Stock Movements, HR Employees, Fleet Vehicles.
-كل صفحة تحصل على: بحث، فلترة متقدمة، ترتيب، أعمدة قابلة للتخصيص، تصدير، طباعة.
+### جداول جديدة
+- `organizations` — المؤسسات (name, slug, owner_user_id, status, created_at)
+- `organization_members` — ربط user ↔ organization + دور داخل المؤسسة (owner/manager/employee)
+- `plans` (موجود، سنراجعه) — الخطط: trial / monthly / semi / yearly + السعر والمدة
+- `licenses` — مفتاح ترخيص لكل مؤسسة (key, organization_id, plan_id, status: active/suspended/expired, starts_at, expires_at, is_trial)
+- `subscriptions` (موجود، سنراجعه) — سجل الاشتراكات والتجديدات
+- `audit_logs` — سجل كامل للعمليات الحساسة (user_id, org_id, action, entity, entity_id, ip, ua, meta, created_at)
 
-## Wave 4 — التقارير + مركز الطباعة
-- قوالب طباعة احترافية (Invoice, Quote, Receipt, Delivery Note) مع شعار المؤسسة و QR.
-- محرك تقارير مع فلاتر (الفترة/الفرع/المستخدم/العميل/المورد/المنتج) + تصدير 3 صيغ.
-- ترقية `/reports` من روابط فقط إلى تقارير حية داخلها.
+### تعديل الأدوار
+- إضافة قيمة `system_owner` إلى enum `app_role`.
+- **قيد قاعدة بيانات صارم:** فهرس فريد جزئي يمنع وجود أكثر من صف واحد بدور `system_owner` في `user_roles`.
+- دوال `SECURITY DEFINER`: `is_system_owner()`، `current_org_id()`، `is_org_member(org)`، `is_org_owner(org)`.
+- **حماية RLS على `user_roles`:** منع أي INSERT/UPDATE/DELETE لدور `system_owner` من داخل التطبيق (فقط عبر SQL مباشر من System Owner).
 
-## Wave 5 — الإشعارات + الإعدادات
-- مركز إشعارات كامل (`notifications` جدول موجود): تنبيهات مخزون، انتهاء صلاحية، ديون، فواتير مستحقة، طلبات جديدة، رسائل نظام. Realtime عبر Supabase.
-- صفحة `/settings` احترافية بتبويبات: المؤسسة، النظام، اللغة، الطباعة، الضرائب، العملات، النسخ الاحتياطي، البريد، WhatsApp.
+### إضافة `organization_id` (بدون حذف بيانات)
+- إضافة عمود `organization_id uuid` (nullable مبدئياً) إلى الجداول الأساسية: `products, customers, suppliers, sales, sale_items, purchase_orders, stock_movements, warehouses, branches, hr_employees, cash_boxes, bank_accounts, journal_entries, accounts, categories, price_lists, coupons, agri_plants, agri_diseases, agri_pests, agri_treatments, fleet_vehicles, sales_reps, ...`
+- Migration تُنشئ مؤسسة افتراضية "Default Organization" وتُسند كل البيانات الحالية إليها، ثم يُصبح العمود `NOT NULL`.
+- المستخدم الحالي الأول (admin) يصبح مالك تلك المؤسسة.
 
-## Wave 6 — Polish + Performance + Cleanup
-- مراجعة UX لكل صفحة (RTL، spacing، dark mode).
-- Code-splitting، lazy routes، تحسين استعلامات.
-- حذف الأكواد/الاستيرادات غير المستعملة (بعد فحص آلي، بدون حذف صفحات أو بيانات).
-- اختبار شامل: كل صفحة، كل زر، كل CRUD.
+### RLS جديدة (فوق الموجودة)
+- كل جدول tenant-scoped تُضاف عليه سياسة: `organization_id = current_org_id() OR is_system_owner()`.
+- سياسات الكتابة تُضيف شرط **Read-Only Mode**: `license_is_active(current_org_id())` — دالة تتحقق أن الترخيص نشط وغير منتهي.
+- `licenses`, `subscriptions`, `plans`: القراءة لأعضاء المؤسسة، الكتابة لـ `system_owner` فقط.
+- `audit_logs`: القراءة لمالك المؤسسة و system_owner، الكتابة عبر triggers فقط.
 
-## التسليم
-كل Wave: كود + قائمة ما تغيّر + كيفية اختباره، ثم أنتظر موافقتك للانتقال للتالي.
+### Triggers
+- Trigger على الجداول الحساسة يكتب في `audit_logs`.
+- Trigger على `sales/purchases/…` يمنع الكتابة إذا `license_is_active() = false` (طبقة ثانية فوق RLS).
+- تحديث `handle_new_user`: يُنشئ مؤسسة تجريبية جديدة + ترخيص Trial لمدة 15 يوماً تلقائياً لكل مستخدم جديد يُسجّل بنفسه.
 
----
+## 2. المصادقة (Auth)
 
-**من أين نبدأ؟**
-- الخيار الافتراضي: **Wave 1** (البنية المشتركة) — لأن كل ما بعده يعتمد عليها.
-- بديل: البدء بـ **Wave 2 (Dashboard)** إذا الأولوية بصرية فورية.
+- تمكين تسجيل الدخول باسم المستخدم فقط: عند الإنشاء يُولّد بريد وهمي `<username>@haytam.local` داخلياً لـ Supabase (الحقل `email_optional` في `profiles` موجود مسبقاً للبريد الحقيقي الاختياري).
+- شاشة تسجيل جديدة `/auth`: تبويبان (دخول / إنشاء حساب) — بحقل username + كلمة مرور + هاتف اختياري + بريد اختياري.
+- **اقتراح أسماء بديلة** تلقائياً عند التكرار (username, username1, username2, ...).
+- **نسيان كلمة المرور:** صفحة `/auth/recover` تبحث بـ username → تعرض القنوات المتاحة (بريد/هاتف) → OTP عبر Supabase (بريد) أو رمز مؤقت يُخزّن في `password_resets`.
+- System Owner يستطيع إصدار كلمة مرور مؤقتة لأي مستخدم من لوحته.
 
-قل لي: **Wave 1** أم **Wave 2** أم ترتيب آخر؟
+## 3. الواجهات الجديدة
+
+### لوحة System Owner (`/system/*`) — محمية بـ `is_system_owner()`
+- `/system` — نظرة عامة (عدد المؤسسات، الاشتراكات النشطة، الإيرادات، Trial ينتهي قريباً).
+- `/system/organizations` — قائمة/إنشاء/تعليق/حذف مؤسسة، تعيين المالك.
+- `/system/licenses` — توليد مفاتيح، تمديد، إلغاء، إعادة تفعيل، ربط بمؤسسة/خطة.
+- `/system/plans` — إدارة الخطط والأسعار والمدد.
+- `/system/subscriptions` — سجل الاشتراكات والتجديدات.
+- `/system/users` — إدارة المستخدمين عبر النظام، إعادة تعيين كلمة مرور مؤقتة.
+- `/system/audit` — سجل التدقيق الكامل.
+- `/system/settings` — إعدادات عامة للنظام.
+
+### داخل التطبيق (لجميع المستخدمين)
+- **شريط علوي** يعرض حالة الترخيص: `نشط | تجريبي (X يوم متبقٍّ) | للقراءة فقط – الرجاء التجديد`.
+- **Read-Only Mode UI:** عند `license_active = false`، يتم تعطيل جميع أزرار "إضافة / حفظ / حذف / تعديل" في كل الصفحات عبر `usePermissions()` (طبقة UI فوق حماية RLS). قراءة البيانات وطباعة التقارير تبقى مسموحة.
+- صفحة `/billing` (موجودة) يتم تطويرها لعرض الاشتراك الحالي + خيارات التجديد.
+- تحديث `_authenticated/route.tsx`: بعد التحقق من الجلسة، جلب `organization_id` + حالة الترخيص، وحقنها في context. المستخدم بدون مؤسسة → إنشاء تجريبية تلقائياً.
+
+## 4. الأمان
+- Rate Limiting بسيط في جدول `auth_attempts` (5 محاولات/15 دقيقة لكل username+IP).
+- كل عمليات System Owner والحساسة تُسجّل في `audit_logs`.
+- كلمات المرور محمية أصلاً بواسطة Supabase Auth (bcrypt).
+- تفعيل `password_hibp_enabled` عبر `configure_auth`.
+
+## 5. النسخ الاحتياطي وOffline
+- **النسخ الاحتياطي:** زر في `/system/settings` يستدعي server function تُصدّر كامل بيانات المؤسسة كـ JSON (تنزيل مباشر). استيراد يقبل نفس الصيغة.
+- **Offline:** إضافة PWA (manifest + service worker عبر `vite-plugin-pwa`) مع cache-first للأصول و queue للطلبات — هذه ميزة كبيرة، سأنفّذها كحد أدنى (تصفح offline + إشعار "أنت غير متصل، سيتم المزامنة لاحقاً")، والمزامنة الكاملة للكتابات offline تتطلب بنية IndexedDB مخصصة قد تحتاج مرحلة لاحقة — سأنبّه المستخدم.
+
+## 6. GitHub / Build / Desktop / Mobile
+- التحقق من `bun run build` ونتائج CI.
+- Windows Setup.exe / Android / iOS تتطلب **Capacitor أو Tauri** — المشروع الحالي TanStack Start (ويب فقط). سأشرح للمستخدم أن هذا يستوجب wrapping منفصل (Capacitor لـ Android/iOS، Tauri أو Electron لـ Windows) وأقترح ذلك كخطوة لاحقة بعد اعتماد جوهر SaaS. **لن أضيفها في هذه المرحلة** لأنها تتطلب بنية بناء موازية وسيرفر CI مختلف.
+
+## 7. الترتيب التنفيذي
+1. **Migration ضخمة واحدة:** جداول جديدة + عمود `organization_id` + backfill + RLS + triggers + دوال + `system_owner` role.
+2. تحديث `handle_new_user` وإنشاء trial تلقائي.
+3. `_authenticated/route.tsx` + `useOrg()` + `useLicense()` hooks.
+4. شاشة `/auth` الجديدة بـ username + استرجاع كلمة مرور.
+5. لوحة `/system/*`.
+6. Read-Only Mode في UI.
+7. PWA (offline أساسي).
+8. Audit + Rate Limiting.
+9. اختبار شامل ثم Publish.
+
+## ملاحظات صريحة قبل البدء
+- **حساب System Owner:** بعد الـ migration، سأطلب منك اسم المستخدم الحالي الذي يجب أن يحصل على هذا الدور (يُمنح مرة واحدة يدوياً عبر SQL، ولا يمكن إنشاؤه من الواجهة).
+- **Setup.exe / Android / iOS:** خارج نطاق هذه المرحلة تقنياً (يتطلب Capacitor/Tauri + CI منفصل). أنجز الويب/PWA الآن، ونعالج الـ native في مرحلة خامسة مخصصة إن أردت.
+- **Offline كامل مع كتابة:** سأنجز PWA أساسي (تصفح offline). المزامنة الكاملة لعمليات الكتابة offline مشروع كبير مستقل.
+
+هل أبدأ بالتنفيذ بهذا الترتيب؟
