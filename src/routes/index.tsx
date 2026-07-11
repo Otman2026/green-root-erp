@@ -33,6 +33,9 @@ function Landing() {
           <LanguageToggle />
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm">
+            <Link to="/shop">{t("landing.shop")}</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
             <Link to={user ? "/dashboard" : "/auth"}>{user ? t("nav.dashboard") : t("landing.signIn")}</Link>
           </Button>
         </div>
