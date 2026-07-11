@@ -104,6 +104,8 @@ function RootComponent() {
     return () => sub.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  useEffect(() => { registerPWA(); }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
