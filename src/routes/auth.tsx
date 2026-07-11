@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Sprout } from "lucide-react";
+import { Sprout, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -13,26 +14,59 @@ import { useI18n } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  isUsernameAvailable, suggestUsernames, loginIdentifierToEmail,
+  normalizeUsername, usernameToEmail,
+} from "@/lib/username-utils";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
 function AuthPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  // sign in
+  const [identifier, setIdentifier] = useState("");
+  const [inPassword, setInPassword] = useState("");
+
+  // sign up
+  const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
+  const [upEmail, setUpEmail] = useState("");
+  const [upPhone, setUpPhone] = useState("");
+  const [upPassword, setUpPassword] = useState("");
   const [busy, setBusy] = useState(false);
+
+  const [uStatus, setUStatus] = useState<"idle" | "checking" | "ok" | "taken">("idle");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   useEffect(() => {
     if (!loading && user) navigate({ to: "/dashboard" });
   }, [user, loading, navigate]);
 
+  // Debounced username availability + suggestions
+  useEffect(() => {
+    const u = normalizeUsername(username);
+    if (u.length < 3) { setUStatus("idle"); setSuggestions([]); return; }
+    setUStatus("checking");
+    const timer = setTimeout(async () => {
+      const ok = await isUsernameAvailable(u);
+      if (ok) { setUStatus("ok"); setSuggestions([]); }
+      else {
+        setUStatus("taken");
+        const s = await suggestUsernames(u);
+        setSuggestions(s);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [username]);
+
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const email = loginIdentifierToEmail(identifier);
+    const { error } = await supabase.auth.signInWithPassword({ email, password: inPassword });
     setBusy(false);
     if (error) toast.error(error.message);
     else navigate({ to: "/dashboard" });
@@ -40,17 +74,27 @@ function AuthPage() {
 
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    const u = normalizeUsername(username);
+    if (u.length < 3) { toast.error(t("auth.usernameHint")); return; }
+    if (uStatus === "taken") { toast.error(t("auth.usernameTaken")); return; }
     setBusy(true);
+    const email = upEmail.trim() || usernameToEmail(u);
     const { error } = await supabase.auth.signUp({
-      email, password,
+      email,
+      password: upPassword,
       options: {
         emailRedirectTo: `${window.location.origin}/dashboard`,
-        data: { full_name: fullName },
+        data: {
+          full_name: fullName || u,
+          username: u,
+          phone: upPhone || null,
+          preferred_language: locale,
+        },
       },
     });
     setBusy(false);
     if (error) toast.error(error.message);
-    else { toast.success("✓"); navigate({ to: "/dashboard" }); }
+    else { toast.success(t("auth.success")); navigate({ to: "/dashboard" }); }
   };
 
   const google = async () => {
@@ -85,12 +129,12 @@ function AuthPage() {
             <TabsContent value="signin" className="mt-4">
               <form onSubmit={signIn} className="space-y-3">
                 <div className="space-y-1.5">
-                  <Label htmlFor="in-email">{t("auth.email")}</Label>
-                  <Input id="in-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Label htmlFor="in-id">{t("auth.usernameOrEmail")}</Label>
+                  <Input id="in-id" required value={identifier} onChange={(e) => setIdentifier(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="in-pass">{t("auth.password")}</Label>
-                  <Input id="in-pass" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <Input id="in-pass" type="password" required value={inPassword} onChange={(e) => setInPassword(e.target.value)} />
                 </div>
                 <Button type="submit" className="w-full" disabled={busy}>{t("auth.signIn")}</Button>
               </form>
@@ -100,17 +144,61 @@ function AuthPage() {
               <form onSubmit={signUp} className="space-y-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="up-name">{t("auth.fullName")}</Label>
-                  <Input id="up-name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
+                  <Input id="up-name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="up-email">{t("auth.email")}</Label>
-                  <Input id="up-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Label htmlFor="up-user">{t("auth.username")} *</Label>
+                  <div className="relative">
+                    <Input
+                      id="up-user"
+                      required
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="haytam_agri"
+                    />
+                    {uStatus === "checking" && (
+                      <Loader2 className="absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">{t("auth.usernameHint")}</p>
+                  {uStatus === "ok" && (
+                    <p className="text-[11px] text-emerald-600">{t("auth.usernameAvailable")}</p>
+                  )}
+                  {uStatus === "taken" && (
+                    <div className="rounded-md border border-destructive/30 bg-destructive/5 p-2">
+                      <p className="text-[11px] text-destructive">{t("auth.usernameTaken")}</p>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {suggestions.map((s) => (
+                          <Badge
+                            key={s}
+                            variant="secondary"
+                            className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
+                            onClick={() => setUsername(s)}
+                          >
+                            {s}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="up-email">{t("auth.emailOptional")}</Label>
+                    <Input id="up-email" type="email" value={upEmail} onChange={(e) => setUpEmail(e.target.value)} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="up-phone">{t("auth.phoneOptional")}</Label>
+                    <Input id="up-phone" type="tel" value={upPhone} onChange={(e) => setUpPhone(e.target.value)} />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="up-pass">{t("auth.password")}</Label>
-                  <Input id="up-pass" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <Input id="up-pass" type="password" required minLength={6} value={upPassword} onChange={(e) => setUpPassword(e.target.value)} />
                 </div>
-                <Button type="submit" className="w-full" disabled={busy}>{t("auth.signUp")}</Button>
+                <Button type="submit" className="w-full" disabled={busy || uStatus === "taken" || uStatus === "checking"}>
+                  {t("auth.signUp")}
+                </Button>
               </form>
             </TabsContent>
           </Tabs>
