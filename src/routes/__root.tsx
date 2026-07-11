@@ -11,6 +11,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { registerPWA } from "@/lib/pwa";
 
 function NotFoundComponent() {
   return (
@@ -48,7 +49,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#16a34a" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Haytam AGRI" },
       { title: "Haytam AGRI — نظام إدارة تجارة المستلزمات الزراعية" },
       { name: "description", content: "منصة احترافية لإدارة محلات وشركات بيع الأسمدة والمبيدات والبذور والمعدات الزراعية." },
       { name: "author", content: "Haytam AGRI" },
