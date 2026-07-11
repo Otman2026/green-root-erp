@@ -91,6 +91,7 @@ function UsersPage() {
           </h1>
           <p className="text-sm text-muted-foreground">{profiles.length} {t("common.total")}</p>
         </div>
+        <AddEmployeeDialog onCreated={load} />
       </div>
 
       <Card className="p-3">
