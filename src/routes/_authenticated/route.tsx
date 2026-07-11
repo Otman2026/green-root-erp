@@ -26,6 +26,10 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthedLayout() {
   const [searchOpen, setSearchOpen] = useState(false);
   useGlobalSearchHotkey(() => setSearchOpen(true));
+  const { readOnly, loading } = useOrg();
+  useEffect(() => {
+    document.body.classList.toggle("license-readonly", readOnly && !loading);
+  }, [readOnly, loading]);
 
   return (
     <SidebarProvider>
