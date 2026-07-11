@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Sprout, LogOut, Search, X } from "lucide-react";
+import { LogOut, Search, X } from "lucide-react";
+import logo from "@/assets/logo.png";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
