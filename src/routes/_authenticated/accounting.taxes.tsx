@@ -60,7 +60,7 @@ function TaxesPage() {
   };
 
   const toggle = async (id: string, field: "is_active" | "is_default", val: boolean) => {
-    const { error } = await supabase.from("tax_rates").update({ [field]: val }).eq("id", id);
+    const { error } = await supabase.from("tax_rates").update({ [field]: val } as any).eq("id", id);
     if (error) return toast.error(error.message);
     load();
   };
