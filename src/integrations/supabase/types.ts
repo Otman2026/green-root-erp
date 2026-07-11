@@ -4270,6 +4270,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      pos_apply_customer_updates: {
+        Args: {
+          _balance_delta: number
+          _customer_id: string
+          _points_delta: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       account_type: "asset" | "liability" | "equity" | "revenue" | "expense"
