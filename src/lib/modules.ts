@@ -4,7 +4,7 @@ import {
   Sparkles, Settings, Building2, ArrowLeftRight, UserCog,
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
-  Briefcase, CalendarCheck, CalendarX, Bell,
+  Briefcase, CalendarCheck, CalendarX, Bell, Barcode,
   Route as RouteIcon, Fuel, MapPin,
   type LucideIcon,
 } from "lucide-react";
