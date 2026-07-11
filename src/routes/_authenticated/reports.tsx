@@ -57,6 +57,7 @@ const GROUPS: { title: string; items: ReportLink[] }[] = [
   {
     title: "لوحة تنفيذية",
     items: [
+      { to: "/reports/live", title: "التقارير الحية", desc: "تقارير تفاعلية بنطاق زمني: مبيعات، منتجات، عملاء، أرباح", icon: BarChart3, color: "mod-reports" },
       { to: "/dashboards/executive", title: "اللوحة التنفيذية", desc: "نظرة شاملة لأداء الأعمال", icon: PieChart, color: "mod-reports" },
       { to: "/activity", title: "سجل النشاطات", desc: "جميع العمليات في النظام", icon: BarChart3, color: "mod-reports" },
     ],
