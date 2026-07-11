@@ -33,7 +33,10 @@ import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedChecksRouteImport } from './routes/_authenticated/checks'
+import { Route as AuthenticatedCashBoxesRouteImport } from './routes/_authenticated/cash-boxes'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
+import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/banks'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
@@ -41,6 +44,10 @@ import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
 import { Route as AuthenticatedAgriDiseasesRouteImport } from './routes/_authenticated/agri.diseases'
+import { Route as AuthenticatedAccountingReportsRouteImport } from './routes/_authenticated/accounting.reports'
+import { Route as AuthenticatedAccountingLedgerRouteImport } from './routes/_authenticated/accounting.ledger'
+import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_authenticated/accounting.journal'
+import { Route as AuthenticatedAccountingChartRouteImport } from './routes/_authenticated/accounting.chart'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -162,9 +169,24 @@ const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedChecksRoute = AuthenticatedChecksRouteImport.update({
+  id: '/checks',
+  path: '/checks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCashBoxesRoute = AuthenticatedCashBoxesRouteImport.update({
+  id: '/cash-boxes',
+  path: '/cash-boxes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBranchesRoute = AuthenticatedBranchesRouteImport.update({
   id: '/branches',
   path: '/branches',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBanksRoute = AuthenticatedBanksRouteImport.update({
+  id: '/banks',
+  path: '/banks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
@@ -204,14 +226,41 @@ const AuthenticatedAgriDiseasesRoute =
     path: '/diseases',
     getParentRoute: () => AuthenticatedAgriRoute,
   } as any)
+const AuthenticatedAccountingReportsRoute =
+  AuthenticatedAccountingReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
+const AuthenticatedAccountingLedgerRoute =
+  AuthenticatedAccountingLedgerRouteImport.update({
+    id: '/ledger',
+    path: '/ledger',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
+const AuthenticatedAccountingJournalRoute =
+  AuthenticatedAccountingJournalRouteImport.update({
+    id: '/journal',
+    path: '/journal',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
+const AuthenticatedAccountingChartRoute =
+  AuthenticatedAccountingChartRouteImport.update({
+    id: '/chart',
+    path: '/chart',
+    getParentRoute: () => AuthenticatedAccountingRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/accounting': typeof AuthenticatedAccountingRoute
+  '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
+  '/banks': typeof AuthenticatedBanksRoute
   '/branches': typeof AuthenticatedBranchesRoute
+  '/cash-boxes': typeof AuthenticatedCashBoxesRoute
+  '/checks': typeof AuthenticatedChecksRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/debts': typeof AuthenticatedDebtsRoute
@@ -233,6 +282,10 @@ export interface FileRoutesByFullPath {
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
+  '/accounting/chart': typeof AuthenticatedAccountingChartRoute
+  '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
+  '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -241,10 +294,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/accounting': typeof AuthenticatedAccountingRoute
+  '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
+  '/banks': typeof AuthenticatedBanksRoute
   '/branches': typeof AuthenticatedBranchesRoute
+  '/cash-boxes': typeof AuthenticatedCashBoxesRoute
+  '/checks': typeof AuthenticatedChecksRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/debts': typeof AuthenticatedDebtsRoute
@@ -266,6 +322,10 @@ export interface FileRoutesByTo {
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
+  '/accounting/chart': typeof AuthenticatedAccountingChartRoute
+  '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
+  '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -276,10 +336,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
+  '/_authenticated/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
   '/_authenticated/ai': typeof AuthenticatedAiRoute
+  '/_authenticated/banks': typeof AuthenticatedBanksRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
+  '/_authenticated/cash-boxes': typeof AuthenticatedCashBoxesRoute
+  '/_authenticated/checks': typeof AuthenticatedChecksRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/debts': typeof AuthenticatedDebtsRoute
@@ -301,6 +364,10 @@ export interface FileRoutesById {
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/warehouses': typeof AuthenticatedWarehousesRoute
+  '/_authenticated/accounting/chart': typeof AuthenticatedAccountingChartRoute
+  '/_authenticated/accounting/journal': typeof AuthenticatedAccountingJournalRoute
+  '/_authenticated/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
+  '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
@@ -314,7 +381,10 @@ export interface FileRouteTypes {
     | '/accounting'
     | '/agri'
     | '/ai'
+    | '/banks'
     | '/branches'
+    | '/cash-boxes'
+    | '/checks'
     | '/customers'
     | '/dashboard'
     | '/debts'
@@ -336,6 +406,10 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/users'
     | '/warehouses'
+    | '/accounting/chart'
+    | '/accounting/journal'
+    | '/accounting/ledger'
+    | '/accounting/reports'
     | '/agri/diseases'
     | '/agri/pests'
     | '/agri/plants'
@@ -347,7 +421,10 @@ export interface FileRouteTypes {
     | '/accounting'
     | '/agri'
     | '/ai'
+    | '/banks'
     | '/branches'
+    | '/cash-boxes'
+    | '/checks'
     | '/customers'
     | '/dashboard'
     | '/debts'
@@ -369,6 +446,10 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/users'
     | '/warehouses'
+    | '/accounting/chart'
+    | '/accounting/journal'
+    | '/accounting/ledger'
+    | '/accounting/reports'
     | '/agri/diseases'
     | '/agri/pests'
     | '/agri/plants'
@@ -381,7 +462,10 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting'
     | '/_authenticated/agri'
     | '/_authenticated/ai'
+    | '/_authenticated/banks'
     | '/_authenticated/branches'
+    | '/_authenticated/cash-boxes'
+    | '/_authenticated/checks'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/debts'
@@ -403,6 +487,10 @@ export interface FileRouteTypes {
     | '/_authenticated/suppliers'
     | '/_authenticated/users'
     | '/_authenticated/warehouses'
+    | '/_authenticated/accounting/chart'
+    | '/_authenticated/accounting/journal'
+    | '/_authenticated/accounting/ledger'
+    | '/_authenticated/accounting/reports'
     | '/_authenticated/agri/diseases'
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
@@ -585,11 +673,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/checks': {
+      id: '/_authenticated/checks'
+      path: '/checks'
+      fullPath: '/checks'
+      preLoaderRoute: typeof AuthenticatedChecksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/cash-boxes': {
+      id: '/_authenticated/cash-boxes'
+      path: '/cash-boxes'
+      fullPath: '/cash-boxes'
+      preLoaderRoute: typeof AuthenticatedCashBoxesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/branches': {
       id: '/_authenticated/branches'
       path: '/branches'
       fullPath: '/branches'
       preLoaderRoute: typeof AuthenticatedBranchesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/banks': {
+      id: '/_authenticated/banks'
+      path: '/banks'
+      fullPath: '/banks'
+      preLoaderRoute: typeof AuthenticatedBanksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/ai': {
@@ -641,8 +750,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgriDiseasesRouteImport
       parentRoute: typeof AuthenticatedAgriRoute
     }
+    '/_authenticated/accounting/reports': {
+      id: '/_authenticated/accounting/reports'
+      path: '/reports'
+      fullPath: '/accounting/reports'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
+    '/_authenticated/accounting/ledger': {
+      id: '/_authenticated/accounting/ledger'
+      path: '/ledger'
+      fullPath: '/accounting/ledger'
+      preLoaderRoute: typeof AuthenticatedAccountingLedgerRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
+    '/_authenticated/accounting/journal': {
+      id: '/_authenticated/accounting/journal'
+      path: '/journal'
+      fullPath: '/accounting/journal'
+      preLoaderRoute: typeof AuthenticatedAccountingJournalRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
+    '/_authenticated/accounting/chart': {
+      id: '/_authenticated/accounting/chart'
+      path: '/chart'
+      fullPath: '/accounting/chart'
+      preLoaderRoute: typeof AuthenticatedAccountingChartRouteImport
+      parentRoute: typeof AuthenticatedAccountingRoute
+    }
   }
 }
+
+interface AuthenticatedAccountingRouteChildren {
+  AuthenticatedAccountingChartRoute: typeof AuthenticatedAccountingChartRoute
+  AuthenticatedAccountingJournalRoute: typeof AuthenticatedAccountingJournalRoute
+  AuthenticatedAccountingLedgerRoute: typeof AuthenticatedAccountingLedgerRoute
+  AuthenticatedAccountingReportsRoute: typeof AuthenticatedAccountingReportsRoute
+}
+
+const AuthenticatedAccountingRouteChildren: AuthenticatedAccountingRouteChildren =
+  {
+    AuthenticatedAccountingChartRoute: AuthenticatedAccountingChartRoute,
+    AuthenticatedAccountingJournalRoute: AuthenticatedAccountingJournalRoute,
+    AuthenticatedAccountingLedgerRoute: AuthenticatedAccountingLedgerRoute,
+    AuthenticatedAccountingReportsRoute: AuthenticatedAccountingReportsRoute,
+  }
+
+const AuthenticatedAccountingRouteWithChildren =
+  AuthenticatedAccountingRoute._addFileChildren(
+    AuthenticatedAccountingRouteChildren,
+  )
 
 interface AuthenticatedAgriRouteChildren {
   AuthenticatedAgriDiseasesRoute: typeof AuthenticatedAgriDiseasesRoute
@@ -662,10 +819,13 @@ const AuthenticatedAgriRouteWithChildren =
   AuthenticatedAgriRoute._addFileChildren(AuthenticatedAgriRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
+  AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRouteWithChildren
   AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
+  AuthenticatedBanksRoute: typeof AuthenticatedBanksRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
+  AuthenticatedCashBoxesRoute: typeof AuthenticatedCashBoxesRoute
+  AuthenticatedChecksRoute: typeof AuthenticatedChecksRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
@@ -690,10 +850,13 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
+  AuthenticatedAccountingRoute: AuthenticatedAccountingRouteWithChildren,
   AuthenticatedAgriRoute: AuthenticatedAgriRouteWithChildren,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
+  AuthenticatedBanksRoute: AuthenticatedBanksRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
+  AuthenticatedCashBoxesRoute: AuthenticatedCashBoxesRoute,
+  AuthenticatedChecksRoute: AuthenticatedChecksRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,

@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          code: string
+          created_at: string
+          currency: string
+          id: string
+          is_active: boolean
+          is_group: boolean
+          name: string
+          name_en: string | null
+          name_fr: string | null
+          notes: string | null
+          parent_id: string | null
+          type: Database["public"]["Enums"]["account_type"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          is_group?: boolean
+          name: string
+          name_en?: string | null
+          name_fr?: string | null
+          notes?: string | null
+          parent_id?: string | null
+          type: Database["public"]["Enums"]["account_type"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          is_group?: boolean
+          name?: string
+          name_en?: string | null
+          name_fr?: string | null
+          notes?: string | null
+          parent_id?: string | null
+          type?: Database["public"]["Enums"]["account_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agri_disease_images: {
         Row: {
           caption: string | null
@@ -477,6 +533,134 @@ export type Database = {
         }
         Relationships: []
       }
+      bank_accounts: {
+        Row: {
+          account_id: string | null
+          account_number: string | null
+          balance: number
+          bank_name: string
+          created_at: string
+          currency: string
+          iban: string | null
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          opening_balance: number
+          rib: string | null
+          swift: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          account_number?: string | null
+          balance?: number
+          bank_name: string
+          created_at?: string
+          currency?: string
+          iban?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          opening_balance?: number
+          rib?: string | null
+          swift?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          account_number?: string | null
+          balance?: number
+          bank_name?: string
+          created_at?: string
+          currency?: string
+          iban?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          opening_balance?: number
+          rib?: string | null
+          swift?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_transactions: {
+        Row: {
+          amount: number
+          bank_id: string
+          counter_bank_id: string | null
+          created_at: string
+          description: string | null
+          direction: Database["public"]["Enums"]["receipt_direction"]
+          id: string
+          reconciled: boolean
+          reconciled_at: string | null
+          reference: string | null
+          tx_date: string
+          tx_type: Database["public"]["Enums"]["bank_tx_type"]
+          user_id: string | null
+          value_date: string | null
+        }
+        Insert: {
+          amount: number
+          bank_id: string
+          counter_bank_id?: string | null
+          created_at?: string
+          description?: string | null
+          direction: Database["public"]["Enums"]["receipt_direction"]
+          id?: string
+          reconciled?: boolean
+          reconciled_at?: string | null
+          reference?: string | null
+          tx_date?: string
+          tx_type: Database["public"]["Enums"]["bank_tx_type"]
+          user_id?: string | null
+          value_date?: string | null
+        }
+        Update: {
+          amount?: number
+          bank_id?: string
+          counter_bank_id?: string | null
+          created_at?: string
+          description?: string | null
+          direction?: Database["public"]["Enums"]["receipt_direction"]
+          id?: string
+          reconciled?: boolean
+          reconciled_at?: string | null
+          reference?: string | null
+          tx_date?: string
+          tx_type?: Database["public"]["Enums"]["bank_tx_type"]
+          user_id?: string | null
+          value_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transactions_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_counter_bank_id_fkey"
+            columns: ["counter_bank_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       branch_members: {
         Row: {
           branch_id: string
@@ -575,6 +759,117 @@ export type Database = {
           },
         ]
       }
+      cash_boxes: {
+        Row: {
+          account_id: string | null
+          balance: number
+          branch_id: string | null
+          code: string | null
+          created_at: string
+          currency: string
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          balance?: number
+          branch_id?: string | null
+          code?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          balance?: number
+          branch_id?: string | null
+          code?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_boxes_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_boxes_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cash_movements: {
+        Row: {
+          amount: number
+          box_id: string
+          counter_box_id: string | null
+          created_at: string
+          direction: Database["public"]["Enums"]["receipt_direction"]
+          id: string
+          reason: string | null
+          reference: string | null
+          tx_date: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          box_id: string
+          counter_box_id?: string | null
+          created_at?: string
+          direction: Database["public"]["Enums"]["receipt_direction"]
+          id?: string
+          reason?: string | null
+          reference?: string | null
+          tx_date?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          box_id?: string
+          counter_box_id?: string | null
+          created_at?: string
+          direction?: Database["public"]["Enums"]["receipt_direction"]
+          id?: string
+          reason?: string | null
+          reference?: string | null
+          tx_date?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_movements_box_id_fkey"
+            columns: ["box_id"]
+            isOneToOne: false
+            referencedRelation: "cash_boxes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_movements_counter_box_id_fkey"
+            columns: ["counter_box_id"]
+            isOneToOne: false
+            referencedRelation: "cash_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           color: string | null
@@ -618,6 +913,74 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checks: {
+        Row: {
+          amount: number
+          bank_id: string | null
+          bank_name: string | null
+          check_no: string
+          created_at: string
+          direction: Database["public"]["Enums"]["check_direction"]
+          due_date: string | null
+          id: string
+          issue_date: string
+          notes: string | null
+          party_id: string | null
+          party_name: string | null
+          party_type: Database["public"]["Enums"]["party_type"] | null
+          status: Database["public"]["Enums"]["check_status"]
+          status_date: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          bank_id?: string | null
+          bank_name?: string | null
+          check_no: string
+          created_at?: string
+          direction: Database["public"]["Enums"]["check_direction"]
+          due_date?: string | null
+          id?: string
+          issue_date?: string
+          notes?: string | null
+          party_id?: string | null
+          party_name?: string | null
+          party_type?: Database["public"]["Enums"]["party_type"] | null
+          status?: Database["public"]["Enums"]["check_status"]
+          status_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          bank_id?: string | null
+          bank_name?: string | null
+          check_no?: string
+          created_at?: string
+          direction?: Database["public"]["Enums"]["check_direction"]
+          due_date?: string | null
+          id?: string
+          issue_date?: string
+          notes?: string | null
+          party_id?: string | null
+          party_name?: string | null
+          party_type?: Database["public"]["Enums"]["party_type"] | null
+          status?: Database["public"]["Enums"]["check_status"]
+          status_date?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checks_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -777,6 +1140,149 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      fiscal_periods: {
+        Row: {
+          closed: boolean
+          closed_at: string | null
+          closed_by: string | null
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          closed?: boolean
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          closed?: boolean
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          entry_date: string
+          entry_no: string
+          id: string
+          period_id: string | null
+          reference: string | null
+          source_id: string | null
+          source_type: string | null
+          status: Database["public"]["Enums"]["journal_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_date?: string
+          entry_no?: string
+          id?: string
+          period_id?: string | null
+          reference?: string | null
+          source_id?: string | null
+          source_type?: string | null
+          status?: Database["public"]["Enums"]["journal_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_date?: string
+          entry_no?: string
+          id?: string
+          period_id?: string | null
+          reference?: string | null
+          source_id?: string | null
+          source_type?: string | null
+          status?: Database["public"]["Enums"]["journal_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "fiscal_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journal_lines: {
+        Row: {
+          account_id: string
+          created_at: string
+          credit: number
+          debit: number
+          description: string | null
+          entry_id: string
+          id: string
+          line_no: number
+          partner_id: string | null
+          partner_type: string | null
+        }
+        Insert: {
+          account_id: string
+          created_at?: string
+          credit?: number
+          debit?: number
+          description?: string | null
+          entry_id: string
+          id?: string
+          line_no?: number
+          partner_id?: string | null
+          partner_type?: string | null
+        }
+        Update: {
+          account_id?: string
+          created_at?: string
+          credit?: number
+          debit?: number
+          description?: string | null
+          entry_id?: string
+          id?: string
+          line_no?: number
+          partner_id?: string | null
+          partner_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_lines_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       loyalty_rules: {
         Row: {
@@ -2456,6 +2962,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      acc_can_write: { Args: never; Returns: boolean }
       agri_can_write: { Args: never; Returns: boolean }
       has_permission: {
         Args: { _perm: string; _user_id: string }
@@ -2470,6 +2977,7 @@ export type Database = {
       }
     }
     Enums: {
+      account_type: "asset" | "liability" | "equity" | "revenue" | "expense"
       agri_disease_type:
         | "fungal"
         | "bacterial"
@@ -2520,8 +3028,23 @@ export type Database = {
         | "sales_manager"
         | "delivery"
         | "customer_service"
+      bank_tx_type:
+        | "deposit"
+        | "withdrawal"
+        | "transfer"
+        | "fee"
+        | "interest"
+        | "other"
+      check_direction: "in" | "out"
+      check_status:
+        | "pending"
+        | "deposited"
+        | "cleared"
+        | "bounced"
+        | "cancelled"
       customer_type: "retail" | "wholesale" | "semi_wholesale" | "vip"
       discount_type: "percent" | "amount"
+      journal_status: "draft" | "posted" | "void"
       party_type: "customer" | "supplier"
       payment_method:
         | "cash"
@@ -2676,6 +3199,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_type: ["asset", "liability", "equity", "revenue", "expense"],
       agri_disease_type: [
         "fungal",
         "bacterial",
@@ -2731,8 +3255,19 @@ export const Constants = {
         "delivery",
         "customer_service",
       ],
+      bank_tx_type: [
+        "deposit",
+        "withdrawal",
+        "transfer",
+        "fee",
+        "interest",
+        "other",
+      ],
+      check_direction: ["in", "out"],
+      check_status: ["pending", "deposited", "cleared", "bounced", "cancelled"],
       customer_type: ["retail", "wholesale", "semi_wholesale", "vip"],
       discount_type: ["percent", "amount"],
+      journal_status: ["draft", "posted", "void"],
       party_type: ["customer", "supplier"],
       payment_method: ["cash", "card", "transfer", "check", "mixed", "credit"],
       po_status: [
