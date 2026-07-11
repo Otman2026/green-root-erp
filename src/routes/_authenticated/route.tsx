@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { GlobalSearch, useGlobalSearchHotkey } from "@/components/shared/global-search";
 import { supabase } from "@/integrations/supabase/client";
 import { LicenseBanner } from "@/components/license-banner";
+import { useOrg } from "@/hooks/use-org";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
