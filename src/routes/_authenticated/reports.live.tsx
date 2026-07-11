@@ -87,12 +87,12 @@ function SalesSummary({ from, to }: Range) {
   return (
     <div className="space-y-4">
       <div className="grid gap-3 md:grid-cols-4">
-        <KpiCard title="عدد الفواتير" value={String(rows.length)} />
-        <KpiCard title="إجمالي المبيعات" value={fmtMoney(total)} />
-        <KpiCard title="المحصّل" value={fmtMoney(paid)} />
-        <KpiCard title="الرصيد" value={fmtMoney(balance)} />
+        <KpiCard icon={BarChart3} label="عدد الفواتير" value={String(rows.length)} />
+        <KpiCard icon={BarChart3} label="إجمالي المبيعات" value={fmtMoney(total)} />
+        <KpiCard icon={BarChart3} label="المحصّل" value={fmtMoney(paid)} />
+        <KpiCard icon={BarChart3} label="الرصيد" value={fmtMoney(balance)} />
       </div>
-      <DataTable data={rows} columns={cols} exportName={`sales_${from}_${to}`} exportTitle="ملخص المبيعات" />
+      <DataTable data={rows} columns={cols} exportName={`sales_${from}_${to}`} exportTitle="ملخص المبيعات" rowKey={(r) => r.id} />
     </div>
   );
 }
@@ -127,7 +127,7 @@ function TopProducts({ from, to }: Range) {
     { key: "qty", header: "الكمية", accessor: (r) => r.qty, sortValue: (r) => r.qty, sortable: true },
     { key: "revenue", header: "الإيراد", accessor: (r) => fmtMoney(r.revenue), sortValue: (r) => r.revenue, exportValue: (r) => r.revenue, sortable: true },
   ];
-  return <DataTable data={rows} columns={cols} exportName={`top_products_${from}_${to}`} exportTitle="أفضل المنتجات" />;
+  return <DataTable data={rows} columns={cols} exportName={`top_products_${from}_${to}`} exportTitle="أفضل المنتجات" rowKey={(r) => r.product_id} />;
 }
 
 function CustomerStatements({ from, to }: Range) {
@@ -165,7 +165,7 @@ function CustomerStatements({ from, to }: Range) {
     { key: "paid", header: "المدفوع", accessor: (r) => fmtMoney(r.paid), sortValue: (r) => r.paid, exportValue: (r) => r.paid },
     { key: "balance", header: "الرصيد", accessor: (r) => fmtMoney(r.balance), sortValue: (r) => r.balance, exportValue: (r) => r.balance, sortable: true },
   ];
-  return <DataTable data={rows} columns={cols} exportName={`customers_${from}_${to}`} exportTitle="كشوف العملاء" />;
+  return <DataTable data={rows} columns={cols} exportName={`customers_${from}_${to}`} exportTitle="كشوف العملاء" rowKey={(r) => r.customer_id} />;
 }
 
 function ProfitMargin({ from, to }: Range) {
@@ -214,12 +214,12 @@ function ProfitMargin({ from, to }: Range) {
   return (
     <div className="space-y-4">
       <div className="grid gap-3 md:grid-cols-4">
-        <KpiCard title="إجمالي الإيراد" value={fmtMoney(totals.rev)} />
-        <KpiCard title="إجمالي التكلفة" value={fmtMoney(totals.cost)} />
-        <KpiCard title="صافي الربح" value={fmtMoney(totals.profit)} />
-        <KpiCard title="متوسط الهامش" value={`${totals.margin.toFixed(1)}%`} />
+        <KpiCard icon={BarChart3} label="إجمالي الإيراد" value={fmtMoney(totals.rev)} />
+        <KpiCard icon={BarChart3} label="إجمالي التكلفة" value={fmtMoney(totals.cost)} />
+        <KpiCard icon={BarChart3} label="صافي الربح" value={fmtMoney(totals.profit)} />
+        <KpiCard icon={BarChart3} label="متوسط الهامش" value={`${totals.margin.toFixed(1)}%`} />
       </div>
-      <DataTable data={rows} columns={cols} exportName={`profit_${from}_${to}`} exportTitle="هامش الربح" />
+      <DataTable data={rows} columns={cols} exportName={`profit_${from}_${to}`} exportTitle="هامش الربح" rowKey={(r) => r.product_id} />
     </div>
   );
 }
