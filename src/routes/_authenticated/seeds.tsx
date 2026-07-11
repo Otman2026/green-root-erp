@@ -1,6 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/module-placeholder";
-import { MODULES } from "@/lib/modules";
+import { Sprout } from "lucide-react";
+import { ProductsByCategory } from "@/components/products/products-by-category";
+
 export const Route = createFileRoute("/_authenticated/seeds")({
-  component: () => <ModulePlaceholder module={MODULES.find((m) => m.key === "seeds")!} />,
+  component: () => (
+    <ProductsByCategory
+      slug="seeds"
+      titleAr="البذور"
+      subtitleAr="إدارة البذور والشتلات"
+      icon={Sprout}
+      colorVar="seeds"
+      defaultCategoryName="Seeds"
+      defaultCategoryNameAr="البذور"
+    />
+  ),
 });
