@@ -19,6 +19,7 @@ import { Route as ShopCartRouteImport } from './routes/shop.cart'
 import { Route as AuthenticatedWarehousesRouteImport } from './routes/_authenticated/warehouses'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedToolsImportExportRouteImport } from './routes/_authenticated/tools-import-export'
+import { Route as AuthenticatedSystemHealthRouteImport } from './routes/_authenticated/system-health'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedStockTransfersRouteImport } from './routes/_authenticated/stock-transfers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -132,6 +133,12 @@ const AuthenticatedToolsImportExportRoute =
   AuthenticatedToolsImportExportRouteImport.update({
     id: '/tools-import-export',
     path: '/tools-import-export',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSystemHealthRoute =
+  AuthenticatedSystemHealthRouteImport.update({
+    id: '/system-health',
+    path: '/system-health',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
@@ -520,6 +527,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/system-health': typeof AuthenticatedSystemHealthRoute
   '/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
@@ -594,6 +602,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/system-health': typeof AuthenticatedSystemHealthRoute
   '/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
@@ -671,6 +680,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
+  '/_authenticated/system-health': typeof AuthenticatedSystemHealthRoute
   '/_authenticated/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/warehouses': typeof AuthenticatedWarehousesRoute
@@ -748,6 +758,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stock-transfers'
     | '/suppliers'
+    | '/system-health'
     | '/tools-import-export'
     | '/users'
     | '/warehouses'
@@ -822,6 +833,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stock-transfers'
     | '/suppliers'
+    | '/system-health'
     | '/tools-import-export'
     | '/users'
     | '/warehouses'
@@ -898,6 +910,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/stock-transfers'
     | '/_authenticated/suppliers'
+    | '/_authenticated/system-health'
     | '/_authenticated/tools-import-export'
     | '/_authenticated/users'
     | '/_authenticated/warehouses'
@@ -1012,6 +1025,13 @@ declare module '@tanstack/react-router' {
       path: '/tools-import-export'
       fullPath: '/tools-import-export'
       preLoaderRoute: typeof AuthenticatedToolsImportExportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/system-health': {
+      id: '/_authenticated/system-health'
+      path: '/system-health'
+      fullPath: '/system-health'
+      preLoaderRoute: typeof AuthenticatedSystemHealthRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/suppliers': {
@@ -1598,6 +1618,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStockTransfersRoute: typeof AuthenticatedStockTransfersRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
+  AuthenticatedSystemHealthRoute: typeof AuthenticatedSystemHealthRoute
   AuthenticatedToolsImportExportRoute: typeof AuthenticatedToolsImportExportRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedWarehousesRoute: typeof AuthenticatedWarehousesRoute
@@ -1645,6 +1666,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStockTransfersRoute: AuthenticatedStockTransfersRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
+  AuthenticatedSystemHealthRoute: AuthenticatedSystemHealthRoute,
   AuthenticatedToolsImportExportRoute: AuthenticatedToolsImportExportRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedWarehousesRoute: AuthenticatedWarehousesRoute,

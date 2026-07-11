@@ -84,8 +84,10 @@ export const MODULES: AppModule[] = [
   { key: "activity", path: "/activity", labelKey: "act.title", icon: History, color: "settings", group: "system", roles: ["admin","owner","manager"] },
   { key: "company-settings", path: "/company-settings", labelKey: "cs.title", icon: Building2, color: "settings", group: "system", roles: ["admin","owner","accountant"] },
   { key: "billing", path: "/billing", labelKey: "bill.title", icon: CreditCard, color: "accounting", group: "finance", roles: ["admin","owner","manager","accountant"] },
+  { key: "system-health", path: "/system-health", labelKey: "sys.title", icon: ShieldAlert, color: "settings", group: "system", roles: ["admin","owner"] },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
+
 ];
 
 export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "hr", "fleet", "intelligence", "knowledge", "system"];
