@@ -20,6 +20,7 @@ import { Route as AuthenticatedWarehousesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedToolsImportExportRouteImport } from './routes/_authenticated/tools-import-export'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
+import { Route as AuthenticatedStockTransfersRouteImport } from './routes/_authenticated/stock-transfers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSeedsRouteImport } from './routes/_authenticated/seeds'
 import { Route as AuthenticatedSalesRepsRouteImport } from './routes/_authenticated/sales-reps'
@@ -135,6 +136,12 @@ const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
   path: '/suppliers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStockTransfersRoute =
+  AuthenticatedStockTransfersRouteImport.update({
+    id: '/stock-transfers',
+    path: '/stock-transfers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -489,6 +496,7 @@ export interface FileRoutesByFullPath {
   '/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -559,6 +567,7 @@ export interface FileRoutesByTo {
   '/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -632,6 +641,7 @@ export interface FileRoutesById {
   '/_authenticated/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/_authenticated/seeds': typeof AuthenticatedSeedsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -705,6 +715,7 @@ export interface FileRouteTypes {
     | '/sales-reps'
     | '/seeds'
     | '/settings'
+    | '/stock-transfers'
     | '/suppliers'
     | '/tools-import-export'
     | '/users'
@@ -775,6 +786,7 @@ export interface FileRouteTypes {
     | '/sales-reps'
     | '/seeds'
     | '/settings'
+    | '/stock-transfers'
     | '/suppliers'
     | '/tools-import-export'
     | '/users'
@@ -847,6 +859,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sales-reps'
     | '/_authenticated/seeds'
     | '/_authenticated/settings'
+    | '/_authenticated/stock-transfers'
     | '/_authenticated/suppliers'
     | '/_authenticated/tools-import-export'
     | '/_authenticated/users'
@@ -968,6 +981,13 @@ declare module '@tanstack/react-router' {
       path: '/suppliers'
       fullPath: '/suppliers'
       preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/stock-transfers': {
+      id: '/_authenticated/stock-transfers'
+      path: '/stock-transfers'
+      fullPath: '/stock-transfers'
+      preLoaderRoute: typeof AuthenticatedStockTransfersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -1515,6 +1535,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSalesRepsRoute: typeof AuthenticatedSalesRepsRouteWithChildren
   AuthenticatedSeedsRoute: typeof AuthenticatedSeedsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStockTransfersRoute: typeof AuthenticatedStockTransfersRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
   AuthenticatedToolsImportExportRoute: typeof AuthenticatedToolsImportExportRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -1558,6 +1579,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSalesRepsRoute: AuthenticatedSalesRepsRouteWithChildren,
   AuthenticatedSeedsRoute: AuthenticatedSeedsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStockTransfersRoute: AuthenticatedStockTransfersRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
   AuthenticatedToolsImportExportRoute: AuthenticatedToolsImportExportRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
