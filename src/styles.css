@@ -204,17 +204,147 @@
   [dir="rtl"] body { letter-spacing: 0; }
 }
 
+/* ===== Gradients (agricultural identity) ===== */
 @utility gradient-primary {
   background-image: linear-gradient(135deg, var(--primary) 0%, oklch(0.62 0.14 175) 100%);
 }
+@utility gradient-hero {
+  background-image:
+    radial-gradient(1200px 500px at 100% 0%, color-mix(in oklch, var(--primary) 22%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, color-mix(in oklch, var(--mod-dashboard) 18%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--background), var(--background));
+}
+@utility gradient-sales { background-image: linear-gradient(135deg, oklch(0.55 0.18 265), oklch(0.65 0.18 235)); }
+@utility gradient-profit { background-image: linear-gradient(135deg, oklch(0.55 0.16 150), oklch(0.68 0.16 145)); }
+@utility gradient-customers { background-image: linear-gradient(135deg, oklch(0.65 0.14 220), oklch(0.72 0.12 195)); }
+@utility gradient-suppliers { background-image: linear-gradient(135deg, oklch(0.60 0.12 195), oklch(0.68 0.13 175)); }
+@utility gradient-inventory { background-image: linear-gradient(135deg, oklch(0.68 0.18 55), oklch(0.72 0.16 75)); }
+@utility gradient-orders { background-image: linear-gradient(135deg, oklch(0.65 0.14 220), oklch(0.60 0.16 245)); }
+@utility gradient-invoices { background-image: linear-gradient(135deg, oklch(0.32 0.10 260), oklch(0.42 0.14 255)); }
+@utility gradient-expenses { background-image: linear-gradient(135deg, oklch(0.60 0.18 25), oklch(0.65 0.16 45)); }
+@utility gradient-accounting { background-image: linear-gradient(135deg, oklch(0.65 0.16 85), oklch(0.32 0.10 260)); }
+@utility gradient-ai { background-image: linear-gradient(135deg, oklch(0.55 0.22 310), oklch(0.62 0.20 280)); }
+
+/* ===== Elevation ===== */
 @utility card-elevated {
-  box-shadow: 0 1px 2px 0 oklch(0 0 0 / 4%), 0 4px 16px -4px oklch(0 0 0 / 8%);
+  box-shadow: 0 1px 2px 0 oklch(0 0 0 / 5%), 0 8px 24px -8px oklch(0 0 0 / 10%);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+@utility card-elevated:hover {
+  box-shadow: 0 2px 4px 0 oklch(0 0 0 / 6%), 0 16px 32px -12px oklch(0 0 0 / 14%);
+  transform: translateY(-2px);
+}
+@utility shadow-glow {
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 15%, transparent),
+              0 12px 40px -12px color-mix(in oklch, var(--primary) 35%, transparent);
 }
 
-/* Read-only mode: dim and disable pointer events on write actions */
+/* ===== Data tables — modern, professional ===== */
+@layer base {
+  table { border-collapse: separate; border-spacing: 0; }
+  table thead tr {
+    background: color-mix(in oklch, var(--muted) 60%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  table thead th {
+    position: sticky; top: 0; z-index: 1;
+    font-weight: 600; font-size: 0.8rem;
+    color: var(--muted-foreground);
+    letter-spacing: 0.02em;
+  }
+  table tbody tr {
+    transition: background-color 120ms ease;
+  }
+  table tbody tr:nth-child(even) {
+    background: color-mix(in oklch, var(--muted) 30%, transparent);
+  }
+  table tbody tr:hover {
+    background: color-mix(in oklch, var(--primary) 8%, transparent);
+  }
+
+  /* Inputs: subtle depth */
+  input, textarea, select {
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+  }
+
+  /* Focus rings unified */
+  :focus-visible {
+    outline: 2px solid color-mix(in oklch, var(--ring) 60%, transparent);
+    outline-offset: 2px;
+  }
+
+  /* Smooth scrolling */
+  html { scroll-behavior: smooth; }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--muted-foreground) 30%, transparent);
+    border-radius: 999px;
+    border: 2px solid var(--background);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--primary) 50%, transparent);
+  }
+}
+
+/* ===== Action button color hints (opt-in via data-action) ===== */
+button[data-action="add"], a[data-action="add"] {
+  background-color: oklch(0.55 0.16 150); color: white;
+}
+button[data-action="save"], a[data-action="save"] {
+  background-color: oklch(0.55 0.15 240); color: white;
+}
+button[data-action="edit"], a[data-action="edit"] {
+  background-color: oklch(0.65 0.18 55); color: white;
+}
+button[data-action="delete"], a[data-action="delete"] {
+  background-color: oklch(0.58 0.22 27); color: white;
+}
+button[data-action="print"], a[data-action="print"] {
+  background-color: oklch(0.55 0.20 300); color: white;
+}
+button[data-action="pdf"], a[data-action="pdf"] {
+  background-color: oklch(0.48 0.22 27); color: white;
+}
+button[data-action="excel"], a[data-action="excel"] {
+  background-color: oklch(0.50 0.16 150); color: white;
+}
+button[data-action="export"], a[data-action="export"] {
+  background-color: oklch(0.60 0.10 190); color: white;
+}
+button[data-action="import"], a[data-action="import"] {
+  background-color: oklch(0.32 0.10 260); color: white;
+}
+
+/* ===== Micro-animations ===== */
+@keyframes float-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@utility animate-float-in { animation: float-in 0.35s ease-out both; }
+
+/* ===== Read-only mode: dim and disable pointer events on write actions ===== */
 body.license-readonly [data-write-action],
 body.license-readonly button[type="submit"]:not([data-allow-readonly]) {
   opacity: 0.5;
   pointer-events: none;
   cursor: not-allowed;
 }
+
+/* ===== Dashboard KPI card colored variants ===== */
+@utility kpi-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  color: white;
+  box-shadow: 0 12px 32px -14px oklch(0 0 0 / 22%);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+@utility kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -16px oklch(0 0 0 / 28%);
+}
+
