@@ -69,6 +69,14 @@
   --color-mod-reports: var(--mod-reports);
   --color-mod-ai: var(--mod-ai);
   --color-mod-settings: var(--mod-settings);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
 }
 
 :root {
@@ -131,7 +139,16 @@
   --mod-reports:     oklch(0.55 0.20 300);  /* purple */
   --mod-ai:          oklch(0.60 0.22 310);  /* modern purple */
   --mod-settings:    oklch(0.55 0.02 260);  /* grey */
+
+  /* Semantic status */
+  --success: oklch(0.58 0.16 150);
+  --success-foreground: oklch(0.99 0.005 120);
+  --warning: oklch(0.72 0.16 75);
+  --warning-foreground: oklch(0.22 0.03 60);
+  --info: oklch(0.60 0.15 235);
+  --info-foreground: oklch(0.99 0.005 120);
 }
+
 
 .dark {
   --background: oklch(0.16 0.02 155);
@@ -189,7 +206,15 @@
   --mod-reports:     oklch(0.72 0.20 300);
   --mod-ai:          oklch(0.72 0.22 310);
   --mod-settings:    oklch(0.70 0.02 260);
+
+  --success: oklch(0.68 0.16 150);
+  --success-foreground: oklch(0.16 0.02 155);
+  --warning: oklch(0.78 0.16 75);
+  --warning-foreground: oklch(0.16 0.02 60);
+  --info: oklch(0.72 0.15 235);
+  --info-foreground: oklch(0.16 0.02 155);
 }
+
 
 @layer base {
   * { border-color: var(--color-border); }
