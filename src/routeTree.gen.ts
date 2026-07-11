@@ -30,6 +30,7 @@ import { Route as AuthenticatedPesticidesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedHrRouteImport } from './routes/_authenticated/hr'
+import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
 import { Route as AuthenticatedFertilizersRouteImport } from './routes/_authenticated/fertilizers'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
@@ -50,6 +51,12 @@ import { Route as AuthenticatedHrLeavesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedHrEmployeesRouteImport } from './routes/_authenticated/hr.employees'
 import { Route as AuthenticatedHrDocumentsRouteImport } from './routes/_authenticated/hr.documents'
 import { Route as AuthenticatedHrAttendanceRouteImport } from './routes/_authenticated/hr.attendance'
+import { Route as AuthenticatedFleetVehiclesRouteImport } from './routes/_authenticated/fleet.vehicles'
+import { Route as AuthenticatedFleetTripsRouteImport } from './routes/_authenticated/fleet.trips'
+import { Route as AuthenticatedFleetTrackingRouteImport } from './routes/_authenticated/fleet.tracking'
+import { Route as AuthenticatedFleetMaintenanceRouteImport } from './routes/_authenticated/fleet.maintenance'
+import { Route as AuthenticatedFleetFuelRouteImport } from './routes/_authenticated/fleet.fuel'
+import { Route as AuthenticatedFleetDriversRouteImport } from './routes/_authenticated/fleet.drivers'
 import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authenticated/agri.treatments'
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
@@ -163,6 +170,11 @@ const AuthenticatedHrRoute = AuthenticatedHrRouteImport.update({
   path: '/hr',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFleetRoute = AuthenticatedFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFertilizersRoute =
   AuthenticatedFertilizersRouteImport.update({
     id: '/fertilizers',
@@ -270,6 +282,40 @@ const AuthenticatedHrAttendanceRoute =
     path: '/attendance',
     getParentRoute: () => AuthenticatedHrRoute,
   } as any)
+const AuthenticatedFleetVehiclesRoute =
+  AuthenticatedFleetVehiclesRouteImport.update({
+    id: '/vehicles',
+    path: '/vehicles',
+    getParentRoute: () => AuthenticatedFleetRoute,
+  } as any)
+const AuthenticatedFleetTripsRoute = AuthenticatedFleetTripsRouteImport.update({
+  id: '/trips',
+  path: '/trips',
+  getParentRoute: () => AuthenticatedFleetRoute,
+} as any)
+const AuthenticatedFleetTrackingRoute =
+  AuthenticatedFleetTrackingRouteImport.update({
+    id: '/tracking',
+    path: '/tracking',
+    getParentRoute: () => AuthenticatedFleetRoute,
+  } as any)
+const AuthenticatedFleetMaintenanceRoute =
+  AuthenticatedFleetMaintenanceRouteImport.update({
+    id: '/maintenance',
+    path: '/maintenance',
+    getParentRoute: () => AuthenticatedFleetRoute,
+  } as any)
+const AuthenticatedFleetFuelRoute = AuthenticatedFleetFuelRouteImport.update({
+  id: '/fuel',
+  path: '/fuel',
+  getParentRoute: () => AuthenticatedFleetRoute,
+} as any)
+const AuthenticatedFleetDriversRoute =
+  AuthenticatedFleetDriversRouteImport.update({
+    id: '/drivers',
+    path: '/drivers',
+    getParentRoute: () => AuthenticatedFleetRoute,
+  } as any)
 const AuthenticatedAgriTreatmentsRoute =
   AuthenticatedAgriTreatmentsRouteImport.update({
     id: '/treatments',
@@ -332,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/debts': typeof AuthenticatedDebtsRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/fleet': typeof AuthenticatedFleetRouteWithChildren
   '/hr': typeof AuthenticatedHrRouteWithChildren
   '/inventory': typeof AuthenticatedInventoryRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -358,6 +405,12 @@ export interface FileRoutesByFullPath {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/fleet/drivers': typeof AuthenticatedFleetDriversRoute
+  '/fleet/fuel': typeof AuthenticatedFleetFuelRoute
+  '/fleet/maintenance': typeof AuthenticatedFleetMaintenanceRoute
+  '/fleet/tracking': typeof AuthenticatedFleetTrackingRoute
+  '/fleet/trips': typeof AuthenticatedFleetTripsRoute
+  '/fleet/vehicles': typeof AuthenticatedFleetVehiclesRoute
   '/hr/attendance': typeof AuthenticatedHrAttendanceRoute
   '/hr/documents': typeof AuthenticatedHrDocumentsRoute
   '/hr/employees': typeof AuthenticatedHrEmployeesRoute
@@ -382,6 +435,7 @@ export interface FileRoutesByTo {
   '/debts': typeof AuthenticatedDebtsRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/fleet': typeof AuthenticatedFleetRouteWithChildren
   '/hr': typeof AuthenticatedHrRouteWithChildren
   '/inventory': typeof AuthenticatedInventoryRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -408,6 +462,12 @@ export interface FileRoutesByTo {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/fleet/drivers': typeof AuthenticatedFleetDriversRoute
+  '/fleet/fuel': typeof AuthenticatedFleetFuelRoute
+  '/fleet/maintenance': typeof AuthenticatedFleetMaintenanceRoute
+  '/fleet/tracking': typeof AuthenticatedFleetTrackingRoute
+  '/fleet/trips': typeof AuthenticatedFleetTripsRoute
+  '/fleet/vehicles': typeof AuthenticatedFleetVehiclesRoute
   '/hr/attendance': typeof AuthenticatedHrAttendanceRoute
   '/hr/documents': typeof AuthenticatedHrDocumentsRoute
   '/hr/employees': typeof AuthenticatedHrEmployeesRoute
@@ -434,6 +494,7 @@ export interface FileRoutesById {
   '/_authenticated/debts': typeof AuthenticatedDebtsRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/_authenticated/fleet': typeof AuthenticatedFleetRouteWithChildren
   '/_authenticated/hr': typeof AuthenticatedHrRouteWithChildren
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -460,6 +521,12 @@ export interface FileRoutesById {
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/_authenticated/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/_authenticated/fleet/drivers': typeof AuthenticatedFleetDriversRoute
+  '/_authenticated/fleet/fuel': typeof AuthenticatedFleetFuelRoute
+  '/_authenticated/fleet/maintenance': typeof AuthenticatedFleetMaintenanceRoute
+  '/_authenticated/fleet/tracking': typeof AuthenticatedFleetTrackingRoute
+  '/_authenticated/fleet/trips': typeof AuthenticatedFleetTripsRoute
+  '/_authenticated/fleet/vehicles': typeof AuthenticatedFleetVehiclesRoute
   '/_authenticated/hr/attendance': typeof AuthenticatedHrAttendanceRoute
   '/_authenticated/hr/documents': typeof AuthenticatedHrDocumentsRoute
   '/_authenticated/hr/employees': typeof AuthenticatedHrEmployeesRoute
@@ -486,6 +553,7 @@ export interface FileRouteTypes {
     | '/debts'
     | '/equipment'
     | '/fertilizers'
+    | '/fleet'
     | '/hr'
     | '/inventory'
     | '/loyalty'
@@ -512,6 +580,12 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/fleet/drivers'
+    | '/fleet/fuel'
+    | '/fleet/maintenance'
+    | '/fleet/tracking'
+    | '/fleet/trips'
+    | '/fleet/vehicles'
     | '/hr/attendance'
     | '/hr/documents'
     | '/hr/employees'
@@ -536,6 +610,7 @@ export interface FileRouteTypes {
     | '/debts'
     | '/equipment'
     | '/fertilizers'
+    | '/fleet'
     | '/hr'
     | '/inventory'
     | '/loyalty'
@@ -562,6 +637,12 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/fleet/drivers'
+    | '/fleet/fuel'
+    | '/fleet/maintenance'
+    | '/fleet/tracking'
+    | '/fleet/trips'
+    | '/fleet/vehicles'
     | '/hr/attendance'
     | '/hr/documents'
     | '/hr/employees'
@@ -587,6 +668,7 @@ export interface FileRouteTypes {
     | '/_authenticated/debts'
     | '/_authenticated/equipment'
     | '/_authenticated/fertilizers'
+    | '/_authenticated/fleet'
     | '/_authenticated/hr'
     | '/_authenticated/inventory'
     | '/_authenticated/loyalty'
@@ -613,6 +695,12 @@ export interface FileRouteTypes {
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
     | '/_authenticated/agri/treatments'
+    | '/_authenticated/fleet/drivers'
+    | '/_authenticated/fleet/fuel'
+    | '/_authenticated/fleet/maintenance'
+    | '/_authenticated/fleet/tracking'
+    | '/_authenticated/fleet/trips'
+    | '/_authenticated/fleet/vehicles'
     | '/_authenticated/hr/attendance'
     | '/_authenticated/hr/documents'
     | '/_authenticated/hr/employees'
@@ -778,6 +866,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHrRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/fleet': {
+      id: '/_authenticated/fleet'
+      path: '/fleet'
+      fullPath: '/fleet'
+      preLoaderRoute: typeof AuthenticatedFleetRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/fertilizers': {
       id: '/_authenticated/fertilizers'
       path: '/fertilizers'
@@ -918,6 +1013,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHrAttendanceRouteImport
       parentRoute: typeof AuthenticatedHrRoute
     }
+    '/_authenticated/fleet/vehicles': {
+      id: '/_authenticated/fleet/vehicles'
+      path: '/vehicles'
+      fullPath: '/fleet/vehicles'
+      preLoaderRoute: typeof AuthenticatedFleetVehiclesRouteImport
+      parentRoute: typeof AuthenticatedFleetRoute
+    }
+    '/_authenticated/fleet/trips': {
+      id: '/_authenticated/fleet/trips'
+      path: '/trips'
+      fullPath: '/fleet/trips'
+      preLoaderRoute: typeof AuthenticatedFleetTripsRouteImport
+      parentRoute: typeof AuthenticatedFleetRoute
+    }
+    '/_authenticated/fleet/tracking': {
+      id: '/_authenticated/fleet/tracking'
+      path: '/tracking'
+      fullPath: '/fleet/tracking'
+      preLoaderRoute: typeof AuthenticatedFleetTrackingRouteImport
+      parentRoute: typeof AuthenticatedFleetRoute
+    }
+    '/_authenticated/fleet/maintenance': {
+      id: '/_authenticated/fleet/maintenance'
+      path: '/maintenance'
+      fullPath: '/fleet/maintenance'
+      preLoaderRoute: typeof AuthenticatedFleetMaintenanceRouteImport
+      parentRoute: typeof AuthenticatedFleetRoute
+    }
+    '/_authenticated/fleet/fuel': {
+      id: '/_authenticated/fleet/fuel'
+      path: '/fuel'
+      fullPath: '/fleet/fuel'
+      preLoaderRoute: typeof AuthenticatedFleetFuelRouteImport
+      parentRoute: typeof AuthenticatedFleetRoute
+    }
+    '/_authenticated/fleet/drivers': {
+      id: '/_authenticated/fleet/drivers'
+      path: '/drivers'
+      fullPath: '/fleet/drivers'
+      preLoaderRoute: typeof AuthenticatedFleetDriversRouteImport
+      parentRoute: typeof AuthenticatedFleetRoute
+    }
     '/_authenticated/agri/treatments': {
       id: '/_authenticated/agri/treatments'
       path: '/treatments'
@@ -1014,6 +1151,27 @@ const AuthenticatedAgriRouteChildren: AuthenticatedAgriRouteChildren = {
 const AuthenticatedAgriRouteWithChildren =
   AuthenticatedAgriRoute._addFileChildren(AuthenticatedAgriRouteChildren)
 
+interface AuthenticatedFleetRouteChildren {
+  AuthenticatedFleetDriversRoute: typeof AuthenticatedFleetDriversRoute
+  AuthenticatedFleetFuelRoute: typeof AuthenticatedFleetFuelRoute
+  AuthenticatedFleetMaintenanceRoute: typeof AuthenticatedFleetMaintenanceRoute
+  AuthenticatedFleetTrackingRoute: typeof AuthenticatedFleetTrackingRoute
+  AuthenticatedFleetTripsRoute: typeof AuthenticatedFleetTripsRoute
+  AuthenticatedFleetVehiclesRoute: typeof AuthenticatedFleetVehiclesRoute
+}
+
+const AuthenticatedFleetRouteChildren: AuthenticatedFleetRouteChildren = {
+  AuthenticatedFleetDriversRoute: AuthenticatedFleetDriversRoute,
+  AuthenticatedFleetFuelRoute: AuthenticatedFleetFuelRoute,
+  AuthenticatedFleetMaintenanceRoute: AuthenticatedFleetMaintenanceRoute,
+  AuthenticatedFleetTrackingRoute: AuthenticatedFleetTrackingRoute,
+  AuthenticatedFleetTripsRoute: AuthenticatedFleetTripsRoute,
+  AuthenticatedFleetVehiclesRoute: AuthenticatedFleetVehiclesRoute,
+}
+
+const AuthenticatedFleetRouteWithChildren =
+  AuthenticatedFleetRoute._addFileChildren(AuthenticatedFleetRouteChildren)
+
 interface AuthenticatedHrRouteChildren {
   AuthenticatedHrAttendanceRoute: typeof AuthenticatedHrAttendanceRoute
   AuthenticatedHrDocumentsRoute: typeof AuthenticatedHrDocumentsRoute
@@ -1066,6 +1224,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedFertilizersRoute: typeof AuthenticatedFertilizersRoute
+  AuthenticatedFleetRoute: typeof AuthenticatedFleetRouteWithChildren
   AuthenticatedHrRoute: typeof AuthenticatedHrRouteWithChildren
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
@@ -1099,6 +1258,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedFertilizersRoute: AuthenticatedFertilizersRoute,
+  AuthenticatedFleetRoute: AuthenticatedFleetRouteWithChildren,
   AuthenticatedHrRoute: AuthenticatedHrRouteWithChildren,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,

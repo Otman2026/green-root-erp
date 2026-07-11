@@ -5,11 +5,12 @@ import {
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
   Briefcase, CalendarCheck, CalendarX,
+  Route as RouteIcon, Fuel, MapPin,
   type LucideIcon,
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
 
-export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "hr" | "intelligence" | "knowledge" | "system";
+export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "hr" | "fleet" | "intelligence" | "knowledge" | "system";
 
 export interface AppModule {
   key: string;
@@ -58,6 +59,13 @@ export const MODULES: AppModule[] = [
   { key: "sales-reps-list",      path: "/sales-reps/list",        labelKey: "reps.list",        icon: Users,       color: "sales", group: "commerce", roles: ["admin","owner","manager","sales_manager"] },
   { key: "sales-reps-visits",    path: "/sales-reps/visits",      labelKey: "reps.visits",      icon: ClipboardList, color: "sales", group: "commerce", roles: ["admin","owner","manager","sales_manager","seller"] },
   { key: "sales-reps-commissions", path: "/sales-reps/commissions", labelKey: "reps.commissions", icon: Wallet,      color: "sales", group: "commerce", roles: ["admin","owner","manager","sales_manager","accountant"] },
+  { key: "fleet",             path: "/fleet",             labelKey: "fleet.title",       icon: Truck,     color: "warehouses", group: "fleet", roles: ["admin","owner","manager","delivery"] },
+  { key: "fleet-vehicles",    path: "/fleet/vehicles",    labelKey: "fleet.vehicles",    icon: Truck,     color: "warehouses", group: "fleet", roles: ["admin","owner","manager","delivery"] },
+  { key: "fleet-drivers",     path: "/fleet/drivers",     labelKey: "fleet.drivers",     icon: Users,     color: "warehouses", group: "fleet", roles: ["admin","owner","manager","delivery"] },
+  { key: "fleet-trips",       path: "/fleet/trips",       labelKey: "fleet.trips",       icon: RouteIcon, color: "warehouses", group: "fleet", roles: ["admin","owner","manager","delivery"] },
+  { key: "fleet-fuel",        path: "/fleet/fuel",        labelKey: "fleet.fuel",        icon: Fuel,      color: "warehouses", group: "fleet", roles: ["admin","owner","manager","delivery"] },
+  { key: "fleet-maintenance", path: "/fleet/maintenance", labelKey: "fleet.maintenance", icon: Wrench,    color: "warehouses", group: "fleet", roles: ["admin","owner","manager"] },
+  { key: "fleet-tracking",    path: "/fleet/tracking",    labelKey: "fleet.tracking",    icon: MapPin,    color: "warehouses", group: "fleet", roles: ["admin","owner","manager","delivery"] },
   { key: "agri",        path: "/agri",        labelKey: "nav.agri",        icon: BookOpen,        color: "seeds",       group: "knowledge" },
   { key: "agri-plants",    path: "/agri/plants",    labelKey: "agri.plants",    icon: Sprout,       color: "seeds",       group: "knowledge" },
   { key: "agri-diseases",  path: "/agri/diseases",  labelKey: "agri.diseases",  icon: ShieldAlert,  color: "pesticides",  group: "knowledge" },
@@ -67,4 +75,4 @@ export const MODULES: AppModule[] = [
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
 ];
 
-export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "hr", "intelligence", "knowledge", "system"];
+export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "hr", "fleet", "intelligence", "knowledge", "system"];
