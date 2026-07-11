@@ -9,6 +9,7 @@ import { NotificationsBell } from "@/components/notifications-bell";
 import { Button } from "@/components/ui/button";
 import { GlobalSearch, useGlobalSearchHotkey } from "@/components/shared/global-search";
 import { supabase } from "@/integrations/supabase/client";
+import { LicenseBanner } from "@/components/license-banner";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -50,6 +51,7 @@ function AuthedLayout() {
               <ThemeToggle />
             </div>
           </header>
+          <LicenseBanner />
           <main className="flex-1 p-4 md:p-6">
             <Outlet />
           </main>

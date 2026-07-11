@@ -20,6 +20,7 @@ import { Route as AuthenticatedWarehousesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedToolsImportExportRouteImport } from './routes/_authenticated/tools-import-export'
 import { Route as AuthenticatedSystemHealthRouteImport } from './routes/_authenticated/system-health'
+import { Route as AuthenticatedSystemRouteImport } from './routes/_authenticated/system'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedStockTransfersRouteImport } from './routes/_authenticated/stock-transfers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -55,7 +56,13 @@ import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
+import { Route as AuthenticatedSystemIndexRouteImport } from './routes/_authenticated/system.index'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
+import { Route as AuthenticatedSystemUsersRouteImport } from './routes/_authenticated/system.users'
+import { Route as AuthenticatedSystemPlansRouteImport } from './routes/_authenticated/system.plans'
+import { Route as AuthenticatedSystemOrganizationsRouteImport } from './routes/_authenticated/system.organizations'
+import { Route as AuthenticatedSystemLicensesRouteImport } from './routes/_authenticated/system.licenses'
+import { Route as AuthenticatedSystemAuditRouteImport } from './routes/_authenticated/system.audit'
 import { Route as AuthenticatedSalesRepsVisitsRouteImport } from './routes/_authenticated/sales-reps.visits'
 import { Route as AuthenticatedSalesRepsListRouteImport } from './routes/_authenticated/sales-reps.list'
 import { Route as AuthenticatedSalesRepsCommissionsRouteImport } from './routes/_authenticated/sales-reps.commissions'
@@ -144,6 +151,11 @@ const AuthenticatedSystemHealthRoute =
     path: '/system-health',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSystemRoute = AuthenticatedSystemRouteImport.update({
+  id: '/system',
+  path: '/system',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
   id: '/suppliers',
   path: '/suppliers',
@@ -323,11 +335,47 @@ const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSystemIndexRoute =
+  AuthenticatedSystemIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
   getParentRoute: () => ShopRoute,
 } as any)
+const AuthenticatedSystemUsersRoute =
+  AuthenticatedSystemUsersRouteImport.update({
+    id: '/users',
+    path: '/users',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
+const AuthenticatedSystemPlansRoute =
+  AuthenticatedSystemPlansRouteImport.update({
+    id: '/plans',
+    path: '/plans',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
+const AuthenticatedSystemOrganizationsRoute =
+  AuthenticatedSystemOrganizationsRouteImport.update({
+    id: '/organizations',
+    path: '/organizations',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
+const AuthenticatedSystemLicensesRoute =
+  AuthenticatedSystemLicensesRouteImport.update({
+    id: '/licenses',
+    path: '/licenses',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
+const AuthenticatedSystemAuditRoute =
+  AuthenticatedSystemAuditRouteImport.update({
+    id: '/audit',
+    path: '/audit',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
 const AuthenticatedSalesRepsVisitsRoute =
   AuthenticatedSalesRepsVisitsRouteImport.update({
     id: '/visits',
@@ -548,6 +596,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/system': typeof AuthenticatedSystemRouteWithChildren
   '/system-health': typeof AuthenticatedSystemHealthRoute
   '/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -586,7 +635,13 @@ export interface FileRoutesByFullPath {
   '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/system/audit': typeof AuthenticatedSystemAuditRoute
+  '/system/licenses': typeof AuthenticatedSystemLicensesRoute
+  '/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
+  '/system/plans': typeof AuthenticatedSystemPlansRoute
+  '/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
+  '/system/': typeof AuthenticatedSystemIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -664,7 +719,13 @@ export interface FileRoutesByTo {
   '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/system/audit': typeof AuthenticatedSystemAuditRoute
+  '/system/licenses': typeof AuthenticatedSystemLicensesRoute
+  '/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
+  '/system/plans': typeof AuthenticatedSystemPlansRoute
+  '/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
+  '/system': typeof AuthenticatedSystemIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -707,6 +768,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/stock-transfers': typeof AuthenticatedStockTransfersRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
+  '/_authenticated/system': typeof AuthenticatedSystemRouteWithChildren
   '/_authenticated/system-health': typeof AuthenticatedSystemHealthRoute
   '/_authenticated/tools-import-export': typeof AuthenticatedToolsImportExportRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -745,7 +807,13 @@ export interface FileRoutesById {
   '/_authenticated/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/_authenticated/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/_authenticated/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/_authenticated/system/audit': typeof AuthenticatedSystemAuditRoute
+  '/_authenticated/system/licenses': typeof AuthenticatedSystemLicensesRoute
+  '/_authenticated/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
+  '/_authenticated/system/plans': typeof AuthenticatedSystemPlansRoute
+  '/_authenticated/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
+  '/_authenticated/system/': typeof AuthenticatedSystemIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -788,6 +856,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stock-transfers'
     | '/suppliers'
+    | '/system'
     | '/system-health'
     | '/tools-import-export'
     | '/users'
@@ -826,7 +895,13 @@ export interface FileRouteTypes {
     | '/sales-reps/commissions'
     | '/sales-reps/list'
     | '/sales-reps/visits'
+    | '/system/audit'
+    | '/system/licenses'
+    | '/system/organizations'
+    | '/system/plans'
+    | '/system/users'
     | '/shop/product/$id'
+    | '/system/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -904,7 +979,13 @@ export interface FileRouteTypes {
     | '/sales-reps/commissions'
     | '/sales-reps/list'
     | '/sales-reps/visits'
+    | '/system/audit'
+    | '/system/licenses'
+    | '/system/organizations'
+    | '/system/plans'
+    | '/system/users'
     | '/shop/product/$id'
+    | '/system'
   id:
     | '__root__'
     | '/'
@@ -946,6 +1027,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/stock-transfers'
     | '/_authenticated/suppliers'
+    | '/_authenticated/system'
     | '/_authenticated/system-health'
     | '/_authenticated/tools-import-export'
     | '/_authenticated/users'
@@ -984,7 +1066,13 @@ export interface FileRouteTypes {
     | '/_authenticated/sales-reps/commissions'
     | '/_authenticated/sales-reps/list'
     | '/_authenticated/sales-reps/visits'
+    | '/_authenticated/system/audit'
+    | '/_authenticated/system/licenses'
+    | '/_authenticated/system/organizations'
+    | '/_authenticated/system/plans'
+    | '/_authenticated/system/users'
     | '/shop/product/$id'
+    | '/_authenticated/system/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1071,6 +1159,13 @@ declare module '@tanstack/react-router' {
       path: '/system-health'
       fullPath: '/system-health'
       preLoaderRoute: typeof AuthenticatedSystemHealthRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/system': {
+      id: '/_authenticated/system'
+      path: '/system'
+      fullPath: '/system'
+      preLoaderRoute: typeof AuthenticatedSystemRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/suppliers': {
@@ -1318,12 +1413,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/system/': {
+      id: '/_authenticated/system/'
+      path: '/'
+      fullPath: '/system/'
+      preLoaderRoute: typeof AuthenticatedSystemIndexRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
+    }
     '/shop/product/$id': {
       id: '/shop/product/$id'
       path: '/product/$id'
       fullPath: '/shop/product/$id'
       preLoaderRoute: typeof ShopProductIdRouteImport
       parentRoute: typeof ShopRoute
+    }
+    '/_authenticated/system/users': {
+      id: '/_authenticated/system/users'
+      path: '/users'
+      fullPath: '/system/users'
+      preLoaderRoute: typeof AuthenticatedSystemUsersRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
+    }
+    '/_authenticated/system/plans': {
+      id: '/_authenticated/system/plans'
+      path: '/plans'
+      fullPath: '/system/plans'
+      preLoaderRoute: typeof AuthenticatedSystemPlansRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
+    }
+    '/_authenticated/system/organizations': {
+      id: '/_authenticated/system/organizations'
+      path: '/organizations'
+      fullPath: '/system/organizations'
+      preLoaderRoute: typeof AuthenticatedSystemOrganizationsRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
+    }
+    '/_authenticated/system/licenses': {
+      id: '/_authenticated/system/licenses'
+      path: '/licenses'
+      fullPath: '/system/licenses'
+      preLoaderRoute: typeof AuthenticatedSystemLicensesRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
+    }
+    '/_authenticated/system/audit': {
+      id: '/_authenticated/system/audit'
+      path: '/audit'
+      fullPath: '/system/audit'
+      preLoaderRoute: typeof AuthenticatedSystemAuditRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
     }
     '/_authenticated/sales-reps/visits': {
       id: '/_authenticated/sales-reps/visits'
@@ -1657,6 +1794,27 @@ const AuthenticatedSalesRepsRouteWithChildren =
     AuthenticatedSalesRepsRouteChildren,
   )
 
+interface AuthenticatedSystemRouteChildren {
+  AuthenticatedSystemAuditRoute: typeof AuthenticatedSystemAuditRoute
+  AuthenticatedSystemLicensesRoute: typeof AuthenticatedSystemLicensesRoute
+  AuthenticatedSystemOrganizationsRoute: typeof AuthenticatedSystemOrganizationsRoute
+  AuthenticatedSystemPlansRoute: typeof AuthenticatedSystemPlansRoute
+  AuthenticatedSystemUsersRoute: typeof AuthenticatedSystemUsersRoute
+  AuthenticatedSystemIndexRoute: typeof AuthenticatedSystemIndexRoute
+}
+
+const AuthenticatedSystemRouteChildren: AuthenticatedSystemRouteChildren = {
+  AuthenticatedSystemAuditRoute: AuthenticatedSystemAuditRoute,
+  AuthenticatedSystemLicensesRoute: AuthenticatedSystemLicensesRoute,
+  AuthenticatedSystemOrganizationsRoute: AuthenticatedSystemOrganizationsRoute,
+  AuthenticatedSystemPlansRoute: AuthenticatedSystemPlansRoute,
+  AuthenticatedSystemUsersRoute: AuthenticatedSystemUsersRoute,
+  AuthenticatedSystemIndexRoute: AuthenticatedSystemIndexRoute,
+}
+
+const AuthenticatedSystemRouteWithChildren =
+  AuthenticatedSystemRoute._addFileChildren(AuthenticatedSystemRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRouteWithChildren
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
@@ -1693,6 +1851,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStockTransfersRoute: typeof AuthenticatedStockTransfersRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
+  AuthenticatedSystemRoute: typeof AuthenticatedSystemRouteWithChildren
   AuthenticatedSystemHealthRoute: typeof AuthenticatedSystemHealthRoute
   AuthenticatedToolsImportExportRoute: typeof AuthenticatedToolsImportExportRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -1741,6 +1900,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStockTransfersRoute: AuthenticatedStockTransfersRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
+  AuthenticatedSystemRoute: AuthenticatedSystemRouteWithChildren,
   AuthenticatedSystemHealthRoute: AuthenticatedSystemHealthRoute,
   AuthenticatedToolsImportExportRoute: AuthenticatedToolsImportExportRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,

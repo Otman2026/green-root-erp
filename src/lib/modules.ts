@@ -89,6 +89,7 @@ export const MODULES: AppModule[] = [
   { key: "system-health", path: "/system-health", labelKey: "sys.title", icon: ShieldAlert, color: "settings", group: "system", roles: ["admin","owner"] },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
+  { key: "system",      path: "/system",      labelKey: "sys.owner",       icon: ShieldAlert,     color: "settings",    group: "system",     roles: ["system_owner"] },
 
 ];
 
