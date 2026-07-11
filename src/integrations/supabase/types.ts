@@ -14,6 +14,293 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          name_ar: string | null
+          parent_id: string | null
+          slug: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          name_ar?: string | null
+          parent_id?: string | null
+          slug?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          name_ar?: string | null
+          parent_id?: string | null
+          slug?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_batches: {
+        Row: {
+          batch_number: string | null
+          created_at: string
+          expiry_date: string | null
+          id: string
+          notes: string | null
+          product_id: string
+          production_date: string | null
+          quantity: number
+          updated_at: string
+        }
+        Insert: {
+          batch_number?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          production_date?: string | null
+          quantity?: number
+          updated_at?: string
+        }
+        Update: {
+          batch_number?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          production_date?: string | null
+          quantity?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_documents: {
+        Row: {
+          created_at: string
+          doc_type: string
+          id: string
+          product_id: string
+          storage_path: string | null
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          doc_type?: string
+          id?: string
+          product_id: string
+          storage_path?: string | null
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          doc_type?: string
+          id?: string
+          product_id?: string
+          storage_path?: string | null
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_documents_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_images: {
+        Row: {
+          created_at: string
+          id: string
+          is_primary: boolean
+          product_id: string
+          sort_order: number
+          storage_path: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          product_id: string
+          sort_order?: number
+          storage_path?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          product_id?: string
+          sort_order?: number
+          storage_path?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          active_ingredient: string | null
+          barcode: string | null
+          brand: string | null
+          category_id: string | null
+          concentration: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          formulation: string | null
+          id: string
+          manufacturer: string | null
+          min_stock_alert: number
+          name: string
+          name_ar: string | null
+          notes: string | null
+          origin_country: string | null
+          primary_image_url: string | null
+          purchase_price: number
+          qr_code: string | null
+          registration_number: string | null
+          scientific_name: string | null
+          selling_price: number
+          sku: string | null
+          status: string
+          stock_quantity: number
+          supplier_id: string | null
+          trade_name: string | null
+          unit: string
+          updated_at: string
+          volume: number | null
+          weight: number | null
+        }
+        Insert: {
+          active_ingredient?: string | null
+          barcode?: string | null
+          brand?: string | null
+          category_id?: string | null
+          concentration?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          formulation?: string | null
+          id?: string
+          manufacturer?: string | null
+          min_stock_alert?: number
+          name: string
+          name_ar?: string | null
+          notes?: string | null
+          origin_country?: string | null
+          primary_image_url?: string | null
+          purchase_price?: number
+          qr_code?: string | null
+          registration_number?: string | null
+          scientific_name?: string | null
+          selling_price?: number
+          sku?: string | null
+          status?: string
+          stock_quantity?: number
+          supplier_id?: string | null
+          trade_name?: string | null
+          unit?: string
+          updated_at?: string
+          volume?: number | null
+          weight?: number | null
+        }
+        Update: {
+          active_ingredient?: string | null
+          barcode?: string | null
+          brand?: string | null
+          category_id?: string | null
+          concentration?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          formulation?: string | null
+          id?: string
+          manufacturer?: string | null
+          min_stock_alert?: number
+          name?: string
+          name_ar?: string | null
+          notes?: string | null
+          origin_country?: string | null
+          primary_image_url?: string | null
+          purchase_price?: number
+          qr_code?: string | null
+          registration_number?: string | null
+          scientific_name?: string | null
+          selling_price?: number
+          sku?: string | null
+          status?: string
+          stock_quantity?: number
+          supplier_id?: string | null
+          trade_name?: string | null
+          unit?: string
+          updated_at?: string
+          volume?: number | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -37,6 +324,57 @@ export type Database = {
           full_name?: string | null
           id?: string
           preferred_language?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      suppliers: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_person: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          status: string
+          tax_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_person?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          tax_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_person?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          tax_number?: string | null
           updated_at?: string
         }
         Relationships: []
