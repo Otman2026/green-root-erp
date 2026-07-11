@@ -1,10 +1,13 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import { ShoppingCart, Sprout } from "lucide-react";
+import { LogIn, LayoutDashboard, ShoppingCart, Sprout } from "lucide-react";
+import { useEffect, useState } from "react";
 import { CartProvider, useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
+
 
 export const Route = createFileRoute("/shop")({
   component: ShopLayout,
