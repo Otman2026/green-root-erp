@@ -62,6 +62,7 @@ import { Route as AuthenticatedSystemIndexRouteImport } from './routes/_authenti
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as AuthenticatedSystemUsersRouteImport } from './routes/_authenticated/system.users'
 import { Route as AuthenticatedSystemPlansRouteImport } from './routes/_authenticated/system.plans'
+import { Route as AuthenticatedSystemPermissionsRouteImport } from './routes/_authenticated/system.permissions'
 import { Route as AuthenticatedSystemOrganizationsRouteImport } from './routes/_authenticated/system.organizations'
 import { Route as AuthenticatedSystemLicensesRouteImport } from './routes/_authenticated/system.licenses'
 import { Route as AuthenticatedSystemAuditRouteImport } from './routes/_authenticated/system.audit'
@@ -370,6 +371,12 @@ const AuthenticatedSystemPlansRoute =
     path: '/plans',
     getParentRoute: () => AuthenticatedSystemRoute,
   } as any)
+const AuthenticatedSystemPermissionsRoute =
+  AuthenticatedSystemPermissionsRouteImport.update({
+    id: '/permissions',
+    path: '/permissions',
+    getParentRoute: () => AuthenticatedSystemRoute,
+  } as any)
 const AuthenticatedSystemOrganizationsRoute =
   AuthenticatedSystemOrganizationsRouteImport.update({
     id: '/organizations',
@@ -652,6 +659,7 @@ export interface FileRoutesByFullPath {
   '/system/audit': typeof AuthenticatedSystemAuditRoute
   '/system/licenses': typeof AuthenticatedSystemLicensesRoute
   '/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
+  '/system/permissions': typeof AuthenticatedSystemPermissionsRoute
   '/system/plans': typeof AuthenticatedSystemPlansRoute
   '/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
@@ -738,6 +746,7 @@ export interface FileRoutesByTo {
   '/system/audit': typeof AuthenticatedSystemAuditRoute
   '/system/licenses': typeof AuthenticatedSystemLicensesRoute
   '/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
+  '/system/permissions': typeof AuthenticatedSystemPermissionsRoute
   '/system/plans': typeof AuthenticatedSystemPlansRoute
   '/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
@@ -828,6 +837,7 @@ export interface FileRoutesById {
   '/_authenticated/system/audit': typeof AuthenticatedSystemAuditRoute
   '/_authenticated/system/licenses': typeof AuthenticatedSystemLicensesRoute
   '/_authenticated/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
+  '/_authenticated/system/permissions': typeof AuthenticatedSystemPermissionsRoute
   '/_authenticated/system/plans': typeof AuthenticatedSystemPlansRoute
   '/_authenticated/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
@@ -918,6 +928,7 @@ export interface FileRouteTypes {
     | '/system/audit'
     | '/system/licenses'
     | '/system/organizations'
+    | '/system/permissions'
     | '/system/plans'
     | '/system/users'
     | '/shop/product/$id'
@@ -1004,6 +1015,7 @@ export interface FileRouteTypes {
     | '/system/audit'
     | '/system/licenses'
     | '/system/organizations'
+    | '/system/permissions'
     | '/system/plans'
     | '/system/users'
     | '/shop/product/$id'
@@ -1093,6 +1105,7 @@ export interface FileRouteTypes {
     | '/_authenticated/system/audit'
     | '/_authenticated/system/licenses'
     | '/_authenticated/system/organizations'
+    | '/_authenticated/system/permissions'
     | '/_authenticated/system/plans'
     | '/_authenticated/system/users'
     | '/shop/product/$id'
@@ -1481,6 +1494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSystemPlansRouteImport
       parentRoute: typeof AuthenticatedSystemRoute
     }
+    '/_authenticated/system/permissions': {
+      id: '/_authenticated/system/permissions'
+      path: '/permissions'
+      fullPath: '/system/permissions'
+      preLoaderRoute: typeof AuthenticatedSystemPermissionsRouteImport
+      parentRoute: typeof AuthenticatedSystemRoute
+    }
     '/_authenticated/system/organizations': {
       id: '/_authenticated/system/organizations'
       path: '/organizations'
@@ -1838,6 +1858,7 @@ interface AuthenticatedSystemRouteChildren {
   AuthenticatedSystemAuditRoute: typeof AuthenticatedSystemAuditRoute
   AuthenticatedSystemLicensesRoute: typeof AuthenticatedSystemLicensesRoute
   AuthenticatedSystemOrganizationsRoute: typeof AuthenticatedSystemOrganizationsRoute
+  AuthenticatedSystemPermissionsRoute: typeof AuthenticatedSystemPermissionsRoute
   AuthenticatedSystemPlansRoute: typeof AuthenticatedSystemPlansRoute
   AuthenticatedSystemUsersRoute: typeof AuthenticatedSystemUsersRoute
   AuthenticatedSystemIndexRoute: typeof AuthenticatedSystemIndexRoute
@@ -1847,6 +1868,7 @@ const AuthenticatedSystemRouteChildren: AuthenticatedSystemRouteChildren = {
   AuthenticatedSystemAuditRoute: AuthenticatedSystemAuditRoute,
   AuthenticatedSystemLicensesRoute: AuthenticatedSystemLicensesRoute,
   AuthenticatedSystemOrganizationsRoute: AuthenticatedSystemOrganizationsRoute,
+  AuthenticatedSystemPermissionsRoute: AuthenticatedSystemPermissionsRoute,
   AuthenticatedSystemPlansRoute: AuthenticatedSystemPlansRoute,
   AuthenticatedSystemUsersRoute: AuthenticatedSystemUsersRoute,
   AuthenticatedSystemIndexRoute: AuthenticatedSystemIndexRoute,
