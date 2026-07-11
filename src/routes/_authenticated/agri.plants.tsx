@@ -80,7 +80,7 @@ function PlantsPage() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm("?")) return;
+    if (!confirm(t("common.confirmDelete"))) return;
     const { error } = await supabase.from("agri_plants").delete().eq("id", id);
     if (error) return toast.error(error.message);
     load();

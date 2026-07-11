@@ -60,7 +60,7 @@ function CompanySettingsPage() {
   };
 
   const delTax = async (id: string) => {
-    if (!confirm("?")) return;
+    if (!confirm(t("common.confirmDelete"))) return;
     await supabase.from("tax_rates").delete().eq("id", id);
     load();
   };

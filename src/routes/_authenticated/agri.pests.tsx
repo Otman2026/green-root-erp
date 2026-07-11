@@ -62,7 +62,7 @@ function PestsPage() {
     toast.success("OK"); setOpen(false); setEditing(empty); load();
   };
   const remove = async (id: string) => {
-    if (!confirm("?")) return;
+    if (!confirm(t("common.confirmDelete"))) return;
     const { error } = await supabase.from("agri_pests").delete().eq("id", id);
     if (error) return toast.error(error.message); load();
   };

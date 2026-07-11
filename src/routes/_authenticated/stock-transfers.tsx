@@ -74,7 +74,7 @@ function StockTransfersPage() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm("?")) return;
+    if (!confirm(t("common.confirmDelete"))) return;
     await supabase.from("stock_transfers").delete().eq("id", id);
     load();
   };
