@@ -210,3 +210,11 @@
 @utility card-elevated {
   box-shadow: 0 1px 2px 0 oklch(0 0 0 / 4%), 0 4px 16px -4px oklch(0 0 0 / 8%);
 }
+
+/* Read-only mode: dim and disable pointer events on write actions */
+body.license-readonly [data-write-action],
+body.license-readonly button[type="submit"]:not([data-allow-readonly]) {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
