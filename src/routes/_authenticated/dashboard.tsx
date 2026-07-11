@@ -16,9 +16,9 @@ import { fmtMoney } from "@/lib/format";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { ChartCard } from "@/components/shared/chart-card";
 import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ds";
+import { Alert, AlertDescription, AlertTitle, StatusBadge } from "@/ds";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
