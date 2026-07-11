@@ -182,6 +182,7 @@ const AR: Dict = {
   "pos.couponNotFound": "الكوبون غير موجود",
   "pos.couponApplied": "تم تطبيق الكوبون",
   "pos.creditNeedsCustomer": "يجب اختيار عميل للبيع الآجل.",
+  "sales.confirmReturn": "هل تريد إنشاء مرتجع لهذه الفاتورة؟",
   "pos.customer": "العميل",
   "pos.walkIn": "عميل عابر",
   "pos.subtotal": "المجموع الفرعي",
