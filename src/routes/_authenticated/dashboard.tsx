@@ -235,7 +235,7 @@ function Dashboard() {
               s?.lowStock.map((p) => (
                 <div key={p.id} className="flex items-center justify-between rounded-lg border p-2 text-sm">
                   <span className="min-w-0 truncate">{p.name_ar || p.name}</span>
-                  <Badge variant="destructive">{p.stock_quantity} {p.unit}</Badge>
+                  <StatusBadge tone="danger" dot>{p.stock_quantity} {p.unit}</StatusBadge>
                 </div>
               ))
             )}
