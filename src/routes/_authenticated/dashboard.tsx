@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { scanAndNotify } from "@/lib/smart-notifications";
 import { useQuery } from "@tanstack/react-query";
 import {
   TrendingUp, ShoppingCart, Package, Users, Wallet, Receipt,
@@ -121,6 +123,8 @@ function Dashboard() {
     queryFn: loadStats,
     refetchInterval: 60_000,
   });
+
+  useEffect(() => { if (user?.id) void scanAndNotify(user.id); }, [user?.id]);
 
   const alertsCount = (s?.lowStock.length ?? 0) + (s?.expiring.length ?? 0);
 
