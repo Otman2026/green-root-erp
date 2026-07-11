@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/hooks/use-auth";
-import { fmtMoney, printHtml } from "@/lib/format";
+import { fmtMoney } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/pos")({ component: POSPage });
 
@@ -75,12 +75,26 @@ function POSPage() {
   const addProduct = (p: Product) => {
     setCart((prev) => {
       const i = prev.findIndex((l) => l.product.id === p.id);
+      const stock = Number(p.stock_quantity ?? 0);
+      const currentQty = i >= 0 ? prev[i].qty : 0;
+      if (stock > 0 && currentQty + 1 > stock) {
+        toast.error(`${p.name}: ${t("pos.stockAvailable")} ${stock}`);
+        return prev;
+      }
       if (i >= 0) { const c = [...prev]; c[i] = { ...c[i], qty: c[i].qty + 1 }; return c; }
       return [...prev, { product: p, qty: 1, unit_price: priceOf(p), discount: 0 }];
     });
   };
 
-  const setQty = (i: number, qty: number) => setCart((c) => c.map((l, idx) => idx === i ? { ...l, qty: Math.max(0, qty) } : l).filter((l) => l.qty > 0));
+  const setQty = (i: number, qty: number) => setCart((c) => c.map((l, idx) => {
+    if (idx !== i) return l;
+    const stock = Number(l.product.stock_quantity ?? 0);
+    if (stock > 0 && qty > stock) {
+      toast.error(`${l.product.name}: ${t("pos.stockAvailable")} ${stock}`);
+      return { ...l, qty: stock };
+    }
+    return { ...l, qty: Math.max(0, qty) };
+  }).filter((l) => l.qty > 0));
   const setPrice = (i: number, unit_price: number) => setCart((c) => c.map((l, idx) => idx === i ? { ...l, unit_price } : l));
   const removeLine = (i: number) => setCart((c) => c.filter((_, idx) => idx !== i));
 
@@ -92,8 +106,8 @@ function POSPage() {
   const applyCoupon = async () => {
     if (!couponCode) return;
     const { data, error } = await supabase.from("coupons").select("*").eq("code", couponCode).eq("is_active", true).maybeSingle();
-    if (error || !data) { toast.error("Coupon not found"); setCoupon(null); return; }
-    setCoupon(data); toast.success("Coupon applied");
+    if (error || !data) { toast.error(t("pos.couponNotFound")); setCoupon(null); return; }
+    setCoupon(data); toast.success(t("pos.couponApplied"));
   };
 
   const reset = () => { setCart([]); setDiscount(0); setCouponCode(""); setCoupon(null); setPaid(""); setCustomerId(""); };
@@ -148,24 +162,27 @@ function POSPage() {
     reset(); setPayOpen(false);
   };
 
-  const printInvoice = (invoiceNo: string, items: any[], grandTotal: number, paidNum: number) => {
+  const printInvoice = async (invoiceNo: string, _items: any[], grandTotal: number, paidNum: number) => {
     const cust = customers.find((c) => c.id === customerId);
-    const rows = cart.map((l) => `<tr><td>${l.product.name}</td><td class="r">${l.qty}</td><td class="r">${fmtMoney(l.unit_price)}</td><td class="r">${fmtMoney(l.qty * l.unit_price - l.discount)}</td></tr>`).join("");
-    printHtml(`
-      <div class="head">
-        <div><h2>Haytam AGRI</h2><div class="muted">Invoice</div></div>
-        <div><b>${invoiceNo}</b><div class="muted">${new Date().toLocaleString()}</div></div>
-      </div>
-      <div><b>Customer:</b> ${cust?.name ?? "Walk-in"}</div>
-      <table><thead><tr><th>Product</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="totals">
-        <div><span>Subtotal</span><span>${fmtMoney(subtotal)}</span></div>
-        <div><span>Discount</span><span>-${fmtMoney(discount + couponDiscount)}</span></div>
-        <div class="grand"><span>Total</span><span>${fmtMoney(grandTotal)}</span></div>
-        <div><span>Paid</span><span>${fmtMoney(paidNum)}</span></div>
-        <div><span>Balance</span><span>${fmtMoney(grandTotal - paidNum)}</span></div>
-      </div>
-    `);
+    const { printDocument } = await import("@/lib/print-templates");
+    await printDocument({
+      kind: "invoice",
+      docNo: invoiceNo,
+      date: new Date().toISOString(),
+      party: { name: cust?.name ?? t("pos.walkIn") },
+      lines: cart.map((l) => ({
+        name: l.product.name,
+        sku: l.product.sku ?? undefined,
+        qty: l.qty,
+        unit_price: l.unit_price,
+        discount: l.discount,
+        tax: 0,
+        total: l.qty * l.unit_price - l.discount,
+      })),
+      total: grandTotal,
+      paid: paidNum,
+      balance: grandTotal - paidNum,
+    });
   };
 
   return (
@@ -276,7 +293,7 @@ function POSPage() {
               </Select>
             </div>
             <div className="space-y-1.5"><Label>{t("pos.paid")}</Label><Input type="number" step="any" value={paid} placeholder={String(total)} onChange={(e) => setPaid(e.target.value)} /></div>
-            {method === "credit" && !customerId && <div className="text-sm text-destructive">Choose a customer for credit sales.</div>}
+            {method === "credit" && !customerId && <div className="text-sm text-destructive">{t("pos.creditNeedsCustomer")}</div>}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPayOpen(false)}>{t("common.cancel")}</Button>
