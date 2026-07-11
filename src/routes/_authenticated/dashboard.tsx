@@ -16,9 +16,9 @@ import { fmtMoney } from "@/lib/format";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { ChartCard } from "@/components/shared/chart-card";
 import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ds";
+import { Alert, AlertDescription, AlertTitle, StatusBadge } from "@/ds";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
@@ -235,7 +235,7 @@ function Dashboard() {
               s?.lowStock.map((p) => (
                 <div key={p.id} className="flex items-center justify-between rounded-lg border p-2 text-sm">
                   <span className="min-w-0 truncate">{p.name_ar || p.name}</span>
-                  <Badge variant="destructive">{p.stock_quantity} {p.unit}</Badge>
+                  <StatusBadge tone="danger" dot>{p.stock_quantity} {p.unit}</StatusBadge>
                 </div>
               ))
             )}
@@ -245,7 +245,7 @@ function Dashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <CalendarX className="h-4 w-4 text-amber-600" />قرب انتهاء الصلاحية
+              <CalendarX className="h-4 w-4 text-warning" />قرب انتهاء الصلاحية
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -257,12 +257,13 @@ function Dashboard() {
                 return (
                   <div key={b.id} className="flex items-center justify-between rounded-lg border p-2 text-sm">
                     <span className="min-w-0 truncate">{p?.name_ar || p?.name}</span>
-                    <Badge variant="outline" className="border-amber-500 text-amber-700">
+                    <StatusBadge tone="warning">
                       {b.expiry_date ? new Date(b.expiry_date).toLocaleDateString("ar-MA") : "—"}
-                    </Badge>
+                    </StatusBadge>
                   </div>
                 );
               })
+
             )}
           </CardContent>
         </Card>
