@@ -17,6 +17,8 @@ function ReportsPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [lines, setLines] = useState<any[]>([]);
+  const [cashIn, setCashIn] = useState(0);
+  const [cashOut, setCashOut] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -27,6 +29,26 @@ function ReportsPage() {
       if (from) list = list.filter((r: any) => r.journal_entries.entry_date >= from);
       if (to)   list = list.filter((r: any) => r.journal_entries.entry_date <= to);
       setLines(list);
+
+      // Cash flow from cash_movements + bank_transactions
+      const [cm, bt] = await Promise.all([
+        (supabase as any).from("cash_movements").select("direction,amount,movement_date"),
+        (supabase as any).from("bank_transactions").select("direction,amount,tx_date"),
+      ]);
+      let inSum = 0, outSum = 0;
+      const inRange = (d: string | null) => (!d ? false : (!from || d >= from) && (!to || d <= to));
+      for (const r of cm.data ?? []) {
+        if (!inRange(r.movement_date)) continue;
+        if (r.direction === "in") inSum += Number(r.amount || 0);
+        else outSum += Number(r.amount || 0);
+      }
+      for (const r of bt.data ?? []) {
+        if (!inRange(r.tx_date)) continue;
+        if (r.direction === "in") inSum += Number(r.amount || 0);
+        else outSum += Number(r.amount || 0);
+      }
+      setCashIn(inSum);
+      setCashOut(outSum);
     })();
   }, [from, to]);
 
