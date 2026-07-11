@@ -1,10 +1,12 @@
-import { Button, Input, Card, Badge, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Switch } from "@/ds";
+import { Button, Input, Card, Badge, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Switch, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, Label } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { UserCog, Search, Archive, ArchiveRestore, Pencil, ShieldCheck } from "lucide-react";
+import { UserCog, Search, Archive, ArchiveRestore, ShieldCheck, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { createEmployee } from "@/lib/employees.functions";
 
 export const Route = createFileRoute("/_authenticated/users")({ component: UsersPage });
 
@@ -89,6 +91,7 @@ function UsersPage() {
           </h1>
           <p className="text-sm text-muted-foreground">{profiles.length} {t("common.total")}</p>
         </div>
+        <AddEmployeeDialog onCreated={load} />
       </div>
 
       <Card className="p-3">
@@ -152,5 +155,64 @@ function UsersPage() {
         </Table>
       </Card>
     </div>
+  );
+}
+
+function AddEmployeeDialog({ onCreated }: { onCreated: () => void }) {
+  const { t } = useI18n();
+  const createFn = useServerFn(createEmployee);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({
+    email: "", password: "", fullName: "", username: "", phone: "", role: "employee",
+  });
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await createFn({ data: form });
+      toast.success("تم إنشاء حساب الموظف");
+      setOpen(false);
+      setForm({ email: "", password: "", fullName: "", username: "", phone: "", role: "employee" });
+      onCreated();
+    } catch (err: any) {
+      toast.error(err?.message ?? "فشل الإنشاء");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button><UserPlus className="me-2 h-4 w-4" /> {t("common.add") ?? "إضافة"} موظف</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>إضافة حساب موظف جديد</DialogTitle></DialogHeader>
+        <form onSubmit={submit} className="space-y-3">
+          <div><Label>الاسم الكامل *</Label><Input required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>
+          <div><Label>البريد الإلكتروني *</Label><Input required type="email" dir="ltr" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+          <div><Label>كلمة السر * (8 أحرف على الأقل)</Label><Input required type="password" dir="ltr" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>اسم المستخدم</Label><Input dir="ltr" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} /></div>
+            <div><Label>الهاتف</Label><Input dir="ltr" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+          </div>
+          <div>
+            <Label>الدور *</Label>
+            <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+            <Button type="submit" disabled={busy}>{busy ? "جاري الإنشاء..." : "إنشاء الحساب"}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Building2, KeyRound, Package as PackageIcon, ScrollText, Users } from "lucide-react";
+import { Shield, Building2, KeyRound, Package as PackageIcon, ScrollText, Users, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/system")({
   ssr: false,
@@ -20,6 +20,7 @@ const NAV: { to: string; label: string; icon: typeof Shield; exact?: boolean }[]
   { to: "/system/licenses", label: "التراخيص", icon: KeyRound },
   { to: "/system/plans", label: "الخطط", icon: PackageIcon },
   { to: "/system/users", label: "المستخدمون", icon: Users },
+  { to: "/system/permissions", label: "الصلاحيات", icon: Lock },
   { to: "/system/audit", label: "سجل التدقيق", icon: ScrollText },
 ];
 
