@@ -42,6 +42,7 @@ export const MODULES: AppModule[] = [
   { key: "products",    path: "/products",    labelKey: "nav.products",    icon: Package,         color: "products",    group: "inventory" },
   { key: "warehouses",  path: "/warehouses",  labelKey: "nav.warehouses",  icon: Warehouse,       color: "warehouses",  group: "inventory",  roles: ["admin","owner","manager","warehouse_keeper","branch_manager"] },
   { key: "inventory",   path: "/inventory",   labelKey: "nav.inventory",   icon: ArrowLeftRight,  color: "warehouses",  group: "inventory",  roles: ["admin","owner","manager","warehouse_keeper"] },
+  { key: "stock-transfers", path: "/stock-transfers", labelKey: "xfer.title", icon: ArrowLeftRight, color: "warehouses", group: "inventory", roles: ["admin","owner","manager","warehouse_keeper","branch_manager"] },
   { key: "fertilizers", path: "/fertilizers", labelKey: "nav.fertilizers", icon: Leaf,            color: "fertilizers", group: "inventory" },
   { key: "pesticides",  path: "/pesticides",  labelKey: "nav.pesticides",  icon: SprayCan,        color: "pesticides",  group: "inventory" },
   { key: "seeds",       path: "/seeds",       labelKey: "nav.seeds",       icon: Sprout,          color: "seeds",       group: "inventory" },
