@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Plus, ClipboardList, Trash2, CheckCircle2, PackageCheck, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -14,6 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney, fmtDateTime } from "@/lib/format";
+import { DataTable, type Column } from "@/components/shared/data-table";
+import { PageHeader } from "@/components/shared/page-header";
 
 export const Route = createFileRoute("/_authenticated/purchases")({ component: PurchasesPage });
 
@@ -23,6 +24,7 @@ function PurchasesPage() {
   const { t } = useI18n();
   const { user } = useAuth();
   const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [warehouses, setWarehouses] = useState<any[]>([]);
@@ -32,6 +34,7 @@ function PurchasesPage() {
   const [form, setForm] = useState<{ supplier_id: string; warehouse_id: string; notes: string; lines: Line[] }>({ supplier_id: "", warehouse_id: "", notes: "", lines: [] });
 
   const load = async () => {
+    setLoading(true);
     const [po, sp, pr, wh] = await Promise.all([
       supabase.from("purchase_orders").select("*").order("created_at", { ascending: false }).limit(300),
       supabase.from("suppliers").select("id,name"),
@@ -40,6 +43,7 @@ function PurchasesPage() {
     ]);
     setRows((po.data ?? []) as any); setSuppliers((sp.data ?? []) as any);
     setProducts((pr.data ?? []) as any); setWarehouses((wh.data ?? []) as any);
+    setLoading(false);
   };
   useEffect(() => { load(); }, []);
 
@@ -89,7 +93,6 @@ function PurchasesPage() {
     });
     if (error) return toast.error(error.message);
     await supabase.from("purchase_orders").update({ status: "invoiced" }).eq("id", po.id);
-    // supplier balance +
     if (po.supplier_id) {
       const { data: s } = await supabase.from("suppliers").select("balance").eq("id", po.supplier_id).maybeSingle();
       await supabase.from("suppliers").update({ balance: (s?.balance ?? 0) + Number(po.total) }).eq("id", po.supplier_id);
@@ -107,36 +110,40 @@ function PurchasesPage() {
     draft: "outline", approved: "secondary", ordered: "secondary", received: "default", invoiced: "default", closed: "default", cancelled: "destructive",
   };
 
+  const supplierName = (id: string) => suppliers.find((s) => s.id === id)?.name ?? "—";
+
+  const columns: Column<any>[] = [
+    { key: "po_no", header: "PO", accessor: (r) => <span className="font-mono">{r.po_no}</span>, sortValue: (r) => r.po_no, exportValue: (r) => r.po_no },
+    { key: "date", header: t("common.date"), accessor: (r) => <span className="text-xs">{fmtDateTime(r.created_at)}</span>, sortValue: (r) => r.created_at, exportValue: (r) => r.created_at },
+    { key: "supplier", header: t("common.supplier"), accessor: (r) => supplierName(r.supplier_id), sortValue: (r) => supplierName(r.supplier_id), exportValue: (r) => supplierName(r.supplier_id) },
+    { key: "status", header: t("common.status"), accessor: (r) => <Badge variant={statusColor[r.status] ?? "outline"}>{t(`purchases.status.${r.status}`)}</Badge>, sortValue: (r) => r.status, exportValue: (r) => r.status },
+    { key: "total", header: t("common.total"), accessor: (r) => <span className="font-mono">{fmtMoney(r.total)}</span>, sortValue: (r) => Number(r.total), exportValue: (r) => Number(r.total) },
+    {
+      key: "actions", header: t("common.actions"), sortable: false, hideable: false, className: "text-end",
+      accessor: (r) => (
+        <div className="text-end">
+          <Button size="icon" variant="ghost" onClick={() => view(r)}><Eye className="h-4 w-4" /></Button>
+          {r.status === "draft" && <Button size="icon" variant="ghost" onClick={() => approve(r)} title="Approve"><CheckCircle2 className="h-4 w-4 text-primary" /></Button>}
+          {(r.status === "approved" || r.status === "ordered") && <Button size="icon" variant="ghost" onClick={() => receive(r)} title="Receive"><PackageCheck className="h-4 w-4 text-primary" /></Button>}
+          {r.status === "received" && <Button size="sm" variant="outline" onClick={() => invoice(r)}>{t("purchases.invoice")}</Button>}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="flex items-center gap-2 text-2xl font-bold"><ClipboardList className="h-6 w-6 text-primary" /> {t("purchases.title")}</h1>
-        <Button onClick={() => setOpen(true)} className="gap-2"><Plus className="h-4 w-4" /> {t("purchases.new")}</Button>
-      </div>
+      <PageHeader
+        icon={ClipboardList} title={t("purchases.title")} subtitle={`${rows.length} ${t("common.total")}`} colorVar="primary"
+        actions={<Button onClick={() => setOpen(true)} className="gap-2"><Plus className="h-4 w-4" /> {t("purchases.new")}</Button>}
+      />
 
-      <Card>
-        <Table>
-          <TableHeader><TableRow><TableHead>PO</TableHead><TableHead>{t("common.date")}</TableHead><TableHead>{t("common.supplier")}</TableHead><TableHead>{t("common.status")}</TableHead><TableHead>{t("common.total")}</TableHead><TableHead className="text-end">{t("common.actions")}</TableHead></TableRow></TableHeader>
-          <TableBody>
-            {rows.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
-            : rows.map((po) => (
-              <TableRow key={po.id}>
-                <TableCell className="font-mono">{po.po_no}</TableCell>
-                <TableCell className="text-xs">{fmtDateTime(po.created_at)}</TableCell>
-                <TableCell>{suppliers.find((s) => s.id === po.supplier_id)?.name ?? "—"}</TableCell>
-                <TableCell><Badge variant={statusColor[po.status] ?? "outline"}>{t(`purchases.status.${po.status}`)}</Badge></TableCell>
-                <TableCell className="font-mono">{fmtMoney(po.total)}</TableCell>
-                <TableCell className="text-end">
-                  <Button size="icon" variant="ghost" onClick={() => view(po)}><Eye className="h-4 w-4" /></Button>
-                  {po.status === "draft" && <Button size="icon" variant="ghost" onClick={() => approve(po)} title="Approve"><CheckCircle2 className="h-4 w-4 text-primary" /></Button>}
-                  {(po.status === "approved" || po.status === "ordered") && <Button size="icon" variant="ghost" onClick={() => receive(po)} title="Receive"><PackageCheck className="h-4 w-4 text-primary" /></Button>}
-                  {po.status === "received" && <Button size="sm" variant="outline" onClick={() => invoice(po)}>{t("purchases.invoice")}</Button>}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+      <DataTable
+        data={rows} columns={columns} isLoading={loading}
+        rowKey={(r) => r.id}
+        exportName="purchase-orders" exportTitle="Purchase Orders"
+        searchKeys={["po_no", "status"]}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl">
