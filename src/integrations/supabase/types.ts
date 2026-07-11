@@ -70,6 +70,39 @@ export type Database = {
           },
         ]
       }
+      activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          entity: string | null
+          entity_id: string | null
+          id: string
+          meta: Json | null
+          summary: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          meta?: Json | null
+          summary?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          meta?: Json | null
+          summary?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       agri_disease_images: {
         Row: {
           caption: string | null

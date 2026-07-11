@@ -49,6 +49,7 @@ import { Route as AuthenticatedBarcodesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/banks'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
+import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as AuthenticatedSalesRepsVisitsRouteImport } from './routes/_authenticated/sales-reps.visits'
@@ -281,6 +282,11 @@ const AuthenticatedAgriRoute = AuthenticatedAgriRouteImport.update({
   path: '/agri',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   id: '/accounting',
   path: '/accounting',
@@ -453,6 +459,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/shop': typeof ShopRouteWithChildren
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
+  '/activity': typeof AuthenticatedActivityRoute
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
   '/banks': typeof AuthenticatedBanksRoute
@@ -522,6 +529,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
+  '/activity': typeof AuthenticatedActivityRoute
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
   '/banks': typeof AuthenticatedBanksRoute
@@ -594,6 +602,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/shop': typeof ShopRouteWithChildren
   '/_authenticated/accounting': typeof AuthenticatedAccountingRouteWithChildren
+  '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
   '/_authenticated/ai': typeof AuthenticatedAiRoute
   '/_authenticated/banks': typeof AuthenticatedBanksRoute
@@ -666,6 +675,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/shop'
     | '/accounting'
+    | '/activity'
     | '/agri'
     | '/ai'
     | '/banks'
@@ -735,6 +745,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/accounting'
+    | '/activity'
     | '/agri'
     | '/ai'
     | '/banks'
@@ -806,6 +817,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/shop'
     | '/_authenticated/accounting'
+    | '/_authenticated/activity'
     | '/_authenticated/agri'
     | '/_authenticated/ai'
     | '/_authenticated/banks'
@@ -1161,6 +1173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgriRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/activity': {
+      id: '/_authenticated/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AuthenticatedActivityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/accounting': {
       id: '/_authenticated/accounting'
       path: '/accounting'
@@ -1466,6 +1485,7 @@ const AuthenticatedSalesRepsRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRouteWithChildren
+  AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
   AuthenticatedBanksRoute: typeof AuthenticatedBanksRoute
@@ -1508,6 +1528,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountingRoute: AuthenticatedAccountingRouteWithChildren,
+  AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedAgriRoute: AuthenticatedAgriRouteWithChildren,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
   AuthenticatedBanksRoute: AuthenticatedBanksRoute,
