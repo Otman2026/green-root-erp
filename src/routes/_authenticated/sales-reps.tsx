@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { UserCog, MapPin, TrendingUp, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/sales-reps")({ component: RepsHub });
 
@@ -21,6 +22,7 @@ function RepsHub() {
         (supabase as any).from("sales").select("total").gte("created_at", from).not("sales_rep_id", "is", null),
         (supabase as any).from("sales_commissions").select("commission_amount").eq("period_year", now.getFullYear()).eq("period_month", now.getMonth() + 1),
       ]);
+      reportSupabaseErrors("المندوبون", r, v, s, c);
       setKpi({
         reps: r.count ?? 0,
         visits: v.count ?? 0,

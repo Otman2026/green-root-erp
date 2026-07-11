@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/dashboards/fleet")({ component: FleetDashboard });
 
@@ -25,6 +26,7 @@ function FleetDashboard() {
         supabase.from("fleet_trips").select("id").gte("created_at", from.toISOString()),
         supabase.from("fleet_fuel_logs").select("total_cost,vehicle_id,fleet_vehicles(plate)").gte("created_at", from.toISOString()),
       ]);
+      reportSupabaseErrors("الأسطول", vehs, drvs, trips, fuel);
       const vdata = vehs.data ?? [];
       const fuelCost = (fuel.data ?? []).reduce((s: number, r: any) => s + Number(r.total_cost ?? 0), 0);
       setKpi({ vehicles: vdata.length, drivers: (drvs.data ?? []).length, trips30: (trips.data ?? []).length, fuelCost30: fuelCost });

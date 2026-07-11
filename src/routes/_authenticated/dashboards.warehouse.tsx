@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/dashboards/warehouse")({ component: WarehouseDashboard });
 
@@ -23,6 +24,7 @@ function WarehouseDashboard() {
         supabase.from("stock_movements").select("type,quantity").gte("created_at", new Date(Date.now()-30*86400000).toISOString()),
         supabase.from("categories").select("id,name"),
       ]);
+      reportSupabaseErrors("المخزون", prods, moves, cats);
       const pdata = prods.data ?? [];
       const low = pdata.filter((p: any) => Number(p.stock_quantity ?? 0) <= Number(p.min_stock ?? 0) && Number(p.stock_quantity ?? 0) > 0);
       const out = pdata.filter((p: any) => Number(p.stock_quantity ?? 0) <= 0);

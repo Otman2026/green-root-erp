@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Users, CalendarCheck, CalendarX, Wallet, FileText, Briefcase } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/hr")({ component: HRHub });
 
@@ -21,6 +22,7 @@ function HRHub() {
         (supabase as any).from("hr_leaves").select("id", { count: "exact", head: true }).eq("status", "pending"),
         (supabase as any).from("hr_payroll").select("net_pay").eq("period_year", now.getFullYear()).eq("period_month", now.getMonth() + 1),
       ]);
+      reportSupabaseErrors("الموارد البشرية", emp, att, lv, pay);
       setKpi({
         employees: emp.count ?? 0,
         present: att.count ?? 0,

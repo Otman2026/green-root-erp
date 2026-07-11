@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/accounting/reports")({ component: ReportsPage });
 
@@ -35,6 +36,7 @@ function ReportsPage() {
         (supabase as any).from("cash_movements").select("direction,amount,tx_date"),
         (supabase as any).from("bank_transactions").select("direction,amount,tx_date"),
       ]);
+      reportSupabaseErrors("التقارير المحاسبية", cm, bt);
       let inSum = 0, outSum = 0;
       const inRange = (d: string | null) => (!d ? false : (!from || d >= from) && (!to || d <= to));
       for (const r of cm.data ?? []) {

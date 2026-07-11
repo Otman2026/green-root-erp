@@ -14,6 +14,7 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend,
 } from "recharts";
+import { reportSupabaseErrors } from "@/lib/supabase-errors";
 
 export const Route = createFileRoute("/_authenticated/dashboards/executive")({
   component: ExecutiveDashboard,
@@ -71,6 +72,7 @@ function ExecutiveDashboard() {
         supabase.from("product_locations").select("qty,warehouses(name)"),
         supabase.from("sale_items").select("qty,products(name),sales!inner(created_at,type,status)").gte("sales.created_at", from.toISOString()),
       ]);
+      reportSupabaseErrors("اللوحة التنفيذية", salesRes, prevSalesRes, purchRes, unpaidSalesRes, unpaidPurchRes, cashRes, bankRes, custRes, prodRes, lowStockRes, dueChecksRes, overdueDebtsRes, whStockRes, salesItemsRes);
 
       const salesRows = salesRes.data ?? [];
       const purchRows = purchRes.data ?? [];
