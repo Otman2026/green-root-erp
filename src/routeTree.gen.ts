@@ -35,6 +35,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
+import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
 
 const AuthRoute = AuthRouteImport.update({
@@ -167,6 +168,11 @@ const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAgriRoute = AuthenticatedAgriRouteImport.update({
+  id: '/agri',
+  path: '/agri',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   id: '/accounting',
   path: '/accounting',
@@ -177,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/agri': typeof AuthenticatedAgriRoute
   '/ai': typeof AuthenticatedAiRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/agri': typeof AuthenticatedAgriRoute
   '/ai': typeof AuthenticatedAiRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
+  '/_authenticated/agri': typeof AuthenticatedAgriRoute
   '/_authenticated/ai': typeof AuthenticatedAiRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/accounting'
+    | '/agri'
     | '/ai'
     | '/branches'
     | '/customers'
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/accounting'
+    | '/agri'
     | '/ai'
     | '/branches'
     | '/customers'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/accounting'
+    | '/_authenticated/agri'
     | '/_authenticated/ai'
     | '/_authenticated/branches'
     | '/_authenticated/customers'
@@ -537,6 +549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAiRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/agri': {
+      id: '/_authenticated/agri'
+      path: '/agri'
+      fullPath: '/agri'
+      preLoaderRoute: typeof AuthenticatedAgriRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/accounting': {
       id: '/_authenticated/accounting'
       path: '/accounting'
@@ -549,6 +568,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
+  AuthenticatedAgriRoute: typeof AuthenticatedAgriRoute
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
@@ -576,6 +596,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
+  AuthenticatedAgriRoute: AuthenticatedAgriRoute,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
