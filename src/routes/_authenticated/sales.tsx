@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
-import { fmtMoney, fmtDateTime, printHtml, whatsappLink } from "@/lib/format";
+import { fmtMoney, fmtDateTime, whatsappLink } from "@/lib/format";
+import { printDocument } from "@/lib/print-templates";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 
@@ -80,18 +81,22 @@ function SalesPage() {
   };
 
   const printInvoice = async (s: Sale) => {
-    const { data: its } = await supabase.from("sale_items").select("*, products(name)").eq("sale_id", s.id);
-    const rowsHtml = (its ?? []).map((l: any) => `<tr><td>${l.products?.name ?? "—"}</td><td class="r">${l.qty}</td><td class="r">${fmtMoney(l.unit_price)}</td><td class="r">${fmtMoney(l.total)}</td></tr>`).join("");
-    printHtml(`
-      <div class="head"><div><h2>Haytam AGRI</h2><div class="muted">${t(`sales.type.${s.type}`)}</div></div>
-      <div><b>${s.invoice_no}</b><div class="muted">${fmtDateTime(s.created_at)}</div></div></div>
-      <div><b>Customer:</b> ${customers[s.customer_id ?? ""] ?? "Walk-in"}</div>
-      <table><thead><tr><th>Product</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Total</th></tr></thead><tbody>${rowsHtml}</tbody></table>
-      <div class="totals">
-        <div class="grand"><span>Total</span><span>${fmtMoney(s.total)}</span></div>
-        <div><span>Paid</span><span>${fmtMoney(s.paid)}</span></div>
-        <div><span>Balance</span><span>${fmtMoney(s.balance)}</span></div>
-      </div>`);
+    const { data: its } = await supabase.from("sale_items").select("*, products(name,sku)").eq("sale_id", s.id);
+    const party = s.customer_id
+      ? (await supabase.from("customers").select("name,phone,address").eq("id", s.customer_id).maybeSingle()).data
+      : { name: "Walk-in" };
+    await printDocument({
+      type: s.type === "return" ? "return" : s.type === "quote" ? "quote" : "invoice",
+      docNo: s.invoice_no, date: s.created_at, party,
+      lines: (its ?? []).map((l: any) => ({
+        name: l.products?.name ?? "—", sku: l.products?.sku ?? null,
+        qty: Number(l.qty), unit_price: Number(l.unit_price),
+        discount: Number(l.discount ?? 0), tax: Number(l.tax ?? 0), total: Number(l.total),
+      })),
+      subtotal: Number(s.total), total: Number(s.total),
+      paid: Number(s.paid), balance: Number(s.balance),
+      notes: s.notes,
+    });
   };
 
   const shareWhatsapp = async (s: Sale) => {
