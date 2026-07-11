@@ -25,6 +25,7 @@ export interface AppModule {
 
 export const MODULES: AppModule[] = [
   { key: "dashboard",   path: "/dashboard",   labelKey: "nav.dashboard",   icon: LayoutDashboard, color: "dashboard",   group: "overview" },
+  { key: "dash-exec",      path: "/dashboards/executive", labelKey: "exec.title",         icon: BarChart3, color: "dashboard",   group: "overview", roles: ["admin","owner","manager"] },
   { key: "dash-sales",     path: "/dashboards/sales",     labelKey: "dash.sales.title",     icon: BarChart3, color: "sales",       group: "overview", roles: ["admin","owner","manager","sales_manager"] },
   { key: "dash-warehouse", path: "/dashboards/warehouse", labelKey: "dash.warehouse.title", icon: BarChart3, color: "warehouses",  group: "overview", roles: ["admin","owner","manager","warehouse_keeper"] },
   { key: "dash-finance",   path: "/dashboards/finance",   labelKey: "dash.finance.title",   icon: BarChart3, color: "accounting",  group: "overview", roles: ["admin","owner","manager","accountant"] },
