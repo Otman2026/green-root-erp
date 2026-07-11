@@ -2710,6 +2710,7 @@ export type Database = {
           paid: number
           parent_sale_id: string | null
           payment_method: Database["public"]["Enums"]["payment_method"] | null
+          sales_rep_id: string | null
           status: Database["public"]["Enums"]["sale_status"]
           subtotal: number
           tax: number
@@ -2733,6 +2734,7 @@ export type Database = {
           paid?: number
           parent_sale_id?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          sales_rep_id?: string | null
           status?: Database["public"]["Enums"]["sale_status"]
           subtotal?: number
           tax?: number
@@ -2756,6 +2758,7 @@ export type Database = {
           paid?: number
           parent_sale_id?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          sales_rep_id?: string | null
           status?: Database["public"]["Enums"]["sale_status"]
           subtotal?: number
           tax?: number
@@ -2794,10 +2797,202 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "sales_sales_rep_id_fkey"
+            columns: ["sales_rep_id"]
+            isOneToOne: false
+            referencedRelation: "sales_reps"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sales_warehouse_id_fkey"
             columns: ["warehouse_id"]
             isOneToOne: false
             referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_commissions: {
+        Row: {
+          achievement_pct: number
+          commission_amount: number
+          commission_rate: number
+          created_at: string
+          id: string
+          notes: string | null
+          paid_at: string | null
+          period_month: number
+          period_year: number
+          rep_id: string
+          sales_total: number
+          status: string
+          target: number
+          updated_at: string
+        }
+        Insert: {
+          achievement_pct?: number
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          period_month: number
+          period_year: number
+          rep_id: string
+          sales_total?: number
+          status?: string
+          target?: number
+          updated_at?: string
+        }
+        Update: {
+          achievement_pct?: number
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          period_month?: number
+          period_year?: number
+          rep_id?: string
+          sales_total?: number
+          status?: string
+          target?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_commissions_rep_id_fkey"
+            columns: ["rep_id"]
+            isOneToOne: false
+            referencedRelation: "sales_reps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_reps: {
+        Row: {
+          branch_id: string | null
+          code: string | null
+          commission_rate: number
+          created_at: string
+          email: string | null
+          employee_id: string | null
+          full_name: string
+          id: string
+          monthly_target: number
+          notes: string | null
+          phone: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          code?: string | null
+          commission_rate?: number
+          created_at?: string
+          email?: string | null
+          employee_id?: string | null
+          full_name: string
+          id?: string
+          monthly_target?: number
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          code?: string | null
+          commission_rate?: number
+          created_at?: string
+          email?: string | null
+          employee_id?: string | null
+          full_name?: string
+          id?: string
+          monthly_target?: number
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_reps_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_reps_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_visits: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          next_action_date: string | null
+          notes: string | null
+          outcome: string
+          rep_id: string
+          updated_at: string
+          visit_date: string
+          visit_type: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          next_action_date?: string | null
+          notes?: string | null
+          outcome?: string
+          rep_id: string
+          updated_at?: string
+          visit_date?: string
+          visit_type?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          next_action_date?: string | null
+          notes?: string | null
+          outcome?: string
+          rep_id?: string
+          updated_at?: string
+          visit_date?: string
+          visit_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_visits_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_visits_rep_id_fkey"
+            columns: ["rep_id"]
+            isOneToOne: false
+            referencedRelation: "sales_reps"
             referencedColumns: ["id"]
           },
         ]

@@ -17,6 +17,7 @@ import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSeedsRouteImport } from './routes/_authenticated/seeds'
+import { Route as AuthenticatedSalesRepsRouteImport } from './routes/_authenticated/sales-reps'
 import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedReceiptsRouteImport } from './routes/_authenticated/receipts'
@@ -41,6 +42,9 @@ import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
+import { Route as AuthenticatedSalesRepsVisitsRouteImport } from './routes/_authenticated/sales-reps.visits'
+import { Route as AuthenticatedSalesRepsListRouteImport } from './routes/_authenticated/sales-reps.list'
+import { Route as AuthenticatedSalesRepsCommissionsRouteImport } from './routes/_authenticated/sales-reps.commissions'
 import { Route as AuthenticatedHrPayrollRouteImport } from './routes/_authenticated/hr.payroll'
 import { Route as AuthenticatedHrLeavesRouteImport } from './routes/_authenticated/hr.leaves'
 import { Route as AuthenticatedHrEmployeesRouteImport } from './routes/_authenticated/hr.employees'
@@ -92,6 +96,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
 const AuthenticatedSeedsRoute = AuthenticatedSeedsRouteImport.update({
   id: '/seeds',
   path: '/seeds',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSalesRepsRoute = AuthenticatedSalesRepsRouteImport.update({
+  id: '/sales-reps',
+  path: '/sales-reps',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
@@ -215,6 +224,24 @@ const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSalesRepsVisitsRoute =
+  AuthenticatedSalesRepsVisitsRouteImport.update({
+    id: '/visits',
+    path: '/visits',
+    getParentRoute: () => AuthenticatedSalesRepsRoute,
+  } as any)
+const AuthenticatedSalesRepsListRoute =
+  AuthenticatedSalesRepsListRouteImport.update({
+    id: '/list',
+    path: '/list',
+    getParentRoute: () => AuthenticatedSalesRepsRoute,
+  } as any)
+const AuthenticatedSalesRepsCommissionsRoute =
+  AuthenticatedSalesRepsCommissionsRouteImport.update({
+    id: '/commissions',
+    path: '/commissions',
+    getParentRoute: () => AuthenticatedSalesRepsRoute,
+  } as any)
 const AuthenticatedHrPayrollRoute = AuthenticatedHrPayrollRouteImport.update({
   id: '/payroll',
   path: '/payroll',
@@ -317,6 +344,7 @@ export interface FileRoutesByFullPath {
   '/receipts': typeof AuthenticatedReceiptsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/sales': typeof AuthenticatedSalesRoute
+  '/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
@@ -335,6 +363,9 @@ export interface FileRoutesByFullPath {
   '/hr/employees': typeof AuthenticatedHrEmployeesRoute
   '/hr/leaves': typeof AuthenticatedHrLeavesRoute
   '/hr/payroll': typeof AuthenticatedHrPayrollRoute
+  '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
+  '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
+  '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -363,6 +394,7 @@ export interface FileRoutesByTo {
   '/receipts': typeof AuthenticatedReceiptsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/sales': typeof AuthenticatedSalesRoute
+  '/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
@@ -381,6 +413,9 @@ export interface FileRoutesByTo {
   '/hr/employees': typeof AuthenticatedHrEmployeesRoute
   '/hr/leaves': typeof AuthenticatedHrLeavesRoute
   '/hr/payroll': typeof AuthenticatedHrPayrollRoute
+  '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
+  '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
+  '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -411,6 +446,7 @@ export interface FileRoutesById {
   '/_authenticated/receipts': typeof AuthenticatedReceiptsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
+  '/_authenticated/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/_authenticated/seeds': typeof AuthenticatedSeedsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
@@ -429,6 +465,9 @@ export interface FileRoutesById {
   '/_authenticated/hr/employees': typeof AuthenticatedHrEmployeesRoute
   '/_authenticated/hr/leaves': typeof AuthenticatedHrLeavesRoute
   '/_authenticated/hr/payroll': typeof AuthenticatedHrPayrollRoute
+  '/_authenticated/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
+  '/_authenticated/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
+  '/_authenticated/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -459,6 +498,7 @@ export interface FileRouteTypes {
     | '/receipts'
     | '/reports'
     | '/sales'
+    | '/sales-reps'
     | '/seeds'
     | '/settings'
     | '/suppliers'
@@ -477,6 +517,9 @@ export interface FileRouteTypes {
     | '/hr/employees'
     | '/hr/leaves'
     | '/hr/payroll'
+    | '/sales-reps/commissions'
+    | '/sales-reps/list'
+    | '/sales-reps/visits'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -505,6 +548,7 @@ export interface FileRouteTypes {
     | '/receipts'
     | '/reports'
     | '/sales'
+    | '/sales-reps'
     | '/seeds'
     | '/settings'
     | '/suppliers'
@@ -523,6 +567,9 @@ export interface FileRouteTypes {
     | '/hr/employees'
     | '/hr/leaves'
     | '/hr/payroll'
+    | '/sales-reps/commissions'
+    | '/sales-reps/list'
+    | '/sales-reps/visits'
   id:
     | '__root__'
     | '/'
@@ -552,6 +599,7 @@ export interface FileRouteTypes {
     | '/_authenticated/receipts'
     | '/_authenticated/reports'
     | '/_authenticated/sales'
+    | '/_authenticated/sales-reps'
     | '/_authenticated/seeds'
     | '/_authenticated/settings'
     | '/_authenticated/suppliers'
@@ -570,6 +618,9 @@ export interface FileRouteTypes {
     | '/_authenticated/hr/employees'
     | '/_authenticated/hr/leaves'
     | '/_authenticated/hr/payroll'
+    | '/_authenticated/sales-reps/commissions'
+    | '/_authenticated/sales-reps/list'
+    | '/_authenticated/sales-reps/visits'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -634,6 +685,13 @@ declare module '@tanstack/react-router' {
       path: '/seeds'
       fullPath: '/seeds'
       preLoaderRoute: typeof AuthenticatedSeedsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sales-reps': {
+      id: '/_authenticated/sales-reps'
+      path: '/sales-reps'
+      fullPath: '/sales-reps'
+      preLoaderRoute: typeof AuthenticatedSalesRepsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/sales': {
@@ -804,6 +862,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sales-reps/visits': {
+      id: '/_authenticated/sales-reps/visits'
+      path: '/visits'
+      fullPath: '/sales-reps/visits'
+      preLoaderRoute: typeof AuthenticatedSalesRepsVisitsRouteImport
+      parentRoute: typeof AuthenticatedSalesRepsRoute
+    }
+    '/_authenticated/sales-reps/list': {
+      id: '/_authenticated/sales-reps/list'
+      path: '/list'
+      fullPath: '/sales-reps/list'
+      preLoaderRoute: typeof AuthenticatedSalesRepsListRouteImport
+      parentRoute: typeof AuthenticatedSalesRepsRoute
+    }
+    '/_authenticated/sales-reps/commissions': {
+      id: '/_authenticated/sales-reps/commissions'
+      path: '/commissions'
+      fullPath: '/sales-reps/commissions'
+      preLoaderRoute: typeof AuthenticatedSalesRepsCommissionsRouteImport
+      parentRoute: typeof AuthenticatedSalesRepsRoute
+    }
     '/_authenticated/hr/payroll': {
       id: '/_authenticated/hr/payroll'
       path: '/payroll'
@@ -955,6 +1034,25 @@ const AuthenticatedHrRouteWithChildren = AuthenticatedHrRoute._addFileChildren(
   AuthenticatedHrRouteChildren,
 )
 
+interface AuthenticatedSalesRepsRouteChildren {
+  AuthenticatedSalesRepsCommissionsRoute: typeof AuthenticatedSalesRepsCommissionsRoute
+  AuthenticatedSalesRepsListRoute: typeof AuthenticatedSalesRepsListRoute
+  AuthenticatedSalesRepsVisitsRoute: typeof AuthenticatedSalesRepsVisitsRoute
+}
+
+const AuthenticatedSalesRepsRouteChildren: AuthenticatedSalesRepsRouteChildren =
+  {
+    AuthenticatedSalesRepsCommissionsRoute:
+      AuthenticatedSalesRepsCommissionsRoute,
+    AuthenticatedSalesRepsListRoute: AuthenticatedSalesRepsListRoute,
+    AuthenticatedSalesRepsVisitsRoute: AuthenticatedSalesRepsVisitsRoute,
+  }
+
+const AuthenticatedSalesRepsRouteWithChildren =
+  AuthenticatedSalesRepsRoute._addFileChildren(
+    AuthenticatedSalesRepsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRouteWithChildren
   AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
@@ -980,6 +1078,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReceiptsRoute: typeof AuthenticatedReceiptsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
+  AuthenticatedSalesRepsRoute: typeof AuthenticatedSalesRepsRouteWithChildren
   AuthenticatedSeedsRoute: typeof AuthenticatedSeedsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
@@ -1012,6 +1111,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReceiptsRoute: AuthenticatedReceiptsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
+  AuthenticatedSalesRepsRoute: AuthenticatedSalesRepsRouteWithChildren,
   AuthenticatedSeedsRoute: AuthenticatedSeedsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
