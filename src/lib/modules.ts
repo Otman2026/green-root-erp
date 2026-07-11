@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
 
-export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "intelligence" | "knowledge" | "system";
+export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "hr" | "intelligence" | "knowledge" | "system";
 
 export interface AppModule {
   key: string;
