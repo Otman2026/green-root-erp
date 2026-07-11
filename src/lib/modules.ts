@@ -5,11 +5,12 @@ import {
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
   Briefcase, CalendarCheck, CalendarX,
+  Route as RouteIcon, Fuel, MapPin,
   type LucideIcon,
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
 
-export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "hr" | "intelligence" | "knowledge" | "system";
+export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "hr" | "fleet" | "intelligence" | "knowledge" | "system";
 
 export interface AppModule {
   key: string;
