@@ -166,7 +166,7 @@ function POSPage() {
     const cust = customers.find((c) => c.id === customerId);
     const { printDocument } = await import("@/lib/print-templates");
     await printDocument({
-      kind: "invoice",
+      type: "invoice",
       docNo: invoiceNo,
       date: new Date().toISOString(),
       party: { name: cust?.name ?? t("pos.walkIn") },
