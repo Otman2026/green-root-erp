@@ -28,6 +28,7 @@ import { Route as AuthenticatedPosRouteImport } from './routes/_authenticated/po
 import { Route as AuthenticatedPesticidesRouteImport } from './routes/_authenticated/pesticides'
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
+import { Route as AuthenticatedHrRouteImport } from './routes/_authenticated/hr'
 import { Route as AuthenticatedFertilizersRouteImport } from './routes/_authenticated/fertilizers'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
@@ -40,6 +41,11 @@ import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
+import { Route as AuthenticatedHrPayrollRouteImport } from './routes/_authenticated/hr.payroll'
+import { Route as AuthenticatedHrLeavesRouteImport } from './routes/_authenticated/hr.leaves'
+import { Route as AuthenticatedHrEmployeesRouteImport } from './routes/_authenticated/hr.employees'
+import { Route as AuthenticatedHrDocumentsRouteImport } from './routes/_authenticated/hr.documents'
+import { Route as AuthenticatedHrAttendanceRouteImport } from './routes/_authenticated/hr.attendance'
 import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authenticated/agri.treatments'
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
@@ -143,6 +149,11 @@ const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
   path: '/inventory',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHrRoute = AuthenticatedHrRouteImport.update({
+  id: '/hr',
+  path: '/hr',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFertilizersRoute =
   AuthenticatedFertilizersRouteImport.update({
     id: '/fertilizers',
@@ -204,6 +215,34 @@ const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHrPayrollRoute = AuthenticatedHrPayrollRouteImport.update({
+  id: '/payroll',
+  path: '/payroll',
+  getParentRoute: () => AuthenticatedHrRoute,
+} as any)
+const AuthenticatedHrLeavesRoute = AuthenticatedHrLeavesRouteImport.update({
+  id: '/leaves',
+  path: '/leaves',
+  getParentRoute: () => AuthenticatedHrRoute,
+} as any)
+const AuthenticatedHrEmployeesRoute =
+  AuthenticatedHrEmployeesRouteImport.update({
+    id: '/employees',
+    path: '/employees',
+    getParentRoute: () => AuthenticatedHrRoute,
+  } as any)
+const AuthenticatedHrDocumentsRoute =
+  AuthenticatedHrDocumentsRouteImport.update({
+    id: '/documents',
+    path: '/documents',
+    getParentRoute: () => AuthenticatedHrRoute,
+  } as any)
+const AuthenticatedHrAttendanceRoute =
+  AuthenticatedHrAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedHrRoute,
+  } as any)
 const AuthenticatedAgriTreatmentsRoute =
   AuthenticatedAgriTreatmentsRouteImport.update({
     id: '/treatments',
@@ -266,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/debts': typeof AuthenticatedDebtsRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/hr': typeof AuthenticatedHrRouteWithChildren
   '/inventory': typeof AuthenticatedInventoryRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/pesticides': typeof AuthenticatedPesticidesRoute
@@ -290,6 +330,11 @@ export interface FileRoutesByFullPath {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/hr/attendance': typeof AuthenticatedHrAttendanceRoute
+  '/hr/documents': typeof AuthenticatedHrDocumentsRoute
+  '/hr/employees': typeof AuthenticatedHrEmployeesRoute
+  '/hr/leaves': typeof AuthenticatedHrLeavesRoute
+  '/hr/payroll': typeof AuthenticatedHrPayrollRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -306,6 +351,7 @@ export interface FileRoutesByTo {
   '/debts': typeof AuthenticatedDebtsRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/hr': typeof AuthenticatedHrRouteWithChildren
   '/inventory': typeof AuthenticatedInventoryRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/pesticides': typeof AuthenticatedPesticidesRoute
@@ -330,6 +376,11 @@ export interface FileRoutesByTo {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/hr/attendance': typeof AuthenticatedHrAttendanceRoute
+  '/hr/documents': typeof AuthenticatedHrDocumentsRoute
+  '/hr/employees': typeof AuthenticatedHrEmployeesRoute
+  '/hr/leaves': typeof AuthenticatedHrLeavesRoute
+  '/hr/payroll': typeof AuthenticatedHrPayrollRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -348,6 +399,7 @@ export interface FileRoutesById {
   '/_authenticated/debts': typeof AuthenticatedDebtsRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/_authenticated/hr': typeof AuthenticatedHrRouteWithChildren
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
   '/_authenticated/pesticides': typeof AuthenticatedPesticidesRoute
@@ -372,6 +424,11 @@ export interface FileRoutesById {
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/_authenticated/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/_authenticated/hr/attendance': typeof AuthenticatedHrAttendanceRoute
+  '/_authenticated/hr/documents': typeof AuthenticatedHrDocumentsRoute
+  '/_authenticated/hr/employees': typeof AuthenticatedHrEmployeesRoute
+  '/_authenticated/hr/leaves': typeof AuthenticatedHrLeavesRoute
+  '/_authenticated/hr/payroll': typeof AuthenticatedHrPayrollRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -390,6 +447,7 @@ export interface FileRouteTypes {
     | '/debts'
     | '/equipment'
     | '/fertilizers'
+    | '/hr'
     | '/inventory'
     | '/loyalty'
     | '/pesticides'
@@ -414,6 +472,11 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/hr/attendance'
+    | '/hr/documents'
+    | '/hr/employees'
+    | '/hr/leaves'
+    | '/hr/payroll'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -430,6 +493,7 @@ export interface FileRouteTypes {
     | '/debts'
     | '/equipment'
     | '/fertilizers'
+    | '/hr'
     | '/inventory'
     | '/loyalty'
     | '/pesticides'
@@ -454,6 +518,11 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/hr/attendance'
+    | '/hr/documents'
+    | '/hr/employees'
+    | '/hr/leaves'
+    | '/hr/payroll'
   id:
     | '__root__'
     | '/'
@@ -471,6 +540,7 @@ export interface FileRouteTypes {
     | '/_authenticated/debts'
     | '/_authenticated/equipment'
     | '/_authenticated/fertilizers'
+    | '/_authenticated/hr'
     | '/_authenticated/inventory'
     | '/_authenticated/loyalty'
     | '/_authenticated/pesticides'
@@ -495,6 +565,11 @@ export interface FileRouteTypes {
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
     | '/_authenticated/agri/treatments'
+    | '/_authenticated/hr/attendance'
+    | '/_authenticated/hr/documents'
+    | '/_authenticated/hr/employees'
+    | '/_authenticated/hr/leaves'
+    | '/_authenticated/hr/payroll'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -638,6 +713,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInventoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/hr': {
+      id: '/_authenticated/hr'
+      path: '/hr'
+      fullPath: '/hr'
+      preLoaderRoute: typeof AuthenticatedHrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/fertilizers': {
       id: '/_authenticated/fertilizers'
       path: '/fertilizers'
@@ -721,6 +803,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/accounting'
       preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/hr/payroll': {
+      id: '/_authenticated/hr/payroll'
+      path: '/payroll'
+      fullPath: '/hr/payroll'
+      preLoaderRoute: typeof AuthenticatedHrPayrollRouteImport
+      parentRoute: typeof AuthenticatedHrRoute
+    }
+    '/_authenticated/hr/leaves': {
+      id: '/_authenticated/hr/leaves'
+      path: '/leaves'
+      fullPath: '/hr/leaves'
+      preLoaderRoute: typeof AuthenticatedHrLeavesRouteImport
+      parentRoute: typeof AuthenticatedHrRoute
+    }
+    '/_authenticated/hr/employees': {
+      id: '/_authenticated/hr/employees'
+      path: '/employees'
+      fullPath: '/hr/employees'
+      preLoaderRoute: typeof AuthenticatedHrEmployeesRouteImport
+      parentRoute: typeof AuthenticatedHrRoute
+    }
+    '/_authenticated/hr/documents': {
+      id: '/_authenticated/hr/documents'
+      path: '/documents'
+      fullPath: '/hr/documents'
+      preLoaderRoute: typeof AuthenticatedHrDocumentsRouteImport
+      parentRoute: typeof AuthenticatedHrRoute
+    }
+    '/_authenticated/hr/attendance': {
+      id: '/_authenticated/hr/attendance'
+      path: '/attendance'
+      fullPath: '/hr/attendance'
+      preLoaderRoute: typeof AuthenticatedHrAttendanceRouteImport
+      parentRoute: typeof AuthenticatedHrRoute
     }
     '/_authenticated/agri/treatments': {
       id: '/_authenticated/agri/treatments'
@@ -818,6 +935,26 @@ const AuthenticatedAgriRouteChildren: AuthenticatedAgriRouteChildren = {
 const AuthenticatedAgriRouteWithChildren =
   AuthenticatedAgriRoute._addFileChildren(AuthenticatedAgriRouteChildren)
 
+interface AuthenticatedHrRouteChildren {
+  AuthenticatedHrAttendanceRoute: typeof AuthenticatedHrAttendanceRoute
+  AuthenticatedHrDocumentsRoute: typeof AuthenticatedHrDocumentsRoute
+  AuthenticatedHrEmployeesRoute: typeof AuthenticatedHrEmployeesRoute
+  AuthenticatedHrLeavesRoute: typeof AuthenticatedHrLeavesRoute
+  AuthenticatedHrPayrollRoute: typeof AuthenticatedHrPayrollRoute
+}
+
+const AuthenticatedHrRouteChildren: AuthenticatedHrRouteChildren = {
+  AuthenticatedHrAttendanceRoute: AuthenticatedHrAttendanceRoute,
+  AuthenticatedHrDocumentsRoute: AuthenticatedHrDocumentsRoute,
+  AuthenticatedHrEmployeesRoute: AuthenticatedHrEmployeesRoute,
+  AuthenticatedHrLeavesRoute: AuthenticatedHrLeavesRoute,
+  AuthenticatedHrPayrollRoute: AuthenticatedHrPayrollRoute,
+}
+
+const AuthenticatedHrRouteWithChildren = AuthenticatedHrRoute._addFileChildren(
+  AuthenticatedHrRouteChildren,
+)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRouteWithChildren
   AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
@@ -831,6 +968,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedFertilizersRoute: typeof AuthenticatedFertilizersRoute
+  AuthenticatedHrRoute: typeof AuthenticatedHrRouteWithChildren
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
   AuthenticatedPesticidesRoute: typeof AuthenticatedPesticidesRoute
@@ -862,6 +1000,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedFertilizersRoute: AuthenticatedFertilizersRoute,
+  AuthenticatedHrRoute: AuthenticatedHrRouteWithChildren,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,
   AuthenticatedPesticidesRoute: AuthenticatedPesticidesRoute,
