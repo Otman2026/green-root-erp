@@ -20,6 +20,7 @@ const NAV: { to: string; label: string; icon: typeof Shield; exact?: boolean }[]
   { to: "/system/licenses", label: "التراخيص", icon: KeyRound },
   { to: "/system/plans", label: "الخطط", icon: PackageIcon },
   { to: "/system/users", label: "المستخدمون", icon: Users },
+  { to: "/system/permissions", label: "الصلاحيات", icon: Lock },
   { to: "/system/audit", label: "سجل التدقيق", icon: ScrollText },
 ];
 
