@@ -3496,6 +3496,102 @@ export type Database = {
           },
         ]
       }
+      stock_transfer_items: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          product_id: string
+          qty: number
+          transfer_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          product_id: string
+          qty: number
+          transfer_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          product_id?: string
+          qty?: number
+          transfer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_transfer_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_transfer_items_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "stock_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_transfers: {
+        Row: {
+          code: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          from_warehouse_id: string
+          id: string
+          notes: string | null
+          status: Database["public"]["Enums"]["stock_transfer_status"]
+          to_warehouse_id: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          from_warehouse_id: string
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["stock_transfer_status"]
+          to_warehouse_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          from_warehouse_id?: string
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["stock_transfer_status"]
+          to_warehouse_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_transfers_from_warehouse_id_fkey"
+            columns: ["from_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_transfers_to_warehouse_id_fkey"
+            columns: ["to_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stocktake_lines: {
         Row: {
           bin_id: string | null
@@ -4089,6 +4185,7 @@ export type Database = {
         | "damage"
         | "adjustment"
         | "stocktake"
+      stock_transfer_status: "draft" | "in_transit" | "completed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4308,6 +4405,7 @@ export const Constants = {
         "adjustment",
         "stocktake",
       ],
+      stock_transfer_status: ["draft", "in_transit", "completed", "cancelled"],
     },
   },
 } as const
