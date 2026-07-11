@@ -43,6 +43,7 @@ import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedCompanySettingsRouteImport } from './routes/_authenticated/company-settings'
 import { Route as AuthenticatedChecksRouteImport } from './routes/_authenticated/checks'
 import { Route as AuthenticatedCashBoxesRouteImport } from './routes/_authenticated/cash-boxes'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
@@ -255,6 +256,12 @@ const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCompanySettingsRoute =
+  AuthenticatedCompanySettingsRouteImport.update({
+    id: '/company-settings',
+    path: '/company-settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedChecksRoute = AuthenticatedChecksRouteImport.update({
   id: '/checks',
   path: '/checks',
@@ -481,6 +488,7 @@ export interface FileRoutesByFullPath {
   '/branches': typeof AuthenticatedBranchesRoute
   '/cash-boxes': typeof AuthenticatedCashBoxesRoute
   '/checks': typeof AuthenticatedChecksRoute
+  '/company-settings': typeof AuthenticatedCompanySettingsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/debts': typeof AuthenticatedDebtsRoute
@@ -553,6 +561,7 @@ export interface FileRoutesByTo {
   '/branches': typeof AuthenticatedBranchesRoute
   '/cash-boxes': typeof AuthenticatedCashBoxesRoute
   '/checks': typeof AuthenticatedChecksRoute
+  '/company-settings': typeof AuthenticatedCompanySettingsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/debts': typeof AuthenticatedDebtsRoute
@@ -628,6 +637,7 @@ export interface FileRoutesById {
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/cash-boxes': typeof AuthenticatedCashBoxesRoute
   '/_authenticated/checks': typeof AuthenticatedChecksRoute
+  '/_authenticated/company-settings': typeof AuthenticatedCompanySettingsRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/debts': typeof AuthenticatedDebtsRoute
@@ -703,6 +713,7 @@ export interface FileRouteTypes {
     | '/branches'
     | '/cash-boxes'
     | '/checks'
+    | '/company-settings'
     | '/customers'
     | '/dashboard'
     | '/debts'
@@ -775,6 +786,7 @@ export interface FileRouteTypes {
     | '/branches'
     | '/cash-boxes'
     | '/checks'
+    | '/company-settings'
     | '/customers'
     | '/dashboard'
     | '/debts'
@@ -849,6 +861,7 @@ export interface FileRouteTypes {
     | '/_authenticated/branches'
     | '/_authenticated/cash-boxes'
     | '/_authenticated/checks'
+    | '/_authenticated/company-settings'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/debts'
@@ -1154,6 +1167,13 @@ declare module '@tanstack/react-router' {
       path: '/customers'
       fullPath: '/customers'
       preLoaderRoute: typeof AuthenticatedCustomersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/company-settings': {
+      id: '/_authenticated/company-settings'
+      path: '/company-settings'
+      fullPath: '/company-settings'
+      preLoaderRoute: typeof AuthenticatedCompanySettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/checks': {
@@ -1533,6 +1553,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCashBoxesRoute: typeof AuthenticatedCashBoxesRoute
   AuthenticatedChecksRoute: typeof AuthenticatedChecksRoute
+  AuthenticatedCompanySettingsRoute: typeof AuthenticatedCompanySettingsRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
@@ -1578,6 +1599,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCashBoxesRoute: AuthenticatedCashBoxesRoute,
   AuthenticatedChecksRoute: AuthenticatedChecksRoute,
+  AuthenticatedCompanySettingsRoute: AuthenticatedCompanySettingsRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,
