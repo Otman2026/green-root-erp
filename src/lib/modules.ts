@@ -5,7 +5,7 @@ import {
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
   Briefcase, CalendarCheck, CalendarX, Bell, Barcode, History, CreditCard,
-  Route as RouteIcon, Fuel, MapPin, Percent, CalendarRange,
+  Route as RouteIcon, Fuel, MapPin, Percent, CalendarRange, KeyRound, ScrollText, Lock,
   type LucideIcon,
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
