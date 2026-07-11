@@ -36,7 +36,7 @@ function LicensesPage() {
     const { error } = await supabase.from("licenses").insert({
       organization_id: orgId,
       plan_id: planId,
-      license_key: key,
+      license_key: (key as string) ?? `HAYTAM-${Date.now()}`,
       status: "active",
       is_trial: plan?.code === "trial",
       expires_at: new Date(Date.now() + days * 86400000).toISOString(),

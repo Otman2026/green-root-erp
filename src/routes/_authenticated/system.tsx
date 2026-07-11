@@ -14,14 +14,14 @@ export const Route = createFileRoute("/_authenticated/system")({
   component: SystemLayout,
 });
 
-const NAV = [
+const NAV: { to: string; label: string; icon: typeof Shield; exact?: boolean }[] = [
   { to: "/system", label: "نظرة عامة", icon: Shield, exact: true },
   { to: "/system/organizations", label: "المؤسسات", icon: Building2 },
   { to: "/system/licenses", label: "التراخيص", icon: KeyRound },
   { to: "/system/plans", label: "الخطط", icon: PackageIcon },
   { to: "/system/users", label: "المستخدمون", icon: Users },
   { to: "/system/audit", label: "سجل التدقيق", icon: ScrollText },
-] as const;
+];
 
 function SystemLayout() {
   return (
