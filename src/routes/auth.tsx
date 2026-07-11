@@ -145,6 +145,11 @@ function AuthPage() {
                   <Input id="in-pass" type="password" required value={inPassword} onChange={(e) => setInPassword(e.target.value)} />
                 </div>
                 <Button type="submit" className="w-full" disabled={busy}>{t("auth.signIn")}</Button>
+                <div className="text-center">
+                  <a href="/forgot-password" className="text-xs text-muted-foreground hover:text-primary hover:underline">
+                    نسيت كلمة المرور؟
+                  </a>
+                </div>
               </form>
             </TabsContent>
 
