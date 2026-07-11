@@ -25,6 +25,11 @@ export interface AppModule {
 
 export const MODULES: AppModule[] = [
   { key: "dashboard",   path: "/dashboard",   labelKey: "nav.dashboard",   icon: LayoutDashboard, color: "dashboard",   group: "overview" },
+  { key: "dash-sales",     path: "/dashboards/sales",     labelKey: "dash.sales.title",     icon: BarChart3, color: "sales",       group: "overview", roles: ["admin","owner","manager","sales_manager"] },
+  { key: "dash-warehouse", path: "/dashboards/warehouse", labelKey: "dash.warehouse.title", icon: BarChart3, color: "warehouses",  group: "overview", roles: ["admin","owner","manager","warehouse_keeper"] },
+  { key: "dash-finance",   path: "/dashboards/finance",   labelKey: "dash.finance.title",   icon: BarChart3, color: "accounting",  group: "overview", roles: ["admin","owner","manager","accountant"] },
+  { key: "dash-hr",        path: "/dashboards/hr",        labelKey: "dash.hr.title",        icon: BarChart3, color: "customers",   group: "overview", roles: ["admin","owner","manager","accountant"] },
+  { key: "dash-fleet",     path: "/dashboards/fleet",     labelKey: "dash.fleet.title",     icon: BarChart3, color: "warehouses",  group: "overview", roles: ["admin","owner","manager","delivery"] },
   { key: "pos",         path: "/pos",         labelKey: "nav.pos",         icon: Zap,             color: "sales",       group: "commerce",   roles: ["admin","owner","manager","sales_manager","cashier","seller"] },
   { key: "sales",       path: "/sales",       labelKey: "nav.sales",       icon: ShoppingCart,    color: "sales",       group: "commerce",   roles: ["admin","owner","manager","sales_manager","cashier","seller","accountant"] },
   { key: "quotes",      path: "/quotes",      labelKey: "nav.quotes",      icon: FileText,        color: "sales",       group: "commerce",   roles: ["admin","owner","manager","sales_manager","seller"] },

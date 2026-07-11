@@ -62,6 +62,11 @@ import { Route as AuthenticatedFleetTrackingRouteImport } from './routes/_authen
 import { Route as AuthenticatedFleetMaintenanceRouteImport } from './routes/_authenticated/fleet.maintenance'
 import { Route as AuthenticatedFleetFuelRouteImport } from './routes/_authenticated/fleet.fuel'
 import { Route as AuthenticatedFleetDriversRouteImport } from './routes/_authenticated/fleet.drivers'
+import { Route as AuthenticatedDashboardsWarehouseRouteImport } from './routes/_authenticated/dashboards.warehouse'
+import { Route as AuthenticatedDashboardsSalesRouteImport } from './routes/_authenticated/dashboards.sales'
+import { Route as AuthenticatedDashboardsHrRouteImport } from './routes/_authenticated/dashboards.hr'
+import { Route as AuthenticatedDashboardsFleetRouteImport } from './routes/_authenticated/dashboards.fleet'
+import { Route as AuthenticatedDashboardsFinanceRouteImport } from './routes/_authenticated/dashboards.finance'
 import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authenticated/agri.treatments'
 import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
 import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
@@ -346,6 +351,36 @@ const AuthenticatedFleetDriversRoute =
     path: '/drivers',
     getParentRoute: () => AuthenticatedFleetRoute,
   } as any)
+const AuthenticatedDashboardsWarehouseRoute =
+  AuthenticatedDashboardsWarehouseRouteImport.update({
+    id: '/dashboards/warehouse',
+    path: '/dashboards/warehouse',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardsSalesRoute =
+  AuthenticatedDashboardsSalesRouteImport.update({
+    id: '/dashboards/sales',
+    path: '/dashboards/sales',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardsHrRoute =
+  AuthenticatedDashboardsHrRouteImport.update({
+    id: '/dashboards/hr',
+    path: '/dashboards/hr',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardsFleetRoute =
+  AuthenticatedDashboardsFleetRouteImport.update({
+    id: '/dashboards/fleet',
+    path: '/dashboards/fleet',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardsFinanceRoute =
+  AuthenticatedDashboardsFinanceRouteImport.update({
+    id: '/dashboards/finance',
+    path: '/dashboards/finance',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAgriTreatmentsRoute =
   AuthenticatedAgriTreatmentsRouteImport.update({
     id: '/treatments',
@@ -439,6 +474,11 @@ export interface FileRoutesByFullPath {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
+  '/dashboards/fleet': typeof AuthenticatedDashboardsFleetRoute
+  '/dashboards/hr': typeof AuthenticatedDashboardsHrRoute
+  '/dashboards/sales': typeof AuthenticatedDashboardsSalesRoute
+  '/dashboards/warehouse': typeof AuthenticatedDashboardsWarehouseRoute
   '/fleet/drivers': typeof AuthenticatedFleetDriversRoute
   '/fleet/fuel': typeof AuthenticatedFleetFuelRoute
   '/fleet/maintenance': typeof AuthenticatedFleetMaintenanceRoute
@@ -500,6 +540,11 @@ export interface FileRoutesByTo {
   '/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
+  '/dashboards/fleet': typeof AuthenticatedDashboardsFleetRoute
+  '/dashboards/hr': typeof AuthenticatedDashboardsHrRoute
+  '/dashboards/sales': typeof AuthenticatedDashboardsSalesRoute
+  '/dashboards/warehouse': typeof AuthenticatedDashboardsWarehouseRoute
   '/fleet/drivers': typeof AuthenticatedFleetDriversRoute
   '/fleet/fuel': typeof AuthenticatedFleetFuelRoute
   '/fleet/maintenance': typeof AuthenticatedFleetMaintenanceRoute
@@ -564,6 +609,11 @@ export interface FileRoutesById {
   '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
   '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
   '/_authenticated/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/_authenticated/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
+  '/_authenticated/dashboards/fleet': typeof AuthenticatedDashboardsFleetRoute
+  '/_authenticated/dashboards/hr': typeof AuthenticatedDashboardsHrRoute
+  '/_authenticated/dashboards/sales': typeof AuthenticatedDashboardsSalesRoute
+  '/_authenticated/dashboards/warehouse': typeof AuthenticatedDashboardsWarehouseRoute
   '/_authenticated/fleet/drivers': typeof AuthenticatedFleetDriversRoute
   '/_authenticated/fleet/fuel': typeof AuthenticatedFleetFuelRoute
   '/_authenticated/fleet/maintenance': typeof AuthenticatedFleetMaintenanceRoute
@@ -628,6 +678,11 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/dashboards/finance'
+    | '/dashboards/fleet'
+    | '/dashboards/hr'
+    | '/dashboards/sales'
+    | '/dashboards/warehouse'
     | '/fleet/drivers'
     | '/fleet/fuel'
     | '/fleet/maintenance'
@@ -689,6 +744,11 @@ export interface FileRouteTypes {
     | '/agri/pests'
     | '/agri/plants'
     | '/agri/treatments'
+    | '/dashboards/finance'
+    | '/dashboards/fleet'
+    | '/dashboards/hr'
+    | '/dashboards/sales'
+    | '/dashboards/warehouse'
     | '/fleet/drivers'
     | '/fleet/fuel'
     | '/fleet/maintenance'
@@ -752,6 +812,11 @@ export interface FileRouteTypes {
     | '/_authenticated/agri/pests'
     | '/_authenticated/agri/plants'
     | '/_authenticated/agri/treatments'
+    | '/_authenticated/dashboards/finance'
+    | '/_authenticated/dashboards/fleet'
+    | '/_authenticated/dashboards/hr'
+    | '/_authenticated/dashboards/sales'
+    | '/_authenticated/dashboards/warehouse'
     | '/_authenticated/fleet/drivers'
     | '/_authenticated/fleet/fuel'
     | '/_authenticated/fleet/maintenance'
@@ -1149,6 +1214,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFleetDriversRouteImport
       parentRoute: typeof AuthenticatedFleetRoute
     }
+    '/_authenticated/dashboards/warehouse': {
+      id: '/_authenticated/dashboards/warehouse'
+      path: '/dashboards/warehouse'
+      fullPath: '/dashboards/warehouse'
+      preLoaderRoute: typeof AuthenticatedDashboardsWarehouseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboards/sales': {
+      id: '/_authenticated/dashboards/sales'
+      path: '/dashboards/sales'
+      fullPath: '/dashboards/sales'
+      preLoaderRoute: typeof AuthenticatedDashboardsSalesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboards/hr': {
+      id: '/_authenticated/dashboards/hr'
+      path: '/dashboards/hr'
+      fullPath: '/dashboards/hr'
+      preLoaderRoute: typeof AuthenticatedDashboardsHrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboards/fleet': {
+      id: '/_authenticated/dashboards/fleet'
+      path: '/dashboards/fleet'
+      fullPath: '/dashboards/fleet'
+      preLoaderRoute: typeof AuthenticatedDashboardsFleetRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboards/finance': {
+      id: '/_authenticated/dashboards/finance'
+      path: '/dashboards/finance'
+      fullPath: '/dashboards/finance'
+      preLoaderRoute: typeof AuthenticatedDashboardsFinanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/agri/treatments': {
       id: '/_authenticated/agri/treatments'
       path: '/treatments'
@@ -1337,6 +1437,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedWarehousesRoute: typeof AuthenticatedWarehousesRoute
+  AuthenticatedDashboardsFinanceRoute: typeof AuthenticatedDashboardsFinanceRoute
+  AuthenticatedDashboardsFleetRoute: typeof AuthenticatedDashboardsFleetRoute
+  AuthenticatedDashboardsHrRoute: typeof AuthenticatedDashboardsHrRoute
+  AuthenticatedDashboardsSalesRoute: typeof AuthenticatedDashboardsSalesRoute
+  AuthenticatedDashboardsWarehouseRoute: typeof AuthenticatedDashboardsWarehouseRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1371,6 +1476,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedWarehousesRoute: AuthenticatedWarehousesRoute,
+  AuthenticatedDashboardsFinanceRoute: AuthenticatedDashboardsFinanceRoute,
+  AuthenticatedDashboardsFleetRoute: AuthenticatedDashboardsFleetRoute,
+  AuthenticatedDashboardsHrRoute: AuthenticatedDashboardsHrRoute,
+  AuthenticatedDashboardsSalesRoute: AuthenticatedDashboardsSalesRoute,
+  AuthenticatedDashboardsWarehouseRoute: AuthenticatedDashboardsWarehouseRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
