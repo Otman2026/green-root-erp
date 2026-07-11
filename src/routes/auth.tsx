@@ -136,8 +136,8 @@ function AuthPage() {
 
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <div className="grid h-14 w-14 place-items-center rounded-2xl gradient-primary text-primary-foreground">
-            <Sprout className="h-7 w-7" />
+          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-white p-2 shadow-md ring-1 ring-border">
+            <img src={logo} alt="Haytam AGRI" className="h-full w-full object-contain" width={64} height={64} />
           </div>
           <h1 className="mt-4 text-2xl font-bold">{t("auth.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("auth.subtitle")}</p>
