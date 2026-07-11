@@ -3,6 +3,7 @@ import {
   Warehouse, ShoppingCart, Users, Truck, Wallet, BarChart3,
   Sparkles, Settings, Building2, ArrowLeftRight, UserCog,
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
+  BookOpen, Bug, ShieldAlert, FlaskConical,
   type LucideIcon,
 } from "lucide-react";
 
