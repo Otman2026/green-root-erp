@@ -78,6 +78,7 @@ export const MODULES: AppModule[] = [
   { key: "agri-treatments",path: "/agri/treatments",labelKey: "agri.treatments",icon: FlaskConical, color: "fertilizers", group: "knowledge" },
   { key: "notifications", path: "/notifications", labelKey: "notif.title", icon: Bell, color: "settings", group: "system" },
   { key: "tools-import-export", path: "/tools-import-export", labelKey: "ie.title", icon: ArrowLeftRight, color: "settings", group: "system", roles: ["admin","owner","manager"] },
+  { key: "barcodes", path: "/barcodes", labelKey: "bar.title", icon: Barcode, color: "products", group: "inventory", roles: ["admin","owner","manager","warehouse_keeper","cashier"] },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
 ];
