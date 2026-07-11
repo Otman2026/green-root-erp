@@ -33,7 +33,7 @@ function ChecksPage() {
   const [editing, setEditing] = useState<Partial<Chk>>(empty);
 
   const load = async () => {
-    const { data } = await (supabase as any).from("checks").select("*").order("due_date", { ascending: true });
+    const { data } = await supabase.from("checks").select("*").order("due_date", { ascending: true });
     setRows((data ?? []) as Chk[]);
   };
   useEffect(() => { load(); }, []);
@@ -57,17 +57,17 @@ function ChecksPage() {
       status: editing.status ?? "pending", notes: editing.notes || null,
     };
     const { error } = editing.id
-      ? await (supabase as any).from("checks").update(payload).eq("id", editing.id)
-      : await (supabase as any).from("checks").insert(payload);
+      ? await supabase.from("checks").update(payload).eq("id", editing.id)
+      : await supabase.from("checks").insert(payload);
     if (error) return toast.error(error.message);
     setOpen(false); setEditing(empty); load();
   };
   const changeStatus = async (id: string, status: Status) => {
-    await (supabase as any).from("checks").update({ status, status_date: todayISO() }).eq("id", id); load();
+    await supabase.from("checks").update({ status, status_date: todayISO() }).eq("id", id); load();
   };
   const remove = async (id: string) => {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("checks").delete().eq("id", id); load();
+    await supabase.from("checks").delete().eq("id", id); load();
   };
 
   const statusColor: Record<Status, string> = {

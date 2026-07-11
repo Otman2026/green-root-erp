@@ -21,8 +21,8 @@ function AttendancePage() {
 
   async function load() {
     const [{ data: e }, { data: a }] = await Promise.all([
-      (supabase as any).from("hr_employees").select("id,full_name,code,base_salary").eq("status", "active").order("full_name"),
-      (supabase as any).from("hr_attendance").select("*").eq("date", date),
+      supabase.from("hr_employees").select("id,full_name,code,base_salary").eq("status", "active").order("full_name"),
+      supabase.from("hr_attendance").select("*").eq("date", date),
     ]);
     setEmployees(e ?? []);
     const map: Record<string, any> = {};
@@ -44,7 +44,7 @@ function AttendancePage() {
       overtime: Number(r.overtime || 0),
       notes: r.notes ?? null,
     }));
-    const { error } = await (supabase as any).from("hr_attendance").upsert(list, { onConflict: "employee_id,date" });
+    const { error } = await supabase.from("hr_attendance").upsert(list, { onConflict: "employee_id,date" });
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.saved"));
     load();

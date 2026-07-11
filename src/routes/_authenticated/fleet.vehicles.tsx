@@ -24,7 +24,7 @@ function VehiclesPage() {
   const [form, setForm] = useState<any>(empty);
 
   async function load() {
-    const { data } = await (supabase as any).from("fleet_vehicles").select("*").order("created_at", { ascending: false });
+    const { data } = await supabase.from("fleet_vehicles").select("*").order("created_at", { ascending: false });
     setRows(data ?? []);
   }
   useEffect(() => { load(); }, []);
@@ -36,15 +36,15 @@ function VehiclesPage() {
     if (!form.plate) { toast.error(t("fleet.plateRequired")); return; }
     const payload = { ...form, year: form.year ? Number(form.year) : null, odometer: Number(form.odometer || 0), insurance_expiry: form.insurance_expiry || null, license_expiry: form.license_expiry || null };
     const q = edit
-      ? (supabase as any).from("fleet_vehicles").update(payload).eq("id", edit.id)
-      : (supabase as any).from("fleet_vehicles").insert(payload);
+      ? supabase.from("fleet_vehicles").update(payload).eq("id", edit.id)
+      : supabase.from("fleet_vehicles").insert(payload);
     const { error } = await q;
     if (error) { toast.error(error.message); return; }
     setOpen(false); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("fleet_vehicles").delete().eq("id", id);
+    await supabase.from("fleet_vehicles").delete().eq("id", id);
     load();
   }
 

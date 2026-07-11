@@ -16,10 +16,10 @@ function FleetHub() {
     (async () => {
       const from = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,10);
       const [v, d, tr, f] = await Promise.all([
-        (supabase as any).from("fleet_vehicles").select("id", { count: "exact", head: true }).eq("status","active"),
-        (supabase as any).from("fleet_drivers").select("id", { count: "exact", head: true }).eq("status","active"),
-        (supabase as any).from("fleet_trips").select("distance").gte("trip_date", from),
-        (supabase as any).from("fleet_fuel_logs").select("total_cost").gte("date", from),
+        supabase.from("fleet_vehicles").select("id", { count: "exact", head: true }).eq("status","active"),
+        supabase.from("fleet_drivers").select("id", { count: "exact", head: true }).eq("status","active"),
+        supabase.from("fleet_trips").select("distance").gte("trip_date", from),
+        supabase.from("fleet_fuel_logs").select("total_cost").gte("date", from),
       ]);
       reportSupabaseErrors("الأسطول", v, d, tr, f);
       setKpi({

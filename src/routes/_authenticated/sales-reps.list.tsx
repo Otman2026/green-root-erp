@@ -23,7 +23,7 @@ function RepsPage() {
   const [form, setForm] = useState<any>({ full_name: "", code: "", phone: "", email: "", commission_rate: 0, monthly_target: 0, status: "active" });
 
   async function load() {
-    const { data } = await (supabase as any).from("sales_reps").select("*").order("created_at", { ascending: false });
+    const { data } = await supabase.from("sales_reps").select("*").order("created_at", { ascending: false });
     setRows(data ?? []);
   }
   useEffect(() => { load(); }, []);
@@ -35,15 +35,15 @@ function RepsPage() {
     if (!form.full_name) { toast.error(t("reps.nameRequired")); return; }
     const payload = { ...form, commission_rate: Number(form.commission_rate || 0), monthly_target: Number(form.monthly_target || 0) };
     const q = edit
-      ? (supabase as any).from("sales_reps").update(payload).eq("id", edit.id)
-      : (supabase as any).from("sales_reps").insert(payload);
+      ? supabase.from("sales_reps").update(payload).eq("id", edit.id)
+      : supabase.from("sales_reps").insert(payload);
     const { error } = await q;
     if (error) { toast.error(error.message); return; }
     setOpen(false); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    const { error } = await (supabase as any).from("sales_reps").delete().eq("id", id);
+    const { error } = await supabase.from("sales_reps").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.deleted")); load();
   }

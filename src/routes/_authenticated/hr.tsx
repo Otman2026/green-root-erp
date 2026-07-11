@@ -17,10 +17,10 @@ function HRHub() {
       const today = new Date().toISOString().slice(0, 10);
       const now = new Date();
       const [emp, att, lv, pay] = await Promise.all([
-        (supabase as any).from("hr_employees").select("id", { count: "exact", head: true }).eq("status", "active"),
-        (supabase as any).from("hr_attendance").select("id", { count: "exact", head: true }).eq("date", today).eq("status", "present"),
-        (supabase as any).from("hr_leaves").select("id", { count: "exact", head: true }).eq("status", "pending"),
-        (supabase as any).from("hr_payroll").select("net_pay").eq("period_year", now.getFullYear()).eq("period_month", now.getMonth() + 1),
+        supabase.from("hr_employees").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("hr_attendance").select("id", { count: "exact", head: true }).eq("date", today).eq("status", "present"),
+        supabase.from("hr_leaves").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("hr_payroll").select("net_pay").eq("period_year", now.getFullYear()).eq("period_month", now.getMonth() + 1),
       ]);
       reportSupabaseErrors("الموارد البشرية", emp, att, lv, pay);
       setKpi({

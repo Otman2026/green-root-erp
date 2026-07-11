@@ -30,11 +30,11 @@ function BanksPage() {
   const [tx, setTx] = useState<any>({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "" });
 
   const loadBanks = async () => {
-    const { data } = await (supabase as any).from("bank_accounts").select("*").order("name");
+    const { data } = await supabase.from("bank_accounts").select("*").order("name");
     setBanks((data ?? []) as Bank[]);
   };
   const loadTxs = async (id: string) => {
-    const { data } = await (supabase as any).from("bank_transactions").select("*").eq("bank_id", id).order("tx_date", { ascending: false }).limit(100);
+    const { data } = await supabase.from("bank_transactions").select("*").eq("bank_id", id).order("tx_date", { ascending: false }).limit(100);
     setTxs(data ?? []);
   };
   useEffect(() => { loadBanks(); }, []);
@@ -42,21 +42,21 @@ function BanksPage() {
 
   const saveBank = async () => {
     if (!newBank.name.trim() || !newBank.bank_name.trim()) return;
-    const { error } = await (supabase as any).from("bank_accounts").insert(newBank);
+    const { error } = await supabase.from("bank_accounts").insert(newBank);
     if (error) return toast.error(error.message);
     setOpenBank(false); setNewBank({ name: "", bank_name: "", account_number: "", rib: "", iban: "", currency: "MAD" }); loadBanks();
   };
   const saveTx = async () => {
     if (!selected || !tx.amount) return;
-    const { error } = await (supabase as any).from("bank_transactions").insert({ ...tx, bank_id: selected.id, amount: Number(tx.amount) });
+    const { error } = await supabase.from("bank_transactions").insert({ ...tx, bank_id: selected.id, amount: Number(tx.amount) });
     if (error) return toast.error(error.message);
     toast.success("✓"); setOpenTx(false); setTx({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "" });
     loadBanks(); loadTxs(selected.id);
-    const b = (await (supabase as any).from("bank_accounts").select("*").eq("id", selected.id).single()).data;
+    const b = (await supabase.from("bank_accounts").select("*").eq("id", selected.id).single()).data;
     if (b) setSelected(b);
   };
   const toggleReconcile = async (id: string, cur: boolean) => {
-    await (supabase as any).from("bank_transactions").update({ reconciled: !cur, reconciled_at: !cur ? new Date().toISOString() : null }).eq("id", id);
+    await supabase.from("bank_transactions").update({ reconciled: !cur, reconciled_at: !cur ? new Date().toISOString() : null }).eq("id", id);
     if (selected) loadTxs(selected.id);
   };
 

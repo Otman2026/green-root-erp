@@ -32,7 +32,7 @@ function ChartOfAccounts() {
   const [editing, setEditing] = useState<Partial<Account>>(empty);
 
   const load = async () => {
-    const { data, error } = await (supabase as any).from("accounts").select("*").order("code");
+    const { data, error } = await supabase.from("accounts").select("*").order("code");
     if (error) toast.error(error.message); else setRows((data ?? []) as Account[]);
   };
   useEffect(() => { load(); }, []);
@@ -51,14 +51,14 @@ function ChartOfAccounts() {
       currency: editing.currency || "MAD", is_active: editing.is_active ?? true,
     };
     const { error } = editing.id
-      ? await (supabase as any).from("accounts").update(payload).eq("id", editing.id)
-      : await (supabase as any).from("accounts").insert(payload);
+      ? await supabase.from("accounts").update(payload).eq("id", editing.id)
+      : await supabase.from("accounts").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("OK"); setOpen(false); setEditing(empty); load();
   };
   const remove = async (id: string) => {
     if (!confirm(t("common.confirmDelete"))) return;
-    const { error } = await (supabase as any).from("accounts").delete().eq("id", id);
+    const { error } = await supabase.from("accounts").delete().eq("id", id);
     if (error) return toast.error(error.message); load();
   };
 

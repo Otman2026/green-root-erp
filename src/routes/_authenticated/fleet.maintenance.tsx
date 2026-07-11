@@ -26,8 +26,8 @@ function MaintenancePage() {
 
   async function load() {
     const [{ data: m }, { data: v }] = await Promise.all([
-      (supabase as any).from("fleet_maintenance").select("*, fleet_vehicles(plate)").order("date", { ascending: false }).limit(200),
-      (supabase as any).from("fleet_vehicles").select("id,plate,name").eq("status","active"),
+      supabase.from("fleet_maintenance").select("*, fleet_vehicles(plate)").order("date", { ascending: false }).limit(200),
+      supabase.from("fleet_vehicles").select("id,plate,name").eq("status","active"),
     ]);
     setRows(m ?? []); setVehicles(v ?? []);
   }
@@ -36,13 +36,13 @@ function MaintenancePage() {
   async function save() {
     if (!form.vehicle_id) { toast.error(t("common.fillAll")); return; }
     const payload = { ...form, cost: Number(form.cost || 0), odometer: form.odometer || null, next_service_odometer: form.next_service_odometer || null, next_service_date: form.next_service_date || null };
-    const { error } = await (supabase as any).from("fleet_maintenance").insert(payload);
+    const { error } = await supabase.from("fleet_maintenance").insert(payload);
     if (error) { toast.error(error.message); return; }
     setOpen(false); setForm(empty); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("fleet_maintenance").delete().eq("id", id);
+    await supabase.from("fleet_maintenance").delete().eq("id", id);
     load();
   }
 

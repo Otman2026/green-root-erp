@@ -26,9 +26,9 @@ function TripsPage() {
 
   async function load() {
     const [{ data: t }, { data: v }, { data: d }] = await Promise.all([
-      (supabase as any).from("fleet_trips").select("*, fleet_vehicles(plate,name), fleet_drivers(full_name)").order("trip_date", { ascending: false }).limit(200),
-      (supabase as any).from("fleet_vehicles").select("id,plate,name,odometer").eq("status","active"),
-      (supabase as any).from("fleet_drivers").select("id,full_name").eq("status","active"),
+      supabase.from("fleet_trips").select("*, fleet_vehicles(plate,name), fleet_drivers(full_name)").order("trip_date", { ascending: false }).limit(200),
+      supabase.from("fleet_vehicles").select("id,plate,name,odometer").eq("status","active"),
+      supabase.from("fleet_drivers").select("id,full_name").eq("status","active"),
     ]);
     setRows(t ?? []); setVehicles(v ?? []); setDrivers(d ?? []);
   }
@@ -39,14 +39,14 @@ function TripsPage() {
     const so = Number(form.start_odometer || 0), eo = Number(form.end_odometer || 0);
     const distance = eo > so ? eo - so : Number(form.distance || 0);
     const payload = { ...form, distance, cost: Number(form.cost || 0), start_odometer: form.start_odometer || null, end_odometer: form.end_odometer || null, driver_id: form.driver_id || null };
-    const { error } = await (supabase as any).from("fleet_trips").insert(payload);
+    const { error } = await supabase.from("fleet_trips").insert(payload);
     if (error) { toast.error(error.message); return; }
-    if (eo > 0) await (supabase as any).from("fleet_vehicles").update({ odometer: eo }).eq("id", form.vehicle_id);
+    if (eo > 0) await supabase.from("fleet_vehicles").update({ odometer: eo }).eq("id", form.vehicle_id);
     setOpen(false); setForm(empty); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("fleet_trips").delete().eq("id", id);
+    await supabase.from("fleet_trips").delete().eq("id", id);
     load();
   }
 

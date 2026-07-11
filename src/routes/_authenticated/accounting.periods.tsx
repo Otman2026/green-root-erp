@@ -34,7 +34,7 @@ function PeriodsPage() {
   const [end, setEnd] = useState("");
 
   const load = async () => {
-    const { data } = await (supabase as any)
+    const { data } = await supabase
       .from("fiscal_periods")
       .select("*")
       .order("start_date", { ascending: false });
@@ -47,7 +47,7 @@ function PeriodsPage() {
 
   const add = async () => {
     if (!name.trim() || !start || !end) return;
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from("fiscal_periods")
       .insert({ name: name.trim(), start_date: start, end_date: end, closed: false });
     if (error) return toast.error(error.message);
@@ -61,7 +61,7 @@ function PeriodsPage() {
   const setClosed = async (id: string, closed: boolean) => {
     const patch: any = { closed };
     patch.closed_at = closed ? new Date().toISOString() : null;
-    const { error } = await (supabase as any).from("fiscal_periods").update(patch).eq("id", id);
+    const { error } = await supabase.from("fiscal_periods").update(patch).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("✓");
     load();

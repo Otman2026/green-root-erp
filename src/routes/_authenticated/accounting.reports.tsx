@@ -23,7 +23,7 @@ function ReportsPage() {
 
   useEffect(() => {
     (async () => {
-      let query = (supabase as any).from("journal_lines")
+      let query = supabase.from("journal_lines")
         .select("debit,credit,accounts(id,code,name,type),journal_entries!inner(entry_date)");
       const { data } = await query;
       let list = data ?? [];
@@ -33,8 +33,8 @@ function ReportsPage() {
 
       // Cash flow from cash_movements + bank_transactions
       const [cm, bt] = await Promise.all([
-        (supabase as any).from("cash_movements").select("direction,amount,tx_date"),
-        (supabase as any).from("bank_transactions").select("direction,amount,tx_date"),
+        supabase.from("cash_movements").select("direction,amount,tx_date"),
+        supabase.from("bank_transactions").select("direction,amount,tx_date"),
       ]);
       reportSupabaseErrors("التقارير المحاسبية", cm, bt);
       let inSum = 0, outSum = 0;

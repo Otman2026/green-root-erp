@@ -24,8 +24,8 @@ function FuelPage() {
 
   async function load() {
     const [{ data: f }, { data: v }] = await Promise.all([
-      (supabase as any).from("fleet_fuel_logs").select("*, fleet_vehicles(plate)").order("date", { ascending: false }).limit(200),
-      (supabase as any).from("fleet_vehicles").select("id,plate,name").eq("status","active"),
+      supabase.from("fleet_fuel_logs").select("*, fleet_vehicles(plate)").order("date", { ascending: false }).limit(200),
+      supabase.from("fleet_vehicles").select("id,plate,name").eq("status","active"),
     ]);
     setRows(f ?? []); setVehicles(v ?? []);
   }
@@ -35,13 +35,13 @@ function FuelPage() {
     if (!form.vehicle_id) { toast.error(t("common.fillAll")); return; }
     const liters = Number(form.liters || 0), ppl = Number(form.price_per_liter || 0);
     const total = Number(form.total_cost) > 0 ? Number(form.total_cost) : liters * ppl;
-    const { error } = await (supabase as any).from("fleet_fuel_logs").insert({ ...form, liters, price_per_liter: ppl, total_cost: total, odometer: form.odometer || null });
+    const { error } = await supabase.from("fleet_fuel_logs").insert({ ...form, liters, price_per_liter: ppl, total_cost: total, odometer: form.odometer || null });
     if (error) { toast.error(error.message); return; }
     setOpen(false); setForm(empty); toast.success(t("common.saved")); load();
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("fleet_fuel_logs").delete().eq("id", id);
+    await supabase.from("fleet_fuel_logs").delete().eq("id", id);
     load();
   }
 

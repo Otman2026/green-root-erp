@@ -24,13 +24,13 @@ function LedgerPage() {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    (supabase as any).from("accounts").select("id,code,name,is_group").eq("is_active", true).order("code")
+    supabase.from("accounts").select("id,code,name,is_group").eq("is_active", true).order("code")
       .then(({ data }: any) => setAccounts((data ?? []).filter((a: Account) => !a.is_group)));
   }, []);
 
   useEffect(() => {
     if (!accId) { setRows([]); return; }
-    let q = (supabase as any).from("journal_lines")
+    let q = supabase.from("journal_lines")
       .select("*, journal_entries!inner(entry_no,entry_date,description,reference)")
       .eq("account_id", accId).order("journal_entries(entry_date)", { ascending: true });
     q.then(({ data }: any) => {

@@ -142,7 +142,7 @@ function POSPage() {
     const owed = customerId && paidNum < total ? total - paidNum : 0;
     const pts = customerId ? Math.floor(total / 100) : 0;
     if (customerId && (owed !== 0 || pts !== 0)) {
-      await (supabase as any).rpc("pos_apply_customer_updates", {
+      await supabase.rpc("pos_apply_customer_updates", {
         _customer_id: customerId,
         _balance_delta: owed,
         _points_delta: pts,

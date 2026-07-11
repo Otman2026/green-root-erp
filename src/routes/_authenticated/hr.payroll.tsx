@@ -21,7 +21,7 @@ function PayrollPage() {
   const [rows, setRows] = useState<any[]>([]);
 
   async function load() {
-    const { data } = await (supabase as any).from("hr_payroll")
+    const { data } = await supabase.from("hr_payroll")
       .select("*, hr_employees(full_name,code,base_salary)")
       .eq("period_year", year).eq("period_month", month)
       .order("created_at", { ascending: false });
@@ -30,14 +30,14 @@ function PayrollPage() {
   useEffect(() => { load(); }, [year, month]);
 
   async function generate() {
-    const { data: emps } = await (supabase as any).from("hr_employees").select("id,base_salary").eq("status", "active");
+    const { data: emps } = await supabase.from("hr_employees").select("id,base_salary").eq("status", "active");
     if (!emps?.length) { toast.error(t("hr.pay.noEmployees")); return; }
     const from = `${year}-${String(month).padStart(2, "0")}-01`;
     const toD = new Date(year, month, 0).toISOString().slice(0, 10);
 
     const [{ data: bonuses }, { data: att }] = await Promise.all([
-      (supabase as any).from("hr_bonuses").select("employee_id,type,amount").gte("date", from).lte("date", toD),
-      (supabase as any).from("hr_attendance").select("employee_id,overtime").gte("date", from).lte("date", toD),
+      supabase.from("hr_bonuses").select("employee_id,type,amount").gte("date", from).lte("date", toD),
+      supabase.from("hr_attendance").select("employee_id,overtime").gte("date", from).lte("date", toD),
     ]);
 
     const bonusMap: Record<string, number> = {};
@@ -64,13 +64,13 @@ function PayrollPage() {
       };
     });
 
-    const { error } = await (supabase as any).from("hr_payroll").upsert(rows, { onConflict: "employee_id,period_year,period_month" });
+    const { error } = await supabase.from("hr_payroll").upsert(rows, { onConflict: "employee_id,period_year,period_month" });
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.saved")); load();
   }
 
   async function markPaid(id: string) {
-    const { error } = await (supabase as any).from("hr_payroll").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", id);
+    const { error } = await supabase.from("hr_payroll").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     load();
   }

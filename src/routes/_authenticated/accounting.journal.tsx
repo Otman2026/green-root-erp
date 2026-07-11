@@ -35,8 +35,8 @@ function JournalPage() {
 
   const load = async () => {
     const [e, a] = await Promise.all([
-      (supabase as any).from("journal_entries").select("*").order("entry_date", { ascending: false }).limit(100),
-      (supabase as any).from("accounts").select("id,code,name,is_group").eq("is_active", true).order("code"),
+      supabase.from("journal_entries").select("*").order("entry_date", { ascending: false }).limit(100),
+      supabase.from("accounts").select("id,code,name,is_group").eq("is_active", true).order("code"),
     ]);
     setEntries((e.data ?? []) as Entry[]);
     setAccounts((a.data ?? []) as Account[]);
@@ -64,7 +64,7 @@ function JournalPage() {
     if (!totals.balanced) return toast.error(t("acc.notBalanced"));
     const validLines = form.lines.filter((l) => l.account_id && (Number(l.debit) > 0 || Number(l.credit) > 0));
     if (validLines.length < 2) return toast.error(t("acc.needTwoLines"));
-    const { data: entry, error } = await (supabase as any).from("journal_entries").insert({
+    const { data: entry, error } = await supabase.from("journal_entries").insert({
       entry_date: form.entry_date, description: form.description || null, reference: form.reference || null,
       status: "posted", source_type: "manual",
     }).select().single();
@@ -74,7 +74,7 @@ function JournalPage() {
       debit: Number(l.debit) || 0, credit: Number(l.credit) || 0,
       description: l.description || null, line_no: i + 1,
     }));
-    const { error: lerr } = await (supabase as any).from("journal_lines").insert(linesPayload);
+    const { error: lerr } = await supabase.from("journal_lines").insert(linesPayload);
     if (lerr) return toast.error(lerr.message);
     toast.success("✓"); setOpen(false);
     setForm({ entry_date: todayISO(), description: "", reference: "", lines: [{ account_id: "", debit: 0, credit: 0 }, { account_id: "", debit: 0, credit: 0 }] });
@@ -83,13 +83,13 @@ function JournalPage() {
 
   const view = async (e: Entry) => {
     setViewing(e);
-    const { data } = await (supabase as any).from("journal_lines")
+    const { data } = await supabase.from("journal_lines")
       .select("*, accounts(code,name)").eq("entry_id", e.id).order("line_no");
     setViewLines(data ?? []);
   };
   const remove = async (id: string) => {
     if (!confirm(t("common.confirmDelete"))) return;
-    const { error } = await (supabase as any).from("journal_entries").delete().eq("id", id);
+    const { error } = await supabase.from("journal_entries").delete().eq("id", id);
     if (error) return toast.error(error.message); load();
   };
 

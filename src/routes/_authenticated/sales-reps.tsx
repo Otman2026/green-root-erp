@@ -17,10 +17,10 @@ function RepsHub() {
       const now = new Date();
       const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       const [r, v, s, c] = await Promise.all([
-        (supabase as any).from("sales_reps").select("id", { count: "exact", head: true }).eq("status", "active"),
-        (supabase as any).from("sales_visits").select("id", { count: "exact", head: true }).gte("visit_date", from),
-        (supabase as any).from("sales").select("total").gte("created_at", from).not("sales_rep_id", "is", null),
-        (supabase as any).from("sales_commissions").select("commission_amount").eq("period_year", now.getFullYear()).eq("period_month", now.getMonth() + 1),
+        supabase.from("sales_reps").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("sales_visits").select("id", { count: "exact", head: true }).gte("visit_date", from),
+        supabase.from("sales").select("total").gte("created_at", from).not("sales_rep_id", "is", null),
+        supabase.from("sales_commissions").select("commission_amount").eq("period_year", now.getFullYear()).eq("period_month", now.getMonth() + 1),
       ]);
       reportSupabaseErrors("المندوبون", r, v, s, c);
       setKpi({

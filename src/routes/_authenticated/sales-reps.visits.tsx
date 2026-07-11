@@ -26,9 +26,9 @@ function VisitsPage() {
 
   async function load() {
     const [{ data: v }, { data: r }, { data: c }] = await Promise.all([
-      (supabase as any).from("sales_visits").select("*, sales_reps(full_name), customers(name)").order("visit_date", { ascending: false }).limit(200),
-      (supabase as any).from("sales_reps").select("id,full_name").eq("status", "active"),
-      (supabase as any).from("customers").select("id,name").order("name").limit(500),
+      supabase.from("sales_visits").select("*, sales_reps(full_name), customers(name)").order("visit_date", { ascending: false }).limit(200),
+      supabase.from("sales_reps").select("id,full_name").eq("status", "active"),
+      supabase.from("customers").select("id,name").order("name").limit(500),
     ]);
     setRows(v ?? []); setReps(r ?? []); setCustomers(c ?? []);
   }
@@ -44,7 +44,7 @@ function VisitsPage() {
 
   async function save() {
     if (!form.rep_id) { toast.error(t("reps.selectRep")); return; }
-    const { error } = await (supabase as any).from("sales_visits").insert({
+    const { error } = await supabase.from("sales_visits").insert({
       ...form,
       customer_id: form.customer_id || null,
       next_action_date: form.next_action_date || null,
@@ -56,7 +56,7 @@ function VisitsPage() {
   }
   async function del(id: string) {
     if (!confirm(t("common.confirmDelete"))) return;
-    await (supabase as any).from("sales_visits").delete().eq("id", id);
+    await supabase.from("sales_visits").delete().eq("id", id);
     load();
   }
 
