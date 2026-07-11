@@ -566,6 +566,60 @@ export type Database = {
         }
         Relationships: []
       }
+      app_settings: {
+        Row: {
+          company_address: string | null
+          company_email: string | null
+          company_name: string | null
+          company_phone: string | null
+          company_tax_id: string | null
+          currency: string
+          currency_symbol: string
+          default_tax_rate: number
+          id: number
+          invoice_footer: string | null
+          invoice_prefix: string
+          invoice_terms: string | null
+          logo_url: string | null
+          print_paper: string
+          updated_at: string
+        }
+        Insert: {
+          company_address?: string | null
+          company_email?: string | null
+          company_name?: string | null
+          company_phone?: string | null
+          company_tax_id?: string | null
+          currency?: string
+          currency_symbol?: string
+          default_tax_rate?: number
+          id?: number
+          invoice_footer?: string | null
+          invoice_prefix?: string
+          invoice_terms?: string | null
+          logo_url?: string | null
+          print_paper?: string
+          updated_at?: string
+        }
+        Update: {
+          company_address?: string | null
+          company_email?: string | null
+          company_name?: string | null
+          company_phone?: string | null
+          company_tax_id?: string | null
+          currency?: string
+          currency_symbol?: string
+          default_tax_rate?: number
+          id?: number
+          invoice_footer?: string | null
+          invoice_prefix?: string
+          invoice_terms?: string | null
+          logo_url?: string | null
+          print_paper?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bank_accounts: {
         Row: {
           account_id: string | null
@@ -3948,6 +4002,36 @@ export type Database = {
           phone?: string | null
           status?: string
           tax_number?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tax_rates: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string
+          rate: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name: string
+          rate: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string
+          rate?: number
           updated_at?: string
         }
         Relationships: []

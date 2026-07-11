@@ -81,6 +81,7 @@ export const MODULES: AppModule[] = [
   { key: "tools-import-export", path: "/tools-import-export", labelKey: "ie.title", icon: ArrowLeftRight, color: "settings", group: "system", roles: ["admin","owner","manager"] },
   { key: "barcodes", path: "/barcodes", labelKey: "bar.title", icon: Barcode, color: "products", group: "inventory", roles: ["admin","owner","manager","warehouse_keeper","cashier"] },
   { key: "activity", path: "/activity", labelKey: "act.title", icon: History, color: "settings", group: "system", roles: ["admin","owner","manager"] },
+  { key: "company-settings", path: "/company-settings", labelKey: "cs.title", icon: Building2, color: "settings", group: "system", roles: ["admin","owner","accountant"] },
   { key: "billing", path: "/billing", labelKey: "bill.title", icon: CreditCard, color: "accounting", group: "finance", roles: ["admin","owner","manager","accountant"] },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
