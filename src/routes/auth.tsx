@@ -72,13 +72,28 @@ function AuthPage() {
       toast.error(t("auth.rateLimited") || "تم حظرك مؤقتاً بسبب محاولات متكررة. حاول بعد 15 دقيقة.");
       return;
     }
-    const email = loginIdentifierToEmail(identifier);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: inPassword });
+    const primaryEmail = loginIdentifierToEmail(identifier);
+    let { error } = await supabase.auth.signInWithPassword({ email: primaryEmail, password: inPassword });
+
+    // Fallback: if signing in with a username, also try the real email stored on the profile.
+    if (error && !identifier.includes("@")) {
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("email_optional")
+        .ilike("username", uname)
+        .maybeSingle();
+      if (prof?.email_optional) {
+        const retry = await supabase.auth.signInWithPassword({ email: prof.email_optional, password: inPassword });
+        error = retry.error;
+      }
+    }
+
     await supabase.rpc("log_auth_attempt" as any, { _username: uname, _success: !error, _ip: null });
     setBusy(false);
     if (error) toast.error(error.message);
     else navigate({ to: "/dashboard" });
   };
+
 
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
