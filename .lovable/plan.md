@@ -1,97 +1,100 @@
-## المرحلة 2: وحدة المنتجات الاحترافية — Haytam AGRI
 
-### 1. تحديثات على الواجهة العامة
-- تغيير اسم التطبيق في `__root.tsx`, `index.tsx`, `auth.tsx`, و `AppSidebar` إلى **Haytam AGRI**
-- تفعيل RTL افتراضياً + خط عربي حديث (Cairo أو Tajawal) عبر `<link>` في `__root.tsx`
-- تحسين ملف `i18n` ليكون العربي هو الافتراضي
+# المرحلة 3 — Haytam AGRI
 
-### 2. قاعدة البيانات (إضافات فقط — بدون حذف)
+هدف هذه المرحلة: إضافة طبقات جديدة **فوق** النظام الحالي دون حذف أي جدول أو صفحة أو علاقة. جميع الجداول الحالية (`profiles`, `user_roles`, `products`, `categories`, `suppliers`, `product_batches`, `product_images`, `product_documents`) تبقى كما هي.
 
-جداول جديدة:
+---
 
-```
-categories               تصنيفات هرمية (parent_id ذاتي المرجع)
-  - name, name_ar, slug, parent_id, icon, color, sort_order
+## 1) دعم اللغات الثلاث (AR / FR / EN)
 
-suppliers                الموردون
-  - name, contact_person, phone, email, address, notes
+- توسيع `src/lib/i18n.tsx` لدعم `ar | fr | en` مع قواميس كاملة (الصفحات، القوائم، الأزرار، الرسائل، التنبيهات، الفواتير، التقارير، الإعدادات).
+- اتجاه تلقائي: `ar → rtl`, `fr/en → ltr` (تعديل `<html dir>` و `lang`).
+- حفظ اللغة في `localStorage` + عمود `preferred_language` في `profiles` (اختياري) للمزامنة بين الأجهزة.
+- مكوّن `LanguageToggle` يعرض 3 خيارات، ويظهر في `Settings` + في الشريط العلوي.
 
-products                 المنتجات (شامل لكل الأنواع)
-  - name, name_ar, trade_name, scientific_name
-  - category_id, supplier_id, brand, manufacturer, origin_country
-  - active_ingredient, formulation, concentration
-  - unit (kg/L/piece/...), weight, volume
-  - barcode, qr_code, registration_number, sku
-  - stock_quantity, min_stock_alert
-  - purchase_price, selling_price, currency
-  - status (active/archived), notes
-  - created_by, created_at, updated_at
+## 2) حسابات باسم المستخدم (اختياري بريد/هاتف)
 
-product_batches          الدفعات (تاريخ الإنتاج/الصلاحية/الكمية)
-  - product_id, batch_number, production_date, expiry_date, quantity
+- إضافة أعمدة إلى `profiles`:
+  - `username TEXT UNIQUE` (فريد، غير حساس لحالة الأحرف)
+  - `phone TEXT`
+  - `email_optional TEXT` (يعكس `auth.users.email` عند وجوده)
+  - `is_active BOOLEAN DEFAULT true`
+  - `is_archived BOOLEAN DEFAULT false`
+  - `preferred_language TEXT DEFAULT 'ar'`
+- **إستراتيجية Supabase**: Supabase يتطلب معرفاً (بريد/هاتف). سنستخدم **بريد وهمي داخلي** بصيغة `username@haytam.local` عند التسجيل بـ username فقط. ملف `profiles.username` هو المرئي للمستخدم.
+- تسجيل الدخول: يقبل `username` أو `email` أو `phone` — نحوّل `username → username@haytam.local` قبل استدعاء Supabase.
+- Server function `checkUsernameAvailable(username)` + `suggestUsernames(base)` تُنتج اقتراحات (haytam_agri01، haytam2026، haytam.store، …).
+- صفحة `/auth` جديدة بحقول: username (إلزامي)، phone (اختياري)، email (اختياري)، password. عند التعارض → عرض شرائح الاقتراحات.
+- إعدادات الحساب `/settings/account`: تعديل username، إضافة/تغيير/حذف بريد، إضافة/تغيير هاتف، تغيير كلمة المرور.
 
-product_images           الصور (رئيسية + معرض)
-  - product_id, url, is_primary, sort_order
+## 3) الأدوار والصلاحيات
 
-product_documents        ملفات PDF (SDS، دليل الاستخدام...)
-  - product_id, title, type, url
-```
+- توسيع enum `app_role` بإضافة: `owner, branch_manager, warehouse_keeper, seller, cashier, accountant, purchases_manager, sales_manager, delivery, customer_service` (نُبقي `admin, employee` الحاليين).
+- جدول `permissions` + `role_permissions` لدعم صلاحيات دقيقة قابلة للتوسّع + جدول `custom_roles` للأدوار المخصصة مستقبلاً.
+- دوال أمان: `has_role`, `has_permission(uid, perm_key)` (SECURITY DEFINER).
 
-- RLS كامل: authenticated يقرأ/يكتب، admin يحذف
-- GRANTs صحيحة (authenticated + service_role)
-- فهارس على `category_id`, `supplier_id`, `barcode`, `sku`, `expiry_date`
-- Trigger `updated_at` على كل الجداول
+## 4) الفروع Branches
 
-### 3. Storage Buckets
-- `product-images` (عام) — للصور
-- `product-documents` (خاص) — لملفات PDF
+جدول `branches`: name، city، address، phone، manager_id (FK → profiles).
+جدول `branch_members`: branch_id + user_id + role.
+صفحة `/branches` (CRUD + بحث + تصفية) — مربوطة بالمستودعات والصندوق والمبيعات لاحقاً.
 
-### 4. Server Functions (`src/lib/products.functions.ts`)
-كل العمليات عبر `createServerFn` + `requireSupabaseAuth`:
-- `listProducts` (مع فلترة/بحث/ترقيم)
-- `getProduct(id)` مع الدفعات والصور والملفات
-- `createProduct` / `updateProduct` / `archiveProduct` / `restoreProduct` / `deleteProduct`
-- `listCategories` / `createCategory` / `updateCategory` / `deleteCategory`
-- `listSuppliers` / `createSupplier` / `updateSupplier` / `deleteSupplier`
-- `getProductStats` (عداد، مخزون منخفض، منتهي/قارب الانتهاء، الأكثر مبيعاً)
-- `exportProductsExcel` / `importProductsExcel`
+## 5) المستودعات WMS
 
-### 5. واجهات المستخدم
+- `warehouses` (branch_id, name, code, address)
+- `warehouse_zones` (warehouse_id, name, code)
+- `warehouse_aisles` (zone_id, name)
+- `warehouse_racks` (aisle_id, name)
+- `warehouse_shelves` (rack_id, name)
+- `warehouse_bins` (shelf_id, name, code) — الموقع الأدق للمنتج
+- `product_locations` (product_id, bin_id, quantity) — يعرف مكان وكمية كل منتج بدقة.
 
-**`/products` — الصفحة الرئيسية**
-- شريط KPIs ملون: إجمالي، مخزون منخفض، منتهي، قارب الانتهاء
-- بطاقات فئات ملونة بأيقونات
-- جدول/بطاقات المنتجات مع صورة مصغرة
-- بحث فوري + فلترة بالفئة/المورد/الحالة
-- أزرار: إضافة، استيراد Excel، تصدير Excel، تصدير PDF، طباعة
+## 6) المخزون والحركات
 
-**`/products/categories` — إدارة التصنيفات**
-- شجرة هرمية قابلة للطي (Tree view)
-- إضافة/تعديل/حذف تصنيف على أي مستوى
+- `stock_movements`: product_id، from_location، to_location، type (`purchase|sale|transfer|return|damage|adjustment|stocktake`)، quantity، user_id، reason، created_at.
+- `stock_reservations` (منتجات محجوزة)، `damaged_items`، `expired_items` (view مبني على `product_batches.expiry_date`).
+- `stocktakes` + `stocktake_lines` لعمليات الجرد والتسويات.
+- Triggers تحدّث `products.stock_quantity` تلقائياً عند كل حركة.
+- صفحة `/inventory` بتبويبات: الحركات، الجرد، التحويلات، التالف، المنتهي، المحجوز.
 
-**`/products/suppliers` — إدارة الموردين**
-- CRUD كامل بجدول احترافي
+## 7) Barcode / QR
 
-**Dialog: تفاصيل/تعديل المنتج**
-- تبويبات: معلومات أساسية | المخزون والدفعات | الصور | الملفات | ملاحظات
-- رفع صور متعددة مع تحديد الرئيسية وضغط تلقائي (browser-image-compression)
-- توليد Barcode/QR تلقائياً
+- توليد Barcode/QR (موجود بالفعل ضمن product-dialog) + صفحة مسح بكاميرا (`html5-qrcode`) لاستعماله في: البيع، الجرد، البحث، المخزون.
+- Endpoint `findProductByCode(code)` يبحث في `barcode`, `qr_code`, `sku`.
 
-### 6. الأدوات المستخدمة
-- `xlsx` لاستيراد/تصدير Excel
-- `jspdf` + `jspdf-autotable` لتصدير PDF
-- `react-barcode` + `qrcode.react`
-- `browser-image-compression` لضغط الصور
-- `@tanstack/react-table` للجداول المتقدمة
+## 8) واجهة المستخدم
 
-### 7. الاختبار قبل الاعتماد
-- إنشاء تصنيفات نموذجية (أسمدة، مبيدات، بذور، معدات...)
-- إضافة منتج مع صور ودفعات وملف PDF
-- اختبار البحث بـ barcode/اسم/مادة فعالة
-- تصدير Excel واستيراده مرة أخرى
-- طباعة PDF
-- أرشفة واستعادة
-- تنبيهات الصلاحية والمخزون
+- تحديث الشريط الجانبي: إضافة روابط `Branches`, `Warehouses`, `Inventory`, `Users`, `Roles`.
+- بطاقات ملونة + KPIs مباشرة + رسوم بيانية (recharts موجودة) في Dashboard الفروع/المستودعات.
+- جميع الأزرار فعّالة (لا Placeholder).
 
-### ملاحظة
-لن يتم لمس: `profiles`, `user_roles`, `handle_new_user`, الوحدات الأخرى (تبقى placeholders). كل الإضافات فوق النظام الحالي فقط.
+## 9) الاختبارات (نفّذها قبل اعتماد المرحلة)
+
+- تسجيل حساب بـ username فقط، ثم آخر بنفس الاسم للتأكد من الاقتراحات.
+- إضافة بريد لاحقاً + تغيير كلمة المرور.
+- تبديل اللغة بين AR/FR/EN مع فحص RTL/LTR.
+- إنشاء فرع → مستودع → zone → bin → ربط منتج بموقع → حركة شراء → بيع → تحويل → جرد.
+- مسح Barcode/QR والبحث السريع.
+- CRUD كامل للمستخدمين مع الأدوار والإيقاف والأرشفة.
+
+---
+
+## تفاصيل تقنية
+
+- **الترحيلات (Migrations)** إضافية فقط — لا `DROP` ولا تعديل أعمدة موجودة. كل جدول جديد يشمل: GRANT للأدوار، RLS مفعّل، سياسات مناسبة (قراءة للمصادَق، كتابة/حذف للأدوار المخوّلة عبر `has_role`)، triggers لـ `updated_at`.
+- **Server functions** تحت `src/lib/*.functions.ts` (users, branches, warehouses, inventory, auth-username) مع `requireSupabaseAuth` وفحص صلاحيات.
+- **Storage**: لا تغييرات على buckets الحالية.
+- **الحفاظ التام** على: `products`, `categories`, `suppliers`, `product_batches`, `product_images`, `product_documents`, `profiles`, `user_roles`, وجميع الصفحات الحالية.
+
+## نطاق التنفيذ في هذه الجلسة
+
+بسبب حجم المرحلة، سأنفّذها على **دفعات متسلسلة داخل نفس المرحلة**، بالترتيب:
+
+1. اللغات الثلاث + RTL/LTR + إعدادات اللغة.
+2. الترحيل الشامل (username fields, roles, permissions, branches, warehouses, WMS, movements).
+3. صفحة `/auth` الجديدة (username + اقتراحات) + `/settings/account`.
+4. صفحات: `/users`, `/roles`, `/branches`, `/warehouses`, `/inventory` + الشريط الجانبي.
+5. Barcode/QR scanner + دمجه في البحث والمخزون.
+6. جولة اختبار وإصلاح.
+
+هل أبدأ التنفيذ بهذا الترتيب؟
