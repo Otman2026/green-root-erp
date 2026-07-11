@@ -125,6 +125,22 @@ export async function deleteCategory(id: string) {
   if (error) throw error;
 }
 
+export async function ensureCategoryBySlug(
+  slug: string,
+  defaults: { name: string; name_ar?: string; icon?: string; color?: string }
+): Promise<Category> {
+  const { data: existing } = await supabase.from("categories").select("*").eq("slug", slug).maybeSingle();
+  if (existing) return existing as Category;
+  const { data, error } = await supabase
+    .from("categories")
+    .insert({ slug, name: defaults.name, name_ar: defaults.name_ar ?? defaults.name, icon: defaults.icon, color: defaults.color })
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data as Category;
+}
+
+
 /* -------------------- SUPPLIERS -------------------- */
 
 export async function listSuppliers(): Promise<Supplier[]> {
