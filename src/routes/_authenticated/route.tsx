@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { GlobalSearch, useGlobalSearchHotkey } from "@/components/shared/global-search";
 import { supabase } from "@/integrations/supabase/client";
 import { LicenseBanner } from "@/components/license-banner";
+import { useOrg } from "@/hooks/use-org";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -24,6 +26,10 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthedLayout() {
   const [searchOpen, setSearchOpen] = useState(false);
   useGlobalSearchHotkey(() => setSearchOpen(true));
+  const { readOnly, loading } = useOrg();
+  useEffect(() => {
+    document.body.classList.toggle("license-readonly", readOnly && !loading);
+  }, [readOnly, loading]);
 
   return (
     <SidebarProvider>

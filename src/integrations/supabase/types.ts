@@ -4719,6 +4719,14 @@ export type Database = {
     Functions: {
       acc_can_write: { Args: never; Returns: boolean }
       agri_can_write: { Args: never; Returns: boolean }
+      check_rate_limit: {
+        Args: {
+          _max_attempts?: number
+          _username: string
+          _window_minutes?: number
+        }
+        Returns: boolean
+      }
       current_org_id: { Args: never; Returns: string }
       generate_license_key: { Args: never; Returns: string }
       has_permission: {
@@ -4737,6 +4745,10 @@ export type Database = {
       is_read_only: { Args: never; Returns: boolean }
       is_system_owner: { Args: { _uid?: string }; Returns: boolean }
       license_is_active: { Args: { _org: string }; Returns: boolean }
+      log_auth_attempt: {
+        Args: { _ip?: string; _success: boolean; _username: string }
+        Returns: undefined
+      }
       pos_apply_customer_updates: {
         Args: {
           _balance_delta: number

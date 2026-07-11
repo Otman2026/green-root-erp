@@ -65,8 +65,16 @@ function AuthPage() {
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
+    const uname = normalizeUsername(identifier);
+    const { data: allowed } = await supabase.rpc("check_rate_limit" as any, { _username: uname, _max_attempts: 5, _window_minutes: 15 });
+    if (allowed === false) {
+      setBusy(false);
+      toast.error(t("auth.rateLimited") || "تم حظرك مؤقتاً بسبب محاولات متكررة. حاول بعد 15 دقيقة.");
+      return;
+    }
     const email = loginIdentifierToEmail(identifier);
     const { error } = await supabase.auth.signInWithPassword({ email, password: inPassword });
+    await supabase.rpc("log_auth_attempt" as any, { _username: uname, _success: !error, _ip: null });
     setBusy(false);
     if (error) toast.error(error.message);
     else navigate({ to: "/dashboard" });
