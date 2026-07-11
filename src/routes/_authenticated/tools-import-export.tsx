@@ -1,11 +1,7 @@
+import { Card, Button, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Download, Upload, FileText } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";

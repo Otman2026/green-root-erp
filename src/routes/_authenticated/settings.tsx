@@ -1,14 +1,8 @@
+import { Button, Input, Label, Card, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Badge } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Settings as SettingsIcon, User as UserIcon, Languages, Palette } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAuth } from "@/hooks/use-auth";
@@ -16,7 +10,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import {
   isUsernameAvailable, normalizeUsername, suggestUsernames,
 } from "@/lib/username-utils";
-import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: SettingsPage });
 

@@ -1,7 +1,6 @@
+import { Card, Button } from "@/ds";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   Wallet, BookOpen, FileText, ScrollText, Banknote,
   PiggyBank, Building, Receipt, TrendingUp, BarChart3, Percent, CalendarRange,

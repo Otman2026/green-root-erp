@@ -1,8 +1,7 @@
+import { Card, Badge } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/system/users")({
   component: UsersPage,

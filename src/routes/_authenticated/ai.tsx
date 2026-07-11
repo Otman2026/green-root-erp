@@ -1,14 +1,10 @@
+import { Button, Input, Textarea, Card, CardContent, CardHeader, CardTitle, Label } from "@/ds";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import ReactMarkdown from "react-markdown";
 import { Sparkles, Upload, Loader2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { diagnosePlant } from "@/lib/ai-diagnose.functions";
 

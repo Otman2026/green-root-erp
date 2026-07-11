@@ -1,9 +1,9 @@
+import { Card, CardContent } from "@/ds";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BarChart3, DollarSign, Package, Users, Truck, Building2,
   FileText, TrendingUp, ShoppingCart, Wallet, Receipt, PieChart,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_authenticated/reports")({
   component: ReportsHub,
