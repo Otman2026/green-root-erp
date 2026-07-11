@@ -45,6 +45,7 @@ import { Route as AuthenticatedCustomersRouteImport } from './routes/_authentica
 import { Route as AuthenticatedChecksRouteImport } from './routes/_authenticated/checks'
 import { Route as AuthenticatedCashBoxesRouteImport } from './routes/_authenticated/cash-boxes'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
+import { Route as AuthenticatedBarcodesRouteImport } from './routes/_authenticated/barcodes'
 import { Route as AuthenticatedBanksRouteImport } from './routes/_authenticated/banks'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
@@ -260,6 +261,11 @@ const AuthenticatedBranchesRoute = AuthenticatedBranchesRouteImport.update({
   path: '/branches',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBarcodesRoute = AuthenticatedBarcodesRouteImport.update({
+  id: '/barcodes',
+  path: '/barcodes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBanksRoute = AuthenticatedBanksRouteImport.update({
   id: '/banks',
   path: '/banks',
@@ -450,6 +456,7 @@ export interface FileRoutesByFullPath {
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
   '/banks': typeof AuthenticatedBanksRoute
+  '/barcodes': typeof AuthenticatedBarcodesRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/cash-boxes': typeof AuthenticatedCashBoxesRoute
   '/checks': typeof AuthenticatedChecksRoute
@@ -518,6 +525,7 @@ export interface FileRoutesByTo {
   '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
   '/banks': typeof AuthenticatedBanksRoute
+  '/barcodes': typeof AuthenticatedBarcodesRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/cash-boxes': typeof AuthenticatedCashBoxesRoute
   '/checks': typeof AuthenticatedChecksRoute
@@ -589,6 +597,7 @@ export interface FileRoutesById {
   '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
   '/_authenticated/ai': typeof AuthenticatedAiRoute
   '/_authenticated/banks': typeof AuthenticatedBanksRoute
+  '/_authenticated/barcodes': typeof AuthenticatedBarcodesRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/cash-boxes': typeof AuthenticatedCashBoxesRoute
   '/_authenticated/checks': typeof AuthenticatedChecksRoute
@@ -660,6 +669,7 @@ export interface FileRouteTypes {
     | '/agri'
     | '/ai'
     | '/banks'
+    | '/barcodes'
     | '/branches'
     | '/cash-boxes'
     | '/checks'
@@ -728,6 +738,7 @@ export interface FileRouteTypes {
     | '/agri'
     | '/ai'
     | '/banks'
+    | '/barcodes'
     | '/branches'
     | '/cash-boxes'
     | '/checks'
@@ -798,6 +809,7 @@ export interface FileRouteTypes {
     | '/_authenticated/agri'
     | '/_authenticated/ai'
     | '/_authenticated/banks'
+    | '/_authenticated/barcodes'
     | '/_authenticated/branches'
     | '/_authenticated/cash-boxes'
     | '/_authenticated/checks'
@@ -1119,6 +1131,13 @@ declare module '@tanstack/react-router' {
       path: '/branches'
       fullPath: '/branches'
       preLoaderRoute: typeof AuthenticatedBranchesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/barcodes': {
+      id: '/_authenticated/barcodes'
+      path: '/barcodes'
+      fullPath: '/barcodes'
+      preLoaderRoute: typeof AuthenticatedBarcodesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/banks': {
@@ -1450,6 +1469,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
   AuthenticatedBanksRoute: typeof AuthenticatedBanksRoute
+  AuthenticatedBarcodesRoute: typeof AuthenticatedBarcodesRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCashBoxesRoute: typeof AuthenticatedCashBoxesRoute
   AuthenticatedChecksRoute: typeof AuthenticatedChecksRoute
@@ -1491,6 +1511,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgriRoute: AuthenticatedAgriRouteWithChildren,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
   AuthenticatedBanksRoute: AuthenticatedBanksRoute,
+  AuthenticatedBarcodesRoute: AuthenticatedBarcodesRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCashBoxesRoute: AuthenticatedCashBoxesRoute,
   AuthenticatedChecksRoute: AuthenticatedChecksRoute,
