@@ -194,6 +194,30 @@ function ReportsPage() {
             </Card>
           </div>
         </TabsContent>
+
+        <TabsContent value="cf">
+          <Card className="space-y-3 p-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div className="rounded-md bg-emerald-500/10 p-4">
+                <div className="text-xs text-muted-foreground">{t("acc.inflow")}</div>
+                <div className="mt-1 text-2xl font-bold text-emerald-600">{fmtMoney(cashIn)}</div>
+              </div>
+              <div className="rounded-md bg-rose-500/10 p-4">
+                <div className="text-xs text-muted-foreground">{t("acc.outflow")}</div>
+                <div className="mt-1 text-2xl font-bold text-rose-600">{fmtMoney(cashOut)}</div>
+              </div>
+              <div className={`rounded-md p-4 ${cashIn - cashOut >= 0 ? "bg-emerald-500/10" : "bg-rose-500/10"}`}>
+                <div className="text-xs text-muted-foreground">{t("acc.netCash")}</div>
+                <div className={`mt-1 text-2xl font-bold ${cashIn - cashOut >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                  {fmtMoney(cashIn - cashOut)}
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t("dash.finance.cashflow")} — {t("acc.cashBoxes")} + {t("acc.banks")}
+            </p>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
