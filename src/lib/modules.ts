@@ -6,6 +6,7 @@ import {
   BookOpen, Bug, ShieldAlert, FlaskConical,
   type LucideIcon,
 } from "lucide-react";
+import type { AppRole } from "@/hooks/use-roles";
 
 export type ModuleGroup = "overview" | "inventory" | "commerce" | "finance" | "intelligence" | "knowledge" | "system";
 
@@ -16,37 +17,39 @@ export interface AppModule {
   icon: LucideIcon;
   color: string;
   group: ModuleGroup;
+  /** if omitted → visible to any authenticated user */
+  roles?: AppRole[];
 }
 
 export const MODULES: AppModule[] = [
   { key: "dashboard",   path: "/dashboard",   labelKey: "nav.dashboard",   icon: LayoutDashboard, color: "dashboard",   group: "overview" },
-  { key: "pos",         path: "/pos",         labelKey: "nav.pos",         icon: Zap,             color: "sales",       group: "commerce" },
-  { key: "sales",       path: "/sales",       labelKey: "nav.sales",       icon: ShoppingCart,    color: "sales",       group: "commerce" },
-  { key: "quotes",      path: "/quotes",      labelKey: "nav.quotes",      icon: FileText,        color: "sales",       group: "commerce" },
-  { key: "customers",   path: "/customers",   labelKey: "nav.customers",   icon: Users,           color: "customers",   group: "commerce" },
-  { key: "loyalty",     path: "/loyalty",     labelKey: "nav.loyalty",     icon: Gift,            color: "customers",   group: "commerce" },
-  { key: "pricing",     path: "/pricing",     labelKey: "nav.pricing",     icon: Tags,            color: "products",    group: "commerce" },
-  { key: "purchases",   path: "/purchases",   labelKey: "nav.purchases",   icon: ClipboardList,   color: "suppliers",   group: "commerce" },
-  { key: "suppliers",   path: "/suppliers",   labelKey: "nav.suppliers",   icon: Truck,           color: "suppliers",   group: "commerce" },
-  { key: "branches",    path: "/branches",    labelKey: "nav.branches",    icon: Building2,       color: "customers",   group: "commerce" },
+  { key: "pos",         path: "/pos",         labelKey: "nav.pos",         icon: Zap,             color: "sales",       group: "commerce",   roles: ["admin","owner","manager","sales_manager","cashier","seller"] },
+  { key: "sales",       path: "/sales",       labelKey: "nav.sales",       icon: ShoppingCart,    color: "sales",       group: "commerce",   roles: ["admin","owner","manager","sales_manager","cashier","seller","accountant"] },
+  { key: "quotes",      path: "/quotes",      labelKey: "nav.quotes",      icon: FileText,        color: "sales",       group: "commerce",   roles: ["admin","owner","manager","sales_manager","seller"] },
+  { key: "customers",   path: "/customers",   labelKey: "nav.customers",   icon: Users,           color: "customers",   group: "commerce",   roles: ["admin","owner","manager","sales_manager","seller","cashier","customer_service"] },
+  { key: "loyalty",     path: "/loyalty",     labelKey: "nav.loyalty",     icon: Gift,            color: "customers",   group: "commerce",   roles: ["admin","owner","manager","sales_manager"] },
+  { key: "pricing",     path: "/pricing",     labelKey: "nav.pricing",     icon: Tags,            color: "products",    group: "commerce",   roles: ["admin","owner","manager","sales_manager","purchases_manager"] },
+  { key: "purchases",   path: "/purchases",   labelKey: "nav.purchases",   icon: ClipboardList,   color: "suppliers",   group: "commerce",   roles: ["admin","owner","manager","purchases_manager","warehouse_keeper"] },
+  { key: "suppliers",   path: "/suppliers",   labelKey: "nav.suppliers",   icon: Truck,           color: "suppliers",   group: "commerce",   roles: ["admin","owner","manager","purchases_manager","accountant"] },
+  { key: "branches",    path: "/branches",    labelKey: "nav.branches",    icon: Building2,       color: "customers",   group: "commerce",   roles: ["admin","owner","manager","branch_manager"] },
   { key: "products",    path: "/products",    labelKey: "nav.products",    icon: Package,         color: "products",    group: "inventory" },
-  { key: "warehouses",  path: "/warehouses",  labelKey: "nav.warehouses",  icon: Warehouse,       color: "warehouses",  group: "inventory" },
-  { key: "inventory",   path: "/inventory",   labelKey: "nav.inventory",   icon: ArrowLeftRight,  color: "warehouses",  group: "inventory" },
+  { key: "warehouses",  path: "/warehouses",  labelKey: "nav.warehouses",  icon: Warehouse,       color: "warehouses",  group: "inventory",  roles: ["admin","owner","manager","warehouse_keeper","branch_manager"] },
+  { key: "inventory",   path: "/inventory",   labelKey: "nav.inventory",   icon: ArrowLeftRight,  color: "warehouses",  group: "inventory",  roles: ["admin","owner","manager","warehouse_keeper"] },
   { key: "fertilizers", path: "/fertilizers", labelKey: "nav.fertilizers", icon: Leaf,            color: "fertilizers", group: "inventory" },
   { key: "pesticides",  path: "/pesticides",  labelKey: "nav.pesticides",  icon: SprayCan,        color: "pesticides",  group: "inventory" },
   { key: "seeds",       path: "/seeds",       labelKey: "nav.seeds",       icon: Sprout,          color: "seeds",       group: "inventory" },
   { key: "equipment",   path: "/equipment",   labelKey: "nav.equipment",   icon: Wrench,          color: "equipment",   group: "inventory" },
-  { key: "receipts",    path: "/receipts",    labelKey: "nav.receipts",    icon: Receipt,         color: "accounting",  group: "finance" },
-  { key: "debts",       path: "/debts",       labelKey: "nav.debts",       icon: CircleDollarSign,color: "accounting",  group: "finance" },
-  { key: "accounting",  path: "/accounting",  labelKey: "nav.accounting",  icon: Wallet,          color: "accounting",  group: "finance" },
-  { key: "reports",     path: "/reports",     labelKey: "nav.reports",     icon: BarChart3,       color: "reports",     group: "intelligence" },
+  { key: "receipts",    path: "/receipts",    labelKey: "nav.receipts",    icon: Receipt,         color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant","cashier"] },
+  { key: "debts",       path: "/debts",       labelKey: "nav.debts",       icon: CircleDollarSign,color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant"] },
+  { key: "accounting",  path: "/accounting",  labelKey: "nav.accounting",  icon: Wallet,          color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant"] },
+  { key: "reports",     path: "/reports",     labelKey: "nav.reports",     icon: BarChart3,       color: "reports",     group: "intelligence", roles: ["admin","owner","manager","accountant","sales_manager"] },
   { key: "ai",          path: "/ai",          labelKey: "nav.ai",          icon: Sparkles,        color: "ai",          group: "intelligence" },
   { key: "agri",        path: "/agri",        labelKey: "nav.agri",        icon: BookOpen,        color: "seeds",       group: "knowledge" },
   { key: "agri-plants",    path: "/agri/plants",    labelKey: "agri.plants",    icon: Sprout,       color: "seeds",       group: "knowledge" },
   { key: "agri-diseases",  path: "/agri/diseases",  labelKey: "agri.diseases",  icon: ShieldAlert,  color: "pesticides",  group: "knowledge" },
   { key: "agri-pests",     path: "/agri/pests",     labelKey: "agri.pests",     icon: Bug,          color: "pesticides",  group: "knowledge" },
   { key: "agri-treatments",path: "/agri/treatments",labelKey: "agri.treatments",icon: FlaskConical, color: "fertilizers", group: "knowledge" },
-  { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system" },
+  { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system",     roles: ["admin","owner"] },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
 ];
 
