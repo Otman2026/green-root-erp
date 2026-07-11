@@ -305,26 +305,41 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          email_optional: string | null
           full_name: string | null
           id: string
+          is_active: boolean
+          is_archived: boolean
+          phone: string | null
           preferred_language: string
           updated_at: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          email_optional?: string | null
           full_name?: string | null
           id: string
+          is_active?: boolean
+          is_archived?: boolean
+          phone?: string | null
           preferred_language?: string
           updated_at?: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          email_optional?: string | null
           full_name?: string | null
           id?: string
+          is_active?: boolean
+          is_archived?: boolean
+          phone?: string | null
           preferred_language?: string
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -414,7 +429,20 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "manager" | "employee"
+      app_role:
+        | "admin"
+        | "manager"
+        | "employee"
+        | "owner"
+        | "branch_manager"
+        | "warehouse_keeper"
+        | "seller"
+        | "cashier"
+        | "accountant"
+        | "purchases_manager"
+        | "sales_manager"
+        | "delivery"
+        | "customer_service"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -542,7 +570,21 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "manager", "employee"],
+      app_role: [
+        "admin",
+        "manager",
+        "employee",
+        "owner",
+        "branch_manager",
+        "warehouse_keeper",
+        "seller",
+        "cashier",
+        "accountant",
+        "purchases_manager",
+        "sales_manager",
+        "delivery",
+        "customer_service",
+      ],
     },
   },
 } as const
