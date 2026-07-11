@@ -1,63 +1,49 @@
-# Phase 5 — Agricultural Knowledge Base
+# المرحلة 3 — ترقية Haytam AGRI إلى Enterprise ERP
 
-Adds a new independent module on top of the existing system. No existing table, page, module, or logic is touched.
+النطاق ضخم جداً (70+ صفحة، 85 جدول). تنفيذه دفعة واحدة سيؤدي إلى انحدار في الجودة وأخطاء. أقترح تقسيمه إلى **6 موجات (Waves)** كل واحدة قابلة للتسليم والاختبار على حدة، دون أي حذف لبيانات أو وحدات.
 
-## 1) New database tables (all with GRANT + RLS + updated_at trigger)
+## Wave 1 — البنية التحتية المشتركة (Foundation)
+لا تغيير مرئي كبير، لكنه يوحّد كل الصفحات لاحقاً.
+- `DataTable` موحّد: بحث فوري، فرز، فلترة، pagination، إظهار/إخفاء أعمدة، تثبيت، تصدير Excel/PDF/CSV، طباعة.
+- `FormShell` موحّد: Zod validation، رسائل خطأ AR، حفظ تلقائي اختياري.
+- `PageHeader` + `EmptyState` + `KpiCard` + `ChartCard` (Recharts).
+- محرك بحث عام (`Cmd+K` / `Ctrl+K`) عبر Products/Customers/Suppliers/Sales/Invoices.
+- Hook `useExport` (Excel/PDF/CSV/Print).
 
-**Reference / taxonomy**
-- `agri_plant_categories` — name_ar/fr/en, kind (`crop|fruit_tree|vegetable|grain|herb|industrial|fodder|forest|ornamental|indoor|outdoor`), parent_id, icon, sort
-- `agri_plants` — scientific_name, common_name_ar/fr/en, category_id, family, cycle (annual/perennial), season, climate, soil, water_needs, growth_stages (jsonb), description, image_url, is_active
-- `agri_plant_varieties` — plant_id, name, traits (jsonb), yield, notes
+## Wave 2 — Dashboard احترافي
+استبدال `dashboard.tsx` الحالي بلوحة كاملة:
+- 8 بطاقات KPI (مبيعات اليوم/الشهر، أرباح، عملاء نشطون، فواتير مستحقة، مخزون منخفض، قرب انتهاء الصلاحية، رصيد الصندوق).
+- رسم بياني: مبيعات آخر 30 يوم، أفضل 10 منتجات، أفضل 10 عملاء، أفضل 5 موردين.
+- قوائم مباشرة: آخر 10 عمليات، منتجات منخفضة، منتجات قريبة الانتهاء، فواتير مستحقة.
+- تنبيهات ذكية أعلى الصفحة.
 
-**Diseases**
-- `agri_diseases` — name_ar/fr/en, type (`fungal|bacterial|viral|physiological|nutrient_deficiency|climatic`), scientific_name, description, symptoms, severity (1–5), stages (jsonb), prevention, references (jsonb)
-- `agri_disease_images` — disease_id, url, caption
-- `agri_plant_diseases` — plant_id, disease_id (many-to-many)
+## Wave 3 — ترقية الجداول الأساسية
+تطبيق `DataTable` الموحّد على:
+- Products, Customers, Suppliers, Sales, Purchases, Inventory, Stock Movements, HR Employees, Fleet Vehicles.
+كل صفحة تحصل على: بحث، فلترة متقدمة، ترتيب، أعمدة قابلة للتخصيص، تصدير، طباعة.
 
-**Pests**
-- `agri_pests` — name_ar/fr/en, type (`insect|mite|worm|nematode|rodent|bird|mollusk|weed|other`), scientific_name, description, life_cycle, damage, severity, image_url, references (jsonb)
-- `agri_pest_images` — pest_id, url, caption
-- `agri_plant_pests` — plant_id, pest_id
+## Wave 4 — التقارير + مركز الطباعة
+- قوالب طباعة احترافية (Invoice, Quote, Receipt, Delivery Note) مع شعار المؤسسة و QR.
+- محرك تقارير مع فلاتر (الفترة/الفرع/المستخدم/العميل/المورد/المنتج) + تصدير 3 صيغ.
+- ترقية `/reports` من روابط فقط إلى تقارير حية داخلها.
 
-**Treatments / recommendations**
-- `agri_treatments` — target_type (`disease|pest|deficiency`), target_id, method (`chemical|biological|cultural|mechanical|organic`), title, description, active_ingredient, dosage, frequency, safety_period, notes
-- `agri_treatment_products` — treatment_id, product_id (link to existing `products` when the shop sells it) — optional catalog bridge
+## Wave 5 — الإشعارات + الإعدادات
+- مركز إشعارات كامل (`notifications` جدول موجود): تنبيهات مخزون، انتهاء صلاحية، ديون، فواتير مستحقة، طلبات جديدة، رسائل نظام. Realtime عبر Supabase.
+- صفحة `/settings` احترافية بتبويبات: المؤسسة، النظام، اللغة، الطباعة، الضرائب، العملات، النسخ الاحتياطي، البريد، WhatsApp.
 
-All tables:
-- `GRANT SELECT` to `authenticated` (public catalog read).
-- `GRANT INSERT/UPDATE/DELETE` to `authenticated` gated by RLS to roles `admin`, `owner`, `manager`, `agronomist` (new role added to `app_role` enum if missing? — no enum change: reuse `admin`/`owner`/`manager`).
-- `GRANT ALL` to `service_role`.
-- `updated_at` trigger reusing existing `public.update_updated_at_column()`.
+## Wave 6 — Polish + Performance + Cleanup
+- مراجعة UX لكل صفحة (RTL، spacing، dark mode).
+- Code-splitting، lazy routes، تحسين استعلامات.
+- حذف الأكواد/الاستيرادات غير المستعملة (بعد فحص آلي، بدون حذف صفحات أو بيانات).
+- اختبار شامل: كل صفحة، كل زر، كل CRUD.
 
-## 2) New pages (under `_authenticated`)
+## التسليم
+كل Wave: كود + قائمة ما تغيّر + كيفية اختباره، ثم أنتظر موافقتك للانتقال للتالي.
 
-- `/agri` — hub with 4 cards (Plants, Diseases, Pests, Treatments)
-- `/agri/plants` — list + filter by category/kind + search AR/FR/EN + detail drawer (varieties, linked diseases, linked pests, growth stages)
-- `/agri/diseases` — list + filter by type/severity + detail (symptoms, images, prevention, treatments, affected plants)
-- `/agri/pests` — same shape as diseases
-- `/agri/treatments` — list filtered by target, link to shop products
+---
 
-All pages: CRUD dialogs for admins; read-only cards for others. Images uploaded to a new **private** Storage bucket `agri-images` (signed URLs on read).
+**من أين نبدأ؟**
+- الخيار الافتراضي: **Wave 1** (البنية المشتركة) — لأن كل ما بعده يعتمد عليها.
+- بديل: البدء بـ **Wave 2 (Dashboard)** إذا الأولوية بصرية فورية.
 
-## 3) i18n
-Add keys under `agri.*` in `src/lib/i18n.tsx` (AR/FR/EN).
-
-## 4) Modules registry
-Append `agri` group in `src/lib/modules.ts` so the sidebar shows the new section automatically. No existing entry removed.
-
-## 5) Seed data (optional, small starter set)
-A migration seeds ~15 common Moroccan crops (wheat, barley, tomato, potato, olive, citrus, date palm, almond, apple, grape, onion, pepper, carrot, alfalfa, mint) with a handful of well-known diseases/pests each, so the pages aren't empty. Users can add/edit freely.
-
-## 6) Safety
-- No `DROP`, no `ALTER` on existing tables.
-- No changes to existing RLS, functions, or triggers except adding new ones scoped to new tables.
-- New storage bucket only.
-
-## 7) Testing after build
-- Create/edit/delete plant, disease, pest, treatment as admin.
-- Search AR/FR/EN.
-- Link disease to plant, pest to plant, treatment to disease.
-- Upload image, view via signed URL.
-- Verify existing pages (POS, sales, inventory, users…) still work unchanged.
-
-Shall I proceed with this scope, or trim/expand any part first?
+قل لي: **Wave 1** أم **Wave 2** أم ترتيب آخر؟
