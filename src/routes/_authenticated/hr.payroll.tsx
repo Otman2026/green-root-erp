@@ -1,11 +1,6 @@
+import { Card, Button, Input, Label, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Badge } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Wallet, RefreshCw, CheckCircle } from "lucide-react";

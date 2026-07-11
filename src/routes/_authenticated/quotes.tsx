@@ -1,10 +1,8 @@
+import { Button, Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { FileText, Printer, ArrowRightLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney, fmtDateTime } from "@/lib/format";

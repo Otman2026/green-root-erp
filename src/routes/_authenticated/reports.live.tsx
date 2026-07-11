@@ -1,3 +1,4 @@
+import { Card, Input, Label, Tabs, TabsList, TabsTrigger, TabsContent } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -6,10 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/shared/page-header";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { KpiCard } from "@/components/shared/kpi-card";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { fmtMoney, fmtDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/reports/live")({ component: LiveReports });

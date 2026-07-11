@@ -1,12 +1,8 @@
+import { Card, Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import JsBarcode from "jsbarcode";
 import { Barcode as BarcodeIcon, Printer, Plus, Trash2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";

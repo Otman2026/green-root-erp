@@ -62,6 +62,18 @@ export {
 } from "@/components/ui/dropdown-menu";
 export { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+export { Progress } from "@/components/ui/progress";
+export {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 export { toast } from "sonner";
 
 // DS composites

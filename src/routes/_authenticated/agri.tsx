@@ -1,5 +1,5 @@
+import { Card } from "@/ds";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Card } from "@/components/ui/card";
 import { BookOpen, Sprout, ShieldAlert, Bug, FlaskConical } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 

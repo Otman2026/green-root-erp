@@ -1,7 +1,7 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, KeyRound, Clock, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/system/")({
