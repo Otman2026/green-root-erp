@@ -35,7 +35,12 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
+import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
+import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authenticated/agri.treatments'
+import { Route as AuthenticatedAgriPlantsRouteImport } from './routes/_authenticated/agri.plants'
+import { Route as AuthenticatedAgriPestsRouteImport } from './routes/_authenticated/agri.pests'
+import { Route as AuthenticatedAgriDiseasesRouteImport } from './routes/_authenticated/agri.diseases'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -167,16 +172,44 @@ const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAgriRoute = AuthenticatedAgriRouteImport.update({
+  id: '/agri',
+  path: '/agri',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   id: '/accounting',
   path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAgriTreatmentsRoute =
+  AuthenticatedAgriTreatmentsRouteImport.update({
+    id: '/treatments',
+    path: '/treatments',
+    getParentRoute: () => AuthenticatedAgriRoute,
+  } as any)
+const AuthenticatedAgriPlantsRoute = AuthenticatedAgriPlantsRouteImport.update({
+  id: '/plants',
+  path: '/plants',
+  getParentRoute: () => AuthenticatedAgriRoute,
+} as any)
+const AuthenticatedAgriPestsRoute = AuthenticatedAgriPestsRouteImport.update({
+  id: '/pests',
+  path: '/pests',
+  getParentRoute: () => AuthenticatedAgriRoute,
+} as any)
+const AuthenticatedAgriDiseasesRoute =
+  AuthenticatedAgriDiseasesRouteImport.update({
+    id: '/diseases',
+    path: '/diseases',
+    getParentRoute: () => AuthenticatedAgriRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -200,11 +233,16 @@ export interface FileRoutesByFullPath {
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
+  '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
+  '/agri/pests': typeof AuthenticatedAgriPestsRoute
+  '/agri/plants': typeof AuthenticatedAgriPlantsRoute
+  '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/agri': typeof AuthenticatedAgriRouteWithChildren
   '/ai': typeof AuthenticatedAiRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
@@ -228,6 +266,10 @@ export interface FileRoutesByTo {
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
+  '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
+  '/agri/pests': typeof AuthenticatedAgriPestsRoute
+  '/agri/plants': typeof AuthenticatedAgriPlantsRoute
+  '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -235,6 +277,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
+  '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
   '/_authenticated/ai': typeof AuthenticatedAiRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
@@ -258,6 +301,10 @@ export interface FileRoutesById {
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/warehouses': typeof AuthenticatedWarehousesRoute
+  '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
+  '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
+  '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
+  '/_authenticated/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -265,6 +312,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/accounting'
+    | '/agri'
     | '/ai'
     | '/branches'
     | '/customers'
@@ -288,11 +336,16 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/users'
     | '/warehouses'
+    | '/agri/diseases'
+    | '/agri/pests'
+    | '/agri/plants'
+    | '/agri/treatments'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/accounting'
+    | '/agri'
     | '/ai'
     | '/branches'
     | '/customers'
@@ -316,12 +369,17 @@ export interface FileRouteTypes {
     | '/suppliers'
     | '/users'
     | '/warehouses'
+    | '/agri/diseases'
+    | '/agri/pests'
+    | '/agri/plants'
+    | '/agri/treatments'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/accounting'
+    | '/_authenticated/agri'
     | '/_authenticated/ai'
     | '/_authenticated/branches'
     | '/_authenticated/customers'
@@ -345,6 +403,10 @@ export interface FileRouteTypes {
     | '/_authenticated/suppliers'
     | '/_authenticated/users'
     | '/_authenticated/warehouses'
+    | '/_authenticated/agri/diseases'
+    | '/_authenticated/agri/pests'
+    | '/_authenticated/agri/plants'
+    | '/_authenticated/agri/treatments'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -537,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAiRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/agri': {
+      id: '/_authenticated/agri'
+      path: '/agri'
+      fullPath: '/agri'
+      preLoaderRoute: typeof AuthenticatedAgriRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/accounting': {
       id: '/_authenticated/accounting'
       path: '/accounting'
@@ -544,11 +613,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/agri/treatments': {
+      id: '/_authenticated/agri/treatments'
+      path: '/treatments'
+      fullPath: '/agri/treatments'
+      preLoaderRoute: typeof AuthenticatedAgriTreatmentsRouteImport
+      parentRoute: typeof AuthenticatedAgriRoute
+    }
+    '/_authenticated/agri/plants': {
+      id: '/_authenticated/agri/plants'
+      path: '/plants'
+      fullPath: '/agri/plants'
+      preLoaderRoute: typeof AuthenticatedAgriPlantsRouteImport
+      parentRoute: typeof AuthenticatedAgriRoute
+    }
+    '/_authenticated/agri/pests': {
+      id: '/_authenticated/agri/pests'
+      path: '/pests'
+      fullPath: '/agri/pests'
+      preLoaderRoute: typeof AuthenticatedAgriPestsRouteImport
+      parentRoute: typeof AuthenticatedAgriRoute
+    }
+    '/_authenticated/agri/diseases': {
+      id: '/_authenticated/agri/diseases'
+      path: '/diseases'
+      fullPath: '/agri/diseases'
+      preLoaderRoute: typeof AuthenticatedAgriDiseasesRouteImport
+      parentRoute: typeof AuthenticatedAgriRoute
+    }
   }
 }
 
+interface AuthenticatedAgriRouteChildren {
+  AuthenticatedAgriDiseasesRoute: typeof AuthenticatedAgriDiseasesRoute
+  AuthenticatedAgriPestsRoute: typeof AuthenticatedAgriPestsRoute
+  AuthenticatedAgriPlantsRoute: typeof AuthenticatedAgriPlantsRoute
+  AuthenticatedAgriTreatmentsRoute: typeof AuthenticatedAgriTreatmentsRoute
+}
+
+const AuthenticatedAgriRouteChildren: AuthenticatedAgriRouteChildren = {
+  AuthenticatedAgriDiseasesRoute: AuthenticatedAgriDiseasesRoute,
+  AuthenticatedAgriPestsRoute: AuthenticatedAgriPestsRoute,
+  AuthenticatedAgriPlantsRoute: AuthenticatedAgriPlantsRoute,
+  AuthenticatedAgriTreatmentsRoute: AuthenticatedAgriTreatmentsRoute,
+}
+
+const AuthenticatedAgriRouteWithChildren =
+  AuthenticatedAgriRoute._addFileChildren(AuthenticatedAgriRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
+  AuthenticatedAgriRoute: typeof AuthenticatedAgriRouteWithChildren
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
@@ -576,6 +691,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
+  AuthenticatedAgriRoute: AuthenticatedAgriRouteWithChildren,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
