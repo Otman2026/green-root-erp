@@ -75,7 +75,7 @@ function BillingPage() {
   };
 
   const setSubStatus = async (id: string, status: string) => {
-    await supabase.from("subscriptions").update({ status }).eq("id", id); load();
+    await supabase.from("subscriptions").update({ status: status as any }).eq("id", id); load();
   };
 
   const statusColor = (s: string) =>
