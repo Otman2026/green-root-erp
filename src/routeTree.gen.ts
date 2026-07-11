@@ -19,11 +19,18 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedSeedsRouteImport } from './routes/_authenticated/seeds'
 import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedReceiptsRouteImport } from './routes/_authenticated/receipts'
+import { Route as AuthenticatedQuotesRouteImport } from './routes/_authenticated/quotes'
+import { Route as AuthenticatedPurchasesRouteImport } from './routes/_authenticated/purchases'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
+import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedPosRouteImport } from './routes/_authenticated/pos'
 import { Route as AuthenticatedPesticidesRouteImport } from './routes/_authenticated/pesticides'
+import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedFertilizersRouteImport } from './routes/_authenticated/fertilizers'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
+import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
@@ -79,14 +86,44 @@ const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReceiptsRoute = AuthenticatedReceiptsRouteImport.update({
+  id: '/receipts',
+  path: '/receipts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedQuotesRoute = AuthenticatedQuotesRouteImport.update({
+  id: '/quotes',
+  path: '/quotes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPurchasesRoute = AuthenticatedPurchasesRouteImport.update({
+  id: '/purchases',
+  path: '/purchases',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   id: '/products',
   path: '/products',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPosRoute = AuthenticatedPosRouteImport.update({
+  id: '/pos',
+  path: '/pos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPesticidesRoute = AuthenticatedPesticidesRouteImport.update({
   id: '/pesticides',
   path: '/pesticides',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLoyaltyRoute = AuthenticatedLoyaltyRouteImport.update({
+  id: '/loyalty',
+  path: '/loyalty',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
@@ -103,6 +140,11 @@ const AuthenticatedFertilizersRoute =
 const AuthenticatedEquipmentRoute = AuthenticatedEquipmentRouteImport.update({
   id: '/equipment',
   path: '/equipment',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDebtsRoute = AuthenticatedDebtsRouteImport.update({
+  id: '/debts',
+  path: '/debts',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -139,11 +181,18 @@ export interface FileRoutesByFullPath {
   '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/debts': typeof AuthenticatedDebtsRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
   '/inventory': typeof AuthenticatedInventoryRoute
+  '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/pesticides': typeof AuthenticatedPesticidesRoute
+  '/pos': typeof AuthenticatedPosRoute
+  '/pricing': typeof AuthenticatedPricingRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/purchases': typeof AuthenticatedPurchasesRoute
+  '/quotes': typeof AuthenticatedQuotesRoute
+  '/receipts': typeof AuthenticatedReceiptsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/sales': typeof AuthenticatedSalesRoute
   '/seeds': typeof AuthenticatedSeedsRoute
@@ -160,11 +209,18 @@ export interface FileRoutesByTo {
   '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/debts': typeof AuthenticatedDebtsRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
   '/inventory': typeof AuthenticatedInventoryRoute
+  '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/pesticides': typeof AuthenticatedPesticidesRoute
+  '/pos': typeof AuthenticatedPosRoute
+  '/pricing': typeof AuthenticatedPricingRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/purchases': typeof AuthenticatedPurchasesRoute
+  '/quotes': typeof AuthenticatedQuotesRoute
+  '/receipts': typeof AuthenticatedReceiptsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/sales': typeof AuthenticatedSalesRoute
   '/seeds': typeof AuthenticatedSeedsRoute
@@ -183,11 +239,18 @@ export interface FileRoutesById {
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/debts': typeof AuthenticatedDebtsRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/fertilizers': typeof AuthenticatedFertilizersRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
+  '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
   '/_authenticated/pesticides': typeof AuthenticatedPesticidesRoute
+  '/_authenticated/pos': typeof AuthenticatedPosRoute
+  '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
+  '/_authenticated/purchases': typeof AuthenticatedPurchasesRoute
+  '/_authenticated/quotes': typeof AuthenticatedQuotesRoute
+  '/_authenticated/receipts': typeof AuthenticatedReceiptsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
   '/_authenticated/seeds': typeof AuthenticatedSeedsRoute
@@ -206,11 +269,18 @@ export interface FileRouteTypes {
     | '/branches'
     | '/customers'
     | '/dashboard'
+    | '/debts'
     | '/equipment'
     | '/fertilizers'
     | '/inventory'
+    | '/loyalty'
     | '/pesticides'
+    | '/pos'
+    | '/pricing'
     | '/products'
+    | '/purchases'
+    | '/quotes'
+    | '/receipts'
     | '/reports'
     | '/sales'
     | '/seeds'
@@ -227,11 +297,18 @@ export interface FileRouteTypes {
     | '/branches'
     | '/customers'
     | '/dashboard'
+    | '/debts'
     | '/equipment'
     | '/fertilizers'
     | '/inventory'
+    | '/loyalty'
     | '/pesticides'
+    | '/pos'
+    | '/pricing'
     | '/products'
+    | '/purchases'
+    | '/quotes'
+    | '/receipts'
     | '/reports'
     | '/sales'
     | '/seeds'
@@ -249,11 +326,18 @@ export interface FileRouteTypes {
     | '/_authenticated/branches'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
+    | '/_authenticated/debts'
     | '/_authenticated/equipment'
     | '/_authenticated/fertilizers'
     | '/_authenticated/inventory'
+    | '/_authenticated/loyalty'
     | '/_authenticated/pesticides'
+    | '/_authenticated/pos'
+    | '/_authenticated/pricing'
     | '/_authenticated/products'
+    | '/_authenticated/purchases'
+    | '/_authenticated/quotes'
+    | '/_authenticated/receipts'
     | '/_authenticated/reports'
     | '/_authenticated/sales'
     | '/_authenticated/seeds'
@@ -341,6 +425,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/receipts': {
+      id: '/_authenticated/receipts'
+      path: '/receipts'
+      fullPath: '/receipts'
+      preLoaderRoute: typeof AuthenticatedReceiptsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/quotes': {
+      id: '/_authenticated/quotes'
+      path: '/quotes'
+      fullPath: '/quotes'
+      preLoaderRoute: typeof AuthenticatedQuotesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/purchases': {
+      id: '/_authenticated/purchases'
+      path: '/purchases'
+      fullPath: '/purchases'
+      preLoaderRoute: typeof AuthenticatedPurchasesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/products': {
       id: '/_authenticated/products'
       path: '/products'
@@ -348,11 +453,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProductsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pricing': {
+      id: '/_authenticated/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof AuthenticatedPricingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pos': {
+      id: '/_authenticated/pos'
+      path: '/pos'
+      fullPath: '/pos'
+      preLoaderRoute: typeof AuthenticatedPosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/pesticides': {
       id: '/_authenticated/pesticides'
       path: '/pesticides'
       fullPath: '/pesticides'
       preLoaderRoute: typeof AuthenticatedPesticidesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/loyalty': {
+      id: '/_authenticated/loyalty'
+      path: '/loyalty'
+      fullPath: '/loyalty'
+      preLoaderRoute: typeof AuthenticatedLoyaltyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/inventory': {
@@ -374,6 +500,13 @@ declare module '@tanstack/react-router' {
       path: '/equipment'
       fullPath: '/equipment'
       preLoaderRoute: typeof AuthenticatedEquipmentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/debts': {
+      id: '/_authenticated/debts'
+      path: '/debts'
+      fullPath: '/debts'
+      preLoaderRoute: typeof AuthenticatedDebtsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -420,11 +553,18 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedFertilizersRoute: typeof AuthenticatedFertilizersRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
+  AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
   AuthenticatedPesticidesRoute: typeof AuthenticatedPesticidesRoute
+  AuthenticatedPosRoute: typeof AuthenticatedPosRoute
+  AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
+  AuthenticatedPurchasesRoute: typeof AuthenticatedPurchasesRoute
+  AuthenticatedQuotesRoute: typeof AuthenticatedQuotesRoute
+  AuthenticatedReceiptsRoute: typeof AuthenticatedReceiptsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
   AuthenticatedSeedsRoute: typeof AuthenticatedSeedsRoute
@@ -440,11 +580,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedFertilizersRoute: AuthenticatedFertilizersRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
+  AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,
   AuthenticatedPesticidesRoute: AuthenticatedPesticidesRoute,
+  AuthenticatedPosRoute: AuthenticatedPosRoute,
+  AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
+  AuthenticatedPurchasesRoute: AuthenticatedPurchasesRoute,
+  AuthenticatedQuotesRoute: AuthenticatedQuotesRoute,
+  AuthenticatedReceiptsRoute: AuthenticatedReceiptsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
   AuthenticatedSeedsRoute: AuthenticatedSeedsRoute,
