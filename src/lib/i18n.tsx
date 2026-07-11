@@ -456,8 +456,6 @@ const AR: Dict = {
   "hr.doc.url": "الرابط",
   "hr.doc.expiry": "تاريخ الانتهاء",
   "hr.doc.notes": "ملاحظات",
-  "common.date": "التاريخ",
-  "common.fillAll": "يرجى تعبئة الحقول المطلوبة",
 };
 
 const FR: Dict = {
@@ -705,8 +703,6 @@ const FR: Dict = {
   "hr.doc.url": "URL",
   "hr.doc.expiry": "Expiration",
   "hr.doc.notes": "Notes",
-  "common.date": "Date",
-  "common.fillAll": "Veuillez remplir les champs requis",
 };
 
 const EN: Dict = {
@@ -954,8 +950,6 @@ const EN: Dict = {
   "hr.doc.url": "URL",
   "hr.doc.expiry": "Expiry",
   "hr.doc.notes": "Notes",
-  "common.date": "Date",
-  "common.fillAll": "Please fill required fields",
 };
 
 const DICTS: Record<Locale, Dict> = { ar: AR, fr: FR, en: EN };
