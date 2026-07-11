@@ -318,6 +318,8 @@ const AR: Dict = {
   "agri.safetyPeriod": "فترة الأمان",
   "agri.damage": "الضرر",
   "agri.lifeCycle": "دورة الحياة",
+  "nav.notifications": "الإشعارات",
+  "notifications.markAllRead": "تعليم الكل مقروء",
 };
 
 const FR: Dict = {
