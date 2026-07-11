@@ -4,6 +4,7 @@ import {
   Sparkles, Settings, Building2, ArrowLeftRight, UserCog,
   Zap, ClipboardList, FileText, Gift, Tags, CircleDollarSign, Receipt,
   BookOpen, Bug, ShieldAlert, FlaskConical,
+  Briefcase, CalendarCheck, CalendarX,
   type LucideIcon,
 } from "lucide-react";
 import type { AppRole } from "@/hooks/use-roles";
@@ -47,6 +48,12 @@ export const MODULES: AppModule[] = [
   { key: "checks",      path: "/checks",      labelKey: "nav.checks",      icon: Receipt,         color: "accounting",  group: "finance",    roles: ["admin","owner","manager","accountant","cashier"] },
   { key: "reports",     path: "/reports",     labelKey: "nav.reports",     icon: BarChart3,       color: "reports",     group: "intelligence", roles: ["admin","owner","manager","accountant","sales_manager"] },
   { key: "ai",          path: "/ai",          labelKey: "nav.ai",          icon: Sparkles,        color: "ai",          group: "intelligence" },
+  { key: "hr",          path: "/hr",          labelKey: "nav.hr",          icon: Briefcase,       color: "customers",   group: "hr",          roles: ["admin","owner","manager","accountant"] },
+  { key: "hr-employees",  path: "/hr/employees",  labelKey: "hr.employees",  icon: Users,         color: "customers",   group: "hr",          roles: ["admin","owner","manager","accountant"] },
+  { key: "hr-attendance", path: "/hr/attendance", labelKey: "hr.attendance", icon: CalendarCheck, color: "customers",   group: "hr",          roles: ["admin","owner","manager","accountant"] },
+  { key: "hr-leaves",     path: "/hr/leaves",     labelKey: "hr.leaves",     icon: CalendarX,     color: "customers",   group: "hr",          roles: ["admin","owner","manager","accountant"] },
+  { key: "hr-payroll",    path: "/hr/payroll",    labelKey: "hr.payroll",    icon: Wallet,        color: "accounting",  group: "hr",          roles: ["admin","owner","manager","accountant"] },
+  { key: "hr-documents",  path: "/hr/documents",  labelKey: "hr.documents",  icon: FileText,      color: "customers",   group: "hr",          roles: ["admin","owner","manager","accountant"] },
   { key: "agri",        path: "/agri",        labelKey: "nav.agri",        icon: BookOpen,        color: "seeds",       group: "knowledge" },
   { key: "agri-plants",    path: "/agri/plants",    labelKey: "agri.plants",    icon: Sprout,       color: "seeds",       group: "knowledge" },
   { key: "agri-diseases",  path: "/agri/diseases",  labelKey: "agri.diseases",  icon: ShieldAlert,  color: "pesticides",  group: "knowledge" },
@@ -56,4 +63,4 @@ export const MODULES: AppModule[] = [
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
 ];
 
-export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "intelligence", "knowledge", "system"];
+export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "hr", "intelligence", "knowledge", "system"];
