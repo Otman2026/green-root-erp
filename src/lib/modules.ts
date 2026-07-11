@@ -41,8 +41,13 @@ export const MODULES: AppModule[] = [
   { key: "accounting",  path: "/accounting",  labelKey: "nav.accounting",  icon: Wallet,          color: "accounting",  group: "finance" },
   { key: "reports",     path: "/reports",     labelKey: "nav.reports",     icon: BarChart3,       color: "reports",     group: "intelligence" },
   { key: "ai",          path: "/ai",          labelKey: "nav.ai",          icon: Sparkles,        color: "ai",          group: "intelligence" },
+  { key: "agri",        path: "/agri",        labelKey: "nav.agri",        icon: BookOpen,        color: "seeds",       group: "knowledge" },
+  { key: "agri-plants",    path: "/agri/plants",    labelKey: "agri.plants",    icon: Sprout,       color: "seeds",       group: "knowledge" },
+  { key: "agri-diseases",  path: "/agri/diseases",  labelKey: "agri.diseases",  icon: ShieldAlert,  color: "pesticides",  group: "knowledge" },
+  { key: "agri-pests",     path: "/agri/pests",     labelKey: "agri.pests",     icon: Bug,          color: "pesticides",  group: "knowledge" },
+  { key: "agri-treatments",path: "/agri/treatments",labelKey: "agri.treatments",icon: FlaskConical, color: "fertilizers", group: "knowledge" },
   { key: "users",       path: "/users",       labelKey: "nav.users",       icon: UserCog,         color: "settings",    group: "system" },
   { key: "settings",    path: "/settings",    labelKey: "nav.settings",    icon: Settings,        color: "settings",    group: "system" },
 ];
 
-export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "intelligence", "system"];
+export const GROUPS: ModuleGroup[] = ["overview", "inventory", "commerce", "finance", "intelligence", "knowledge", "system"];
