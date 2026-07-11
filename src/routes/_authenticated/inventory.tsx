@@ -1,25 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Plus, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/hooks/use-auth";
+import { DataTable, type Column } from "@/components/shared/data-table";
+import { PageHeader } from "@/components/shared/page-header";
 
 export const Route = createFileRoute("/_authenticated/inventory")({ component: InventoryPage });
 
@@ -27,14 +21,9 @@ const TYPES = ["purchase", "sale", "transfer", "return", "damage", "adjustment",
 type MType = typeof TYPES[number];
 
 interface Movement {
-  id: string;
-  product_id: string;
-  type: MType;
-  quantity: number;
-  reason: string | null;
-  reference: string | null;
-  created_at: string;
-  user_id: string | null;
+  id: string; product_id: string; type: MType; quantity: number;
+  reason: string | null; reference: string | null;
+  created_at: string; user_id: string | null;
 }
 interface Product { id: string; name: string; sku: string | null; stock_quantity: number | null }
 
@@ -42,6 +31,7 @@ function InventoryPage() {
   const { t } = useI18n();
   const { user } = useAuth();
   const [rows, setRows] = useState<Movement[]>([]);
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [filterType, setFilterType] = useState<string>("all");
   const [open, setOpen] = useState(false);
@@ -50,29 +40,28 @@ function InventoryPage() {
   });
 
   const load = async () => {
+    setLoading(true);
     const [m, p] = await Promise.all([
-      supabase.from("stock_movements").select("*").order("created_at", { ascending: false }).limit(200),
+      supabase.from("stock_movements").select("*").order("created_at", { ascending: false }).limit(500),
       supabase.from("products").select("id,name,sku,stock_quantity").order("name"),
     ]);
     if (m.error) toast.error(m.error.message);
     if (p.error) toast.error(p.error.message);
     setRows((m.data ?? []) as Movement[]);
     setProducts((p.data ?? []) as Product[]);
+    setLoading(false);
   };
   useEffect(() => { load(); }, []);
 
-  const filtered = filterType === "all" ? rows : rows.filter((r) => r.type === filterType);
+  const filtered = useMemo(() => filterType === "all" ? rows : rows.filter((r) => r.type === filterType), [rows, filterType]);
 
   const save = async () => {
     if (!form.product_id) return toast.error(t("nav.products"));
     const qty = Number(form.quantity);
     if (!qty || qty <= 0) return toast.error(t("common.quantity"));
     const { error } = await supabase.from("stock_movements").insert({
-      product_id: form.product_id,
-      type: form.type,
-      quantity: qty,
-      reason: form.reason || null,
-      reference: form.reference || null,
+      product_id: form.product_id, type: form.type, quantity: qty,
+      reason: form.reason || null, reference: form.reference || null,
       user_id: user?.id ?? null,
     });
     if (error) return toast.error(error.message);
@@ -89,54 +78,36 @@ function InventoryPage() {
     return: "outline", damage: "destructive", adjustment: "outline", stocktake: "secondary",
   };
 
+  const columns: Column<Movement>[] = [
+    { key: "date", header: t("common.date"), accessor: (r) => <span className="text-xs text-muted-foreground" dir="ltr">{new Date(r.created_at).toLocaleString()}</span>, sortValue: (r) => r.created_at, exportValue: (r) => r.created_at },
+    { key: "type", header: t("common.type"), accessor: (r) => <Badge variant={badgeVariant[r.type]}>{t(`inventory.type.${r.type}`)}</Badge>, sortValue: (r) => r.type, exportValue: (r) => r.type },
+    { key: "product", header: t("nav.products"), accessor: (r) => productName(r.product_id), sortValue: (r) => productName(r.product_id), exportValue: (r) => productName(r.product_id) },
+    { key: "qty", header: t("common.quantity"), accessor: (r) => <span className="font-mono">{r.quantity}</span>, sortValue: (r) => Number(r.quantity), exportValue: (r) => Number(r.quantity) },
+    { key: "reason", header: t("common.reason"), accessor: (r) => <span className="text-sm text-muted-foreground">{r.reason ?? "—"}</span>, sortValue: (r) => r.reason ?? "", exportValue: (r) => r.reason ?? "" },
+    { key: "reference", header: "Reference", accessor: (r) => <span className="font-mono text-xs">{r.reference ?? "—"}</span>, sortValue: (r) => r.reference ?? "", exportValue: (r) => r.reference ?? "", defaultHidden: true },
+  ];
+
   return (
     <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold">
-            <ArrowLeftRight className="h-6 w-6 text-primary" /> {t("inventory.title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">{rows.length} {t("common.total")}</p>
-        </div>
-        <Button onClick={() => setOpen(true)} className="gap-2"><Plus className="h-4 w-4" /> {t("inventory.new")}</Button>
-      </div>
+      <PageHeader
+        icon={ArrowLeftRight} title={t("inventory.title")} subtitle={`${rows.length} ${t("common.total")}`} colorVar="primary"
+        actions={<Button onClick={() => setOpen(true)} className="gap-2"><Plus className="h-4 w-4" /> {t("inventory.new")}</Button>}
+      />
 
-      <Card className="p-3">
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("common.all")}</SelectItem>
-            {TYPES.map((tp) => <SelectItem key={tp} value={tp}>{t(`inventory.type.${tp}`)}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </Card>
-
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("common.date")}</TableHead>
-              <TableHead>{t("common.type")}</TableHead>
-              <TableHead>{t("nav.products")}</TableHead>
-              <TableHead>{t("common.quantity")}</TableHead>
-              <TableHead>{t("common.reason")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
-            ) : filtered.map((r) => (
-              <TableRow key={r.id}>
-                <TableCell className="text-xs text-muted-foreground" dir="ltr">{new Date(r.created_at).toLocaleString()}</TableCell>
-                <TableCell><Badge variant={badgeVariant[r.type]}>{t(`inventory.type.${r.type}`)}</Badge></TableCell>
-                <TableCell>{productName(r.product_id)}</TableCell>
-                <TableCell className="font-mono">{r.quantity}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">{r.reason ?? "—"}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+      <DataTable
+        data={filtered} columns={columns} isLoading={loading}
+        rowKey={(r) => r.id}
+        exportName="stock-movements" exportTitle="Stock Movements"
+        rightSlot={
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="h-8 w-48"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("common.all")}</SelectItem>
+              {TYPES.map((tp) => <SelectItem key={tp} value={tp}>{t(`inventory.type.${tp}`)}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        }
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

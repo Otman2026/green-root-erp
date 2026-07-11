@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Search, Pencil, Trash2, Users, Download } from "lucide-react";
+import { Plus, Pencil, Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -14,7 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
-import { fmtMoney, fmtDateTime, toCSV, downloadFile } from "@/lib/format";
+import { fmtMoney, fmtDateTime } from "@/lib/format";
+import { DataTable, type Column } from "@/components/shared/data-table";
+import { PageHeader } from "@/components/shared/page-header";
 
 export const Route = createFileRoute("/_authenticated/customers")({ component: CustomersPage });
 
@@ -31,7 +32,7 @@ const empty: Partial<Customer> = { name: "", customer_type: "retail", credit_lim
 function CustomersPage() {
   const { t } = useI18n();
   const [rows, setRows] = useState<Customer[]>([]);
-  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Customer>>(empty);
   const [detail, setDetail] = useState<Customer | null>(null);
@@ -39,15 +40,12 @@ function CustomersPage() {
   const [payments, setPayments] = useState<any[]>([]);
 
   const load = async () => {
+    setLoading(true);
     const { data, error } = await supabase.from("customers").select("*").order("created_at", { ascending: false });
     if (error) toast.error(error.message); else setRows((data ?? []) as Customer[]);
+    setLoading(false);
   };
   useEffect(() => { load(); }, []);
-
-  const filtered = useMemo(() => rows.filter((r) => {
-    const s = q.toLowerCase();
-    return !s || r.name.toLowerCase().includes(s) || (r.phone ?? "").includes(s) || (r.email ?? "").toLowerCase().includes(s);
-  }), [rows, q]);
 
   const save = async () => {
     if (!editing.name?.trim()) return toast.error(t("common.name"));
@@ -83,60 +81,37 @@ function CustomersPage() {
     setPayments((pay.data ?? []) as any[]);
   };
 
-  const exportCsv = () => {
-    const data = filtered.map((r) => ({ name: r.name, phone: r.phone, email: r.email, city: r.city, type: r.customer_type, balance: r.balance, loyalty: r.loyalty_points }));
-    downloadFile(`customers-${new Date().toISOString().slice(0,10)}.csv`, toCSV(data));
-  };
+  const columns: Column<Customer>[] = [
+    { key: "name", header: t("common.name"), accessor: (r) => <span className="font-medium">{r.name}</span>, sortValue: (r) => r.name, exportValue: (r) => r.name },
+    { key: "phone", header: t("common.phone"), accessor: (r) => <span dir="ltr">{r.phone ?? "—"}</span>, sortValue: (r) => r.phone ?? "", exportValue: (r) => r.phone ?? "" },
+    { key: "city", header: t("common.city"), accessor: (r) => r.city ?? "—", sortValue: (r) => r.city ?? "", exportValue: (r) => r.city ?? "", defaultHidden: true },
+    { key: "type", header: t("common.type"), accessor: (r) => <Badge variant="secondary">{t(`customers.type.${r.customer_type}`)}</Badge>, sortValue: (r) => r.customer_type, exportValue: (r) => r.customer_type },
+    { key: "balance", header: t("customers.balance"), accessor: (r) => <span className={Number(r.balance) > 0 ? "text-destructive font-mono" : "font-mono"}>{fmtMoney(r.balance)}</span>, sortValue: (r) => Number(r.balance), exportValue: (r) => Number(r.balance) },
+    { key: "loyalty", header: t("customers.loyaltyPoints"), accessor: (r) => <span className="font-mono">{Number(r.loyalty_points).toFixed(0)}</span>, sortValue: (r) => Number(r.loyalty_points), exportValue: (r) => Number(r.loyalty_points) },
+    {
+      key: "actions", header: t("common.actions"), sortable: false, hideable: false, className: "text-end",
+      accessor: (r) => (
+        <div className="text-end" onClick={(e) => e.stopPropagation()}>
+          <Button size="icon" variant="ghost" onClick={() => { setEditing(r); setOpen(true); }}><Pencil className="h-4 w-4" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => del(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-4 p-4 md:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold"><Users className="h-6 w-6 text-primary" /> {t("customers.title")}</h1>
-          <p className="text-sm text-muted-foreground">{rows.length} {t("common.total")}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={exportCsv} className="gap-2"><Download className="h-4 w-4" /> {t("common.export")}</Button>
-          <Button onClick={() => { setEditing(empty); setOpen(true); }} className="gap-2"><Plus className="h-4 w-4" /> {t("customers.new")}</Button>
-        </div>
-      </div>
+      <PageHeader
+        icon={Users} title={t("customers.title")} subtitle={`${rows.length} ${t("common.total")}`} colorVar="primary"
+        actions={<Button onClick={() => { setEditing(empty); setOpen(true); }} className="gap-2"><Plus className="h-4 w-4" /> {t("customers.new")}</Button>}
+      />
 
-      <Card className="p-3">
-        <div className="relative">
-          <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder={t("common.search")} value={q} onChange={(e) => setQ(e.target.value)} className="ps-9" />
-        </div>
-      </Card>
-
-      <Card>
-        <Table>
-          <TableHeader><TableRow>
-            <TableHead>{t("common.name")}</TableHead>
-            <TableHead>{t("common.phone")}</TableHead>
-            <TableHead>{t("common.type")}</TableHead>
-            <TableHead>{t("customers.balance")}</TableHead>
-            <TableHead>{t("customers.loyaltyPoints")}</TableHead>
-            <TableHead className="text-end">{t("common.actions")}</TableHead>
-          </TableRow></TableHeader>
-          <TableBody>
-            {filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
-            ) : filtered.map((r) => (
-              <TableRow key={r.id} className="cursor-pointer" onClick={() => openDetail(r)}>
-                <TableCell className="font-medium">{r.name}</TableCell>
-                <TableCell dir="ltr">{r.phone ?? "—"}</TableCell>
-                <TableCell><Badge variant="secondary">{t(`customers.type.${r.customer_type}`)}</Badge></TableCell>
-                <TableCell className={Number(r.balance) > 0 ? "text-destructive font-mono" : "font-mono"}>{fmtMoney(r.balance)}</TableCell>
-                <TableCell className="font-mono">{Number(r.loyalty_points).toFixed(0)}</TableCell>
-                <TableCell className="text-end" onClick={(e) => e.stopPropagation()}>
-                  <Button size="icon" variant="ghost" onClick={() => { setEditing(r); setOpen(true); }}><Pencil className="h-4 w-4" /></Button>
-                  <Button size="icon" variant="ghost" onClick={() => del(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+      <DataTable
+        data={rows} columns={columns} isLoading={loading}
+        rowKey={(r) => r.id} onRowClick={openDetail}
+        exportName="customers" exportTitle="Customers"
+        searchKeys={["name", "phone", "email", "city"]}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl">
