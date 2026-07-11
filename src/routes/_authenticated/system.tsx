@@ -37,7 +37,7 @@ function SystemLayout() {
         {NAV.map((n) => (
           <Link
             key={n.to}
-            to={n.to}
+            to={n.to as any}
             activeOptions={{ exact: n.exact }}
             activeProps={{ className: "bg-primary text-primary-foreground" }}
             className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm hover:bg-accent"
