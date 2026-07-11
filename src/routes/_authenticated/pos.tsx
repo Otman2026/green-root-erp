@@ -47,7 +47,7 @@ function POSPage() {
   useEffect(() => {
     (async () => {
       const [p, c] = await Promise.all([
-        supabase.from("products").select("id,name,sku,barcode,qr_code,selling_price,price_wholesale,price_semi_wholesale,stock_quantity,category_id,supplier_id,active_ingredient").eq("is_archived", false).order("name").limit(300),
+        supabase.from("products").select("id,name,sku,barcode,qr_code,selling_price,price_wholesale,price_semi_wholesale,stock_quantity,category_id,supplier_id,active_ingredient").order("name").limit(300),
         supabase.from("customers").select("id,name,customer_type,loyalty_points,balance").eq("is_active", true).order("name").limit(500),
       ]);
       setProducts((p.data ?? []) as any); setCustomers((c.data ?? []) as any);
