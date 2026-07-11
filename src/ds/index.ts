@@ -61,6 +61,7 @@ export {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 export { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 export { toast } from "sonner";
 
 // DS composites
