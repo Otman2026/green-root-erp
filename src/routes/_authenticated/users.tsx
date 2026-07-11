@@ -1,10 +1,12 @@
-import { Button, Input, Card, Badge, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Switch } from "@/ds";
+import { Button, Input, Card, Badge, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Switch, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, Label } from "@/ds";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { UserCog, Search, Archive, ArchiveRestore, Pencil, ShieldCheck } from "lucide-react";
+import { UserCog, Search, Archive, ArchiveRestore, ShieldCheck, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { createEmployee } from "@/lib/employees.functions";
 
 export const Route = createFileRoute("/_authenticated/users")({ component: UsersPage });
 
