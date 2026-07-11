@@ -36,14 +36,14 @@ export function GlobalSearch({ open, onOpenChange }: { open: boolean; onOpenChan
           supabase.from("products").select("id,name,name_ar,sku").or(`name.ilike.${like},name_ar.ilike.${like},sku.ilike.${like}`).limit(6),
           supabase.from("customers").select("id,name,phone").or(`name.ilike.${like},phone.ilike.${like}`).limit(6),
           supabase.from("suppliers").select("id,name,phone").or(`name.ilike.${like},phone.ilike.${like}`).limit(6),
-          supabase.from("sales").select("id,invoice_number,total").ilike("invoice_number", like).limit(6),
+          supabase.from("sales").select("id,invoice_no,total").ilike("invoice_no", like).limit(6),
         ]);
         if (ctl.signal.aborted) return;
         const out: Result[] = [];
         (p.data ?? []).forEach((r) => out.push({ type: "product", id: r.id, label: r.name_ar || r.name || "", sub: r.sku || "", to: "/products" }));
         (c.data ?? []).forEach((r) => out.push({ type: "customer", id: r.id, label: r.name || "", sub: r.phone || "", to: "/customers" }));
         (s.data ?? []).forEach((r) => out.push({ type: "supplier", id: r.id, label: r.name || "", sub: r.phone || "", to: "/suppliers" }));
-        (sa.data ?? []).forEach((r) => out.push({ type: "sale", id: r.id, label: r.invoice_number || "", sub: `${r.total} MAD`, to: "/sales" }));
+        (sa.data ?? []).forEach((r) => out.push({ type: "sale", id: r.id, label: r.invoice_no || "", sub: `${r.total} MAD`, to: "/sales" }));
         setResults(out);
       } catch { /* ignore */ }
     })();
@@ -94,7 +94,7 @@ export function GlobalSearch({ open, onOpenChange }: { open: boolean; onOpenChan
             <Sparkles className="mr-2 h-4 w-4" />التشخيص بالذكاء الاصطناعي
           </CommandItem>
           {MODULES.slice(0, 20).map((m) => (
-            <CommandItem key={m.key} onSelect={() => goto(m.href)}>
+            <CommandItem key={m.key} onSelect={() => goto(m.path)}>
               <m.icon className="mr-2 h-4 w-4" />
               {t(m.labelKey)}
             </CommandItem>
