@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWarehousesRouteImport } from './routes/_authenticated/warehouses'
+import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSeedsRouteImport } from './routes/_authenticated/seeds'
@@ -20,10 +21,12 @@ import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as AuthenticatedPesticidesRouteImport } from './routes/_authenticated/pesticides'
+import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedFertilizersRouteImport } from './routes/_authenticated/fertilizers'
 import { Route as AuthenticatedEquipmentRouteImport } from './routes/_authenticated/equipment'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
 import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
 
@@ -44,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedWarehousesRoute = AuthenticatedWarehousesRouteImport.update({
   id: '/warehouses',
   path: '/warehouses',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
@@ -81,6 +89,11 @@ const AuthenticatedPesticidesRoute = AuthenticatedPesticidesRouteImport.update({
   path: '/pesticides',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFertilizersRoute =
   AuthenticatedFertilizersRouteImport.update({
     id: '/fertilizers',
@@ -102,6 +115,11 @@ const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBranchesRoute = AuthenticatedBranchesRouteImport.update({
+  id: '/branches',
+  path: '/branches',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
   id: '/ai',
   path: '/ai',
@@ -118,10 +136,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRoute
   '/ai': typeof AuthenticatedAiRoute
+  '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/inventory': typeof AuthenticatedInventoryRoute
   '/pesticides': typeof AuthenticatedPesticidesRoute
   '/products': typeof AuthenticatedProductsRoute
   '/reports': typeof AuthenticatedReportsRoute
@@ -129,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
 }
 export interface FileRoutesByTo {
@@ -136,10 +157,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/accounting': typeof AuthenticatedAccountingRoute
   '/ai': typeof AuthenticatedAiRoute
+  '/branches': typeof AuthenticatedBranchesRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipment': typeof AuthenticatedEquipmentRoute
   '/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/inventory': typeof AuthenticatedInventoryRoute
   '/pesticides': typeof AuthenticatedPesticidesRoute
   '/products': typeof AuthenticatedProductsRoute
   '/reports': typeof AuthenticatedReportsRoute
@@ -147,6 +170,7 @@ export interface FileRoutesByTo {
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/users': typeof AuthenticatedUsersRoute
   '/warehouses': typeof AuthenticatedWarehousesRoute
 }
 export interface FileRoutesById {
@@ -156,10 +180,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
   '/_authenticated/ai': typeof AuthenticatedAiRoute
+  '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipment': typeof AuthenticatedEquipmentRoute
   '/_authenticated/fertilizers': typeof AuthenticatedFertilizersRoute
+  '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/pesticides': typeof AuthenticatedPesticidesRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
@@ -167,6 +193,7 @@ export interface FileRoutesById {
   '/_authenticated/seeds': typeof AuthenticatedSeedsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
+  '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/warehouses': typeof AuthenticatedWarehousesRoute
 }
 export interface FileRouteTypes {
@@ -176,10 +203,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/accounting'
     | '/ai'
+    | '/branches'
     | '/customers'
     | '/dashboard'
     | '/equipment'
     | '/fertilizers'
+    | '/inventory'
     | '/pesticides'
     | '/products'
     | '/reports'
@@ -187,6 +216,7 @@ export interface FileRouteTypes {
     | '/seeds'
     | '/settings'
     | '/suppliers'
+    | '/users'
     | '/warehouses'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -194,10 +224,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/accounting'
     | '/ai'
+    | '/branches'
     | '/customers'
     | '/dashboard'
     | '/equipment'
     | '/fertilizers'
+    | '/inventory'
     | '/pesticides'
     | '/products'
     | '/reports'
@@ -205,6 +237,7 @@ export interface FileRouteTypes {
     | '/seeds'
     | '/settings'
     | '/suppliers'
+    | '/users'
     | '/warehouses'
   id:
     | '__root__'
@@ -213,10 +246,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/accounting'
     | '/_authenticated/ai'
+    | '/_authenticated/branches'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/equipment'
     | '/_authenticated/fertilizers'
+    | '/_authenticated/inventory'
     | '/_authenticated/pesticides'
     | '/_authenticated/products'
     | '/_authenticated/reports'
@@ -224,6 +259,7 @@ export interface FileRouteTypes {
     | '/_authenticated/seeds'
     | '/_authenticated/settings'
     | '/_authenticated/suppliers'
+    | '/_authenticated/users'
     | '/_authenticated/warehouses'
   fileRoutesById: FileRoutesById
 }
@@ -261,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/warehouses'
       fullPath: '/warehouses'
       preLoaderRoute: typeof AuthenticatedWarehousesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users': {
+      id: '/_authenticated/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthenticatedUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/suppliers': {
@@ -312,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPesticidesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/inventory': {
+      id: '/_authenticated/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AuthenticatedInventoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/fertilizers': {
       id: '/_authenticated/fertilizers'
       path: '/fertilizers'
@@ -340,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/branches': {
+      id: '/_authenticated/branches'
+      path: '/branches'
+      fullPath: '/branches'
+      preLoaderRoute: typeof AuthenticatedBranchesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/ai': {
       id: '/_authenticated/ai'
       path: '/ai'
@@ -360,10 +417,12 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
   AuthenticatedAiRoute: typeof AuthenticatedAiRoute
+  AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipmentRoute: typeof AuthenticatedEquipmentRoute
   AuthenticatedFertilizersRoute: typeof AuthenticatedFertilizersRoute
+  AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedPesticidesRoute: typeof AuthenticatedPesticidesRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
@@ -371,16 +430,19 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSeedsRoute: typeof AuthenticatedSeedsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
+  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedWarehousesRoute: typeof AuthenticatedWarehousesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
   AuthenticatedAiRoute: AuthenticatedAiRoute,
+  AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipmentRoute: AuthenticatedEquipmentRoute,
   AuthenticatedFertilizersRoute: AuthenticatedFertilizersRoute,
+  AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedPesticidesRoute: AuthenticatedPesticidesRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
@@ -388,6 +450,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSeedsRoute: AuthenticatedSeedsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
+  AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedWarehousesRoute: AuthenticatedWarehousesRoute,
 }
 
