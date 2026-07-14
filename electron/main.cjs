@@ -1,4 +1,5 @@
 const { app, BrowserWindow, shell } = require("electron");
+const path = require("path");
 
 const APP_URL = "https://green-root-erp.lovable.app";
 
@@ -9,6 +10,7 @@ function createWindow() {
     minWidth: 1100,
     minHeight: 720,
     title: "Haytam AGRI",
+    icon: path.join(__dirname, "..", "build", "icon.ico"),
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,
