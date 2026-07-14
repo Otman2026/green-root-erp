@@ -29,6 +29,18 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Ensure app icon exists
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path build | Out-Null
+          if (-Not (Test-Path "build/icon.ico")) {
+            Write-Host "Generating build/icon.ico from public/icon-512.png"
+            npm i -g png-to-ico
+            png-to-ico public/icon-512.png > build/icon.ico
+          } else {
+            Write-Host "build/icon.ico already present"
+          }
+
       - name: Build Windows installer (NSIS)
         run: npx electron-builder --win nsis --x64 --publish never
         env:
