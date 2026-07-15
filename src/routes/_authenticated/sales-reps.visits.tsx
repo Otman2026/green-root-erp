@@ -39,6 +39,8 @@ function VisitsPage() {
     const { error } = await supabase.from("sales_visits").insert({
       ...form,
       customer_id: form.customer_id || null,
+      latitude: form.latitude === "" || form.latitude == null ? null : Number(form.latitude),
+      longitude: form.longitude === "" || form.longitude == null ? null : Number(form.longitude),
       next_action_date: form.next_action_date || null,
     });
     if (error) { toast.error(error.message); return; }
