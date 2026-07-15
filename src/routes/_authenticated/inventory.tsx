@@ -54,7 +54,7 @@ function InventoryPage() {
   const save = async () => {
     if (!form.product_id) return toast.error(t("nav.products"));
     const qty = Number(form.quantity);
-    if (!qty || qty <= 0) return toast.error(t("common.quantity"));
+    if (!Number.isFinite(qty) || qty <= 0) return toast.error(t("common.quantity"));
     const { error } = await supabase.from("stock_movements").insert({
       product_id: form.product_id, type: form.type, quantity: qty,
       reason: form.reason || null, reference: form.reference || null,
