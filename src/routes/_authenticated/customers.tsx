@@ -141,6 +141,16 @@ function CustomersPage() {
               <Input placeholder="tomato, wheat, olive" value={(editing.crops ?? []).join(", ")} onChange={(e) => setEditing({ ...editing, crops: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} />
             </div>
             <div className="space-y-1.5"><Label>{t("customers.creditLimit")}</Label><Input type="number" step="any" value={editing.credit_limit ?? 0} onChange={(e) => setEditing({ ...editing, credit_limit: Number(e.target.value) })} /></div>
+            <div className="space-y-1.5">
+              <Label>{t("common.status")}</Label>
+              <Select value={(editing.is_active ?? true) ? "active" : "inactive"} onValueChange={(v) => setEditing({ ...editing, is_active: v === "active" })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">{t("common.active")}</SelectItem>
+                  <SelectItem value="inactive">{t("common.inactive")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="col-span-2 space-y-1.5"><Label>{t("common.notes")}</Label><Textarea value={editing.notes ?? ""} onChange={(e) => setEditing({ ...editing, notes: e.target.value })} /></div>
           </div>
           <DialogFooter>
