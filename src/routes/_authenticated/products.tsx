@@ -45,11 +45,19 @@ function ProductsPage() {
 
   const archiveMut = useMutation({
     mutationFn: archiveProduct,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["products"] }); toast.success("تمت الأرشفة"); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+      qc.invalidateQueries({ queryKey: ["product-stats"] });
+      toast.success("تمت الأرشفة");
+    },
   });
   const restoreMut = useMutation({
     mutationFn: restoreProduct,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["products"] }); toast.success("تمت الاستعادة"); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+      qc.invalidateQueries({ queryKey: ["product-stats"] });
+      toast.success("تمت الاستعادة");
+    },
   });
   const deleteMut = useMutation({
     mutationFn: deleteProduct,
