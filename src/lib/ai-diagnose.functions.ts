@@ -141,8 +141,8 @@ ${kbContext}`;
       const { output } = await generateText({
         model,
         output: Output.object({ schema: DiagnosisSchema }),
+        system,
         messages: [
-          { role: "system", content: system },
           { role: "user", content: userContent },
         ],
       });

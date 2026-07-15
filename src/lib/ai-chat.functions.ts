@@ -90,14 +90,11 @@ Use the KNOWLEDGE BASE CONTEXT below as primary reference. Cite dosages/methods 
 KNOWLEDGE BASE CONTEXT:
 ${kbContext || "(no matching entries - use general expertise)"}`;
 
-    const messages = [
-      { role: "system" as const, content: system },
-      ...((history ?? []) as Array<{ role: "user" | "assistant"; content: string }>).map((m) => ({ role: m.role, content: m.content })),
-    ];
+    const messages = ((history ?? []) as Array<{ role: "user" | "assistant"; content: string }>).map((m) => ({ role: m.role, content: m.content }));
 
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway("google/gemini-3-flash-preview");
-    const { text } = await generateText({ model, messages });
+    const { text } = await generateText({ model, system, messages });
 
     await supabase.from("ai_messages").insert({
       conversation_id: conversationId, role: "assistant", content: text,
