@@ -11,7 +11,15 @@ const Input = z.object({
   lang: z.enum(["ar", "fr", "en"]).default("ar"),
 });
 
-const emptyMatchedIds = {
+type MatchedIds = {
+  disease_ids: string[];
+  pest_ids: string[];
+  weed_ids: string[];
+  pesticide_ids: string[];
+  fertilizer_ids: string[];
+};
+
+const emptyMatchedIds: MatchedIds = {
   disease_ids: [],
   pest_ids: [],
   weed_ids: [],
@@ -47,8 +55,14 @@ function normalizeConfidence(value: unknown): "low" | "medium" | "high" {
   return value === "high" || value === "medium" || value === "low" ? value : "low";
 }
 
-function classifyIds(ids: string[], kb: any) {
-  const matched = { ...emptyMatchedIds };
+function classifyIds(ids: string[], kb: any): MatchedIds {
+  const matched: MatchedIds = {
+    disease_ids: [],
+    pest_ids: [],
+    weed_ids: [],
+    pesticide_ids: [],
+    fertilizer_ids: [],
+  };
   const known = {
     disease_ids: new Set((kb?.diseases ?? []).map((item: any) => item.id)),
     pest_ids: new Set((kb?.pests ?? []).map((item: any) => item.id)),
@@ -99,7 +113,13 @@ function normalizeMatchedIds(value: unknown, kb: any) {
     return direct;
   }
 
-  return { ...emptyMatchedIds };
+  return {
+    disease_ids: [],
+    pest_ids: [],
+    weed_ids: [],
+    pesticide_ids: [],
+    fertilizer_ids: [],
+  };
 }
 
 function parseJsonCandidate(text: string): unknown {
@@ -342,19 +362,18 @@ ${kbContext}`;
         system,
         messages: [{ role: "user", content: userContent }],
       });
-      output = res.output;
+      output = normalizeDiagnosisPayload(res.output, kb, data.description);
     } catch (e: any) {
-      // Fallback: try to parse raw text if schema validation failed
+      // Fallback: accept common valid-but-different JSON shapes from the model.
       if (NoObjectGeneratedError.isInstance(e) && e.text) {
         try {
-          const cleaned = e.text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-          const parsed = JSON.parse(cleaned);
-          output = DiagnosisSchema.partial().parse(parsed) as any;
+          const parsed = parseJsonCandidate(e.text);
+          output = normalizeDiagnosisPayload(parsed, kb, data.description, e.text);
         } catch {
-          throw new Error("AI diagnosis failed: could not parse response");
+          output = fallbackDiagnosis(data.description, kb, e.text);
         }
       } else {
-        throw new Error(e?.message ?? "AI diagnosis failed");
+        output = fallbackDiagnosis(data.description, kb);
       }
     }
 
