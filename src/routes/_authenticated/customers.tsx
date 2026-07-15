@@ -73,12 +73,14 @@ function CustomersPage() {
 
   const openDetail = async (c: Customer) => {
     setDetail(c);
-    const [inv, pay] = await Promise.all([
+    const [inv, pay, ly] = await Promise.all([
       supabase.from("sales").select("*").eq("customer_id", c.id).order("created_at", { ascending: false }),
       supabase.from("receipts").select("*").eq("party_type", "customer").eq("party_id", c.id).order("received_at", { ascending: false }),
+      supabase.from("loyalty_transactions").select("*").eq("customer_id", c.id).order("created_at", { ascending: false }),
     ]);
     setInvoices((inv.data ?? []) as any[]);
     setPayments((pay.data ?? []) as any[]);
+    setLoyaltyTx((ly.data ?? []) as any[]);
   };
 
   const columns: Column<Customer>[] = [
