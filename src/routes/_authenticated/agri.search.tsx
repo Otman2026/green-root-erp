@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/agri/search")({ component: UnifiedSearch });
 
-interface Hit { id: string; kind: string; title: string; subtitle?: string; meta?: string; to: string; icon: any; color: string }
+type DetailKind = "plant" | "disease" | "pest";
+interface Hit { id: string; kind: string; title: string; subtitle?: string; meta?: string; detailKind: DetailKind | null; listTo: string; icon: any; color: string }
 
 function UnifiedSearch() {
   const [q, setQ] = useState("");
@@ -25,13 +26,13 @@ function UnifiedSearch() {
         supabase.from("agri_seeds").select("id,variety_name,crop_name,company,country_of_origin,seed_type"),
       ]);
       const hits: Hit[] = [
-        ...((pl.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "محصول", title: r.common_name_ar, subtitle: [r.common_name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: [r.family, r.cycle].filter(Boolean).join(" · "), to: "/agri/plants", icon: Sprout, color: "text-green-600" })),
-        ...((di.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "مرض", title: r.name_ar, subtitle: [r.name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: `${r.type} · خطورة ${r.severity ?? "?"}`, to: "/agri/diseases", icon: ShieldAlert, color: "text-red-600" })),
-        ...((pe.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "آفة", title: r.name_ar, subtitle: [r.name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: `${r.type} · خطورة ${r.severity ?? "?"}`, to: "/agri/pests", icon: Bug, color: "text-orange-600" })),
-        ...((we.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "عشبة ضارة", title: r.name_ar, subtitle: [r.name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: [r.weed_type, r.affected_crops].filter(Boolean).join(" · "), to: "/agri/weeds", icon: Wheat, color: "text-yellow-700" })),
-        ...((fe.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "سماد", title: r.name_ar, subtitle: r.name_fr ?? "", meta: `${r.type ?? ""} · NPK ${r.n_percent ?? 0}-${r.p_percent ?? 0}-${r.k_percent ?? 0} · ${r.suitable_crops ?? ""}`, to: "/agri/fertilizers", icon: FlaskConical, color: "text-blue-600" })),
-        ...((ps.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "مبيد", title: r.name_ar, subtitle: `${r.name_fr ?? ""} · ${r.active_ingredient ?? ""}`, meta: [r.category, r.target_pests, r.target_diseases].filter(Boolean).join(" · "), to: "/agri/pesticides", icon: Beaker, color: "text-purple-600" })),
-        ...((se.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "بذور", title: `${r.variety_name} — ${r.crop_name}`, subtitle: [r.company, r.country_of_origin].filter(Boolean).join(" · "), meta: r.seed_type ?? "", to: "/agri/seeds", icon: Leaf, color: "text-emerald-600" })),
+        ...((pl.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "محصول", title: r.common_name_ar, subtitle: [r.common_name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: [r.family, r.cycle].filter(Boolean).join(" · "), detailKind: "plant" as DetailKind, listTo: "/agri/plants", icon: Sprout, color: "text-green-600" })),
+        ...((di.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "مرض", title: r.name_ar, subtitle: [r.name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: `${r.type} · خطورة ${r.severity ?? "?"}`, detailKind: "disease" as DetailKind, listTo: "/agri/diseases", icon: ShieldAlert, color: "text-red-600" })),
+        ...((pe.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "آفة", title: r.name_ar, subtitle: [r.name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: `${r.type} · خطورة ${r.severity ?? "?"}`, detailKind: "pest" as DetailKind, listTo: "/agri/pests", icon: Bug, color: "text-orange-600" })),
+        ...((we.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "عشبة ضارة", title: r.name_ar, subtitle: [r.name_fr, r.scientific_name].filter(Boolean).join(" · "), meta: [r.weed_type, r.affected_crops].filter(Boolean).join(" · "), detailKind: null, listTo: "/agri/weeds", icon: Wheat, color: "text-yellow-700" })),
+        ...((fe.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "سماد", title: r.name_ar, subtitle: r.name_fr ?? "", meta: `${r.type ?? ""} · NPK ${r.n_percent ?? 0}-${r.p_percent ?? 0}-${r.k_percent ?? 0} · ${r.suitable_crops ?? ""}`, detailKind: null, listTo: "/agri/fertilizers", icon: FlaskConical, color: "text-blue-600" })),
+        ...((ps.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "مبيد", title: r.name_ar, subtitle: `${r.name_fr ?? ""} · ${r.active_ingredient ?? ""}`, meta: [r.category, r.target_pests, r.target_diseases].filter(Boolean).join(" · "), detailKind: null, listTo: "/agri/pesticides", icon: Beaker, color: "text-purple-600" })),
+        ...((se.data ?? []) as any[]).map((r) => ({ id: r.id, kind: "بذور", title: `${r.variety_name} — ${r.crop_name}`, subtitle: [r.company, r.country_of_origin].filter(Boolean).join(" · "), meta: r.seed_type ?? "", detailKind: null, listTo: "/agri/seeds", icon: Leaf, color: "text-emerald-600" })),
       ];
       setAll(hits);
       setLoading(false);
@@ -79,8 +80,8 @@ function UnifiedSearch() {
             <span className="text-sm text-muted-foreground">{hits.length}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {hits.map((h) => (
-              <Link key={`${h.kind}-${h.id}`} to={h.to} className="block">
+            {hits.map((h) => {
+              const inner = (
                 <Card className="p-3 hover:shadow transition flex gap-3 items-start">
                   <h.icon className={`w-5 h-5 mt-0.5 ${h.color}`} />
                   <div className="min-w-0 flex-1">
@@ -89,8 +90,13 @@ function UnifiedSearch() {
                     {h.meta && <div className="text-xs text-muted-foreground truncate">{h.meta}</div>}
                   </div>
                 </Card>
-              </Link>
-            ))}
+              );
+              const key = `${h.kind}-${h.id}`;
+              if (h.detailKind === "plant") return <Link key={key} to="/agri/plants/$id" params={{ id: h.id }} className="block">{inner}</Link>;
+              if (h.detailKind === "disease") return <Link key={key} to="/agri/diseases/$id" params={{ id: h.id }} className="block">{inner}</Link>;
+              if (h.detailKind === "pest") return <Link key={key} to="/agri/pests/$id" params={{ id: h.id }} className="block">{inner}</Link>;
+              return <Link key={key} to={h.listTo as any} className="block">{inner}</Link>;
+            })}
           </div>
         </Card>
       ))}

@@ -152,7 +152,7 @@ function PlantDetail() {
         </Card>
       )}
 
-      <Button asChild variant="outline"><Link to="/agri/treatments-finder" search={{ plant: plant.common_name_ar } as any}>🔬 مستشار العلاج لهذا المحصول</Link></Button>
+      <Button asChild variant="outline"><Link to="/agri/treatments-finder">🔬 مستشار العلاج</Link></Button>
     </div>
   );
 }
