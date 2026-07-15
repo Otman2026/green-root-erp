@@ -29,15 +29,34 @@ function LoyaltyPage() {
 
   const saveRule = async () => {
     if (!rule.name) return toast.error(t("common.name"));
-    const res = rule.id ? await supabase.from("loyalty_rules").update(rule).eq("id", rule.id) : await supabase.from("loyalty_rules").insert(rule);
+    const payload = {
+      name: rule.name,
+      points_per_amount: Number(rule.points_per_amount) || 0,
+      amount_unit: Number(rule.amount_unit) || 1,
+      redemption_value: Number(rule.redemption_value) || 0,
+      min_redeem_points: Number(rule.min_redeem_points) || 0,
+      is_active: rule.is_active ?? true,
+    };
+    const res = rule.id ? await supabase.from("loyalty_rules").update(payload).eq("id", rule.id) : await supabase.from("loyalty_rules").insert(payload);
     if (res.error) return toast.error(res.error.message);
-    toast.success(t("auth.success")); setRuleOpen(false); setRule({ name: "", points_per_amount: 1, amount_unit: 100, redemption_value: 1, min_redeem_points: 0 }); load();
+    toast.success(t("auth.success")); setRuleOpen(false); setRule({ name: "", points_per_amount: 1, amount_unit: 100, redemption_value: 1, min_redeem_points: 0, is_active: true }); load();
   };
   const delRule = async (id: string) => { if (!confirm(t("common.confirmDelete"))) return; await supabase.from("loyalty_rules").delete().eq("id", id); load(); };
 
   const saveCoupon = async () => {
     if (!coupon.code) return toast.error("code");
-    const res = coupon.id ? await supabase.from("coupons").update(coupon).eq("id", coupon.id) : await supabase.from("coupons").insert(coupon);
+    const payload = {
+      code: coupon.code,
+      discount_type: coupon.discount_type,
+      value: Number(coupon.value) || 0,
+      valid_from: coupon.valid_from || null,
+      valid_to: coupon.valid_to || null,
+      usage_limit: coupon.usage_limit ?? null,
+      min_total: coupon.min_total ?? null,
+      is_active: coupon.is_active ?? true,
+      description: coupon.description || null,
+    };
+    const res = coupon.id ? await supabase.from("coupons").update(payload).eq("id", coupon.id) : await supabase.from("coupons").insert(payload);
     if (res.error) return toast.error(res.error.message);
     toast.success(t("auth.success")); setCouponOpen(false); setCoupon({ code: "", discount_type: "percent", value: 10, is_active: true }); load();
   };
