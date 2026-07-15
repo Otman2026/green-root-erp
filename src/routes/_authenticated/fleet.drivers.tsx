@@ -27,11 +27,17 @@ function DriversPage() {
   useEffect(() => { load(); }, []);
 
   function openNew() { setEdit(null); setForm(empty); setOpen(true); }
-  function openEdit(r: any) { setEdit(r); setForm({ ...r }); setOpen(true); }
+  function openEdit(r: any) {
+    setEdit(r);
+    const { hr_employees, id, created_at, updated_at, organization_id, ...clean } = r;
+    setForm(clean);
+    setOpen(true);
+  }
 
   async function save() {
     if (!form.full_name) { toast.error(t("common.fillAll")); return; }
-    const payload = { ...form, license_expiry: form.license_expiry || null };
+    const { hr_employees, id, created_at, updated_at, organization_id, ...rest } = form;
+    const payload = { ...rest, license_expiry: form.license_expiry || null };
     const q = edit
       ? supabase.from("fleet_drivers").update(payload).eq("id", edit.id)
       : supabase.from("fleet_drivers").insert(payload);

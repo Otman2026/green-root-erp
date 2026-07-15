@@ -24,11 +24,17 @@ function VehiclesPage() {
   useEffect(() => { load(); }, []);
 
   function openNew() { setEdit(null); setForm(empty); setOpen(true); }
-  function openEdit(r: any) { setEdit(r); setForm({ ...r }); setOpen(true); }
+  function openEdit(r: any) {
+    setEdit(r);
+    const { id, created_at, updated_at, last_lat, last_lng, last_speed, last_ping_at, organization_id, ...clean } = r;
+    setForm(clean);
+    setOpen(true);
+  }
 
   async function save() {
     if (!form.plate) { toast.error(t("fleet.plateRequired")); return; }
-    const payload = { ...form, year: form.year ? Number(form.year) : null, odometer: Number(form.odometer || 0), insurance_expiry: form.insurance_expiry || null, license_expiry: form.license_expiry || null };
+    const { id, created_at, updated_at, last_lat, last_lng, last_speed, last_ping_at, organization_id, ...rest } = form;
+    const payload = { ...rest, year: form.year ? Number(form.year) : null, odometer: Number(form.odometer || 0), insurance_expiry: form.insurance_expiry || null, license_expiry: form.license_expiry || null };
     const q = edit
       ? supabase.from("fleet_vehicles").update(payload).eq("id", edit.id)
       : supabase.from("fleet_vehicles").insert(payload);
