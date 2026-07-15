@@ -228,6 +228,22 @@ async function retrieveKnowledge(supabase: any, plant: string | undefined, descr
 
 const stringArraySchema = z.preprocess(toStringArray, z.array(z.string()).default([]));
 
+const AiDiagnosisSchema = z.object({
+  diagnosis: z.string().optional(),
+  confidence: z.string().optional(),
+  matched_ids: z.any().optional(),
+  symptoms: z.any().optional(),
+  symptoms_analysis: z.any().optional(),
+  causes: z.any().optional(),
+  treatment_options: z.any().optional(),
+  recommendations: z.any().optional(),
+  treatments_chemical: z.any().optional(),
+  treatments_organic: z.any().optional(),
+  treatments_cultural: z.any().optional(),
+  prevention: z.any().optional(),
+  alternatives: z.any().optional(),
+});
+
 const MatchedIdsSchema = z.preprocess((value) => normalizeMatchedIds(value, null), z.object({
   disease_ids: stringArraySchema,
   pest_ids: stringArraySchema,
@@ -346,6 +362,7 @@ ${kb.treatments.map((t: any) => `- id=${t.id} | ${t.title} | method=${t.method ?
 Base your diagnosis STRICTLY on the KNOWLEDGE BASE CONTEXT when a match exists. Populate matched_ids with the exact ids you used.
 If no strong match exists, provide best-effort diagnosis and set confidence to "low".
 Always provide chemical + organic + cultural treatment options. Be concise, actionable, evidence-based.
+Return a single JSON object, not an array. Use these keys: diagnosis, confidence, matched_ids, symptoms, causes, treatments_chemical, treatments_organic, treatments_cultural, prevention, alternatives.
 
 ${kbContext}`;
 
@@ -358,7 +375,7 @@ ${kbContext}`;
     try {
       const res = await generateText({
         model,
-        output: Output.object({ schema: DiagnosisSchema }),
+        output: Output.object({ schema: AiDiagnosisSchema }),
         system,
         messages: [{ role: "user", content: userContent }],
       });
