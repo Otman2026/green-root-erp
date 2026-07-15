@@ -195,6 +195,98 @@ export type Database = {
         }
         Relationships: []
       }
+      agri_fertilizers: {
+        Row: {
+          application_method: string | null
+          brand: string | null
+          cautions: string | null
+          composition: string | null
+          created_at: string
+          dosage: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          k_percent: number | null
+          manufacturer: string | null
+          micro_nutrients: string | null
+          n_percent: number | null
+          name_ar: string
+          name_en: string | null
+          name_fr: string | null
+          organization_id: string
+          p_percent: number | null
+          ph_effect: string | null
+          product_id: string | null
+          references_url: string | null
+          suitable_crops: string | null
+          suitable_stages: string | null
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_method?: string | null
+          brand?: string | null
+          cautions?: string | null
+          composition?: string | null
+          created_at?: string
+          dosage?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          k_percent?: number | null
+          manufacturer?: string | null
+          micro_nutrients?: string | null
+          n_percent?: number | null
+          name_ar: string
+          name_en?: string | null
+          name_fr?: string | null
+          organization_id?: string
+          p_percent?: number | null
+          ph_effect?: string | null
+          product_id?: string | null
+          references_url?: string | null
+          suitable_crops?: string | null
+          suitable_stages?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_method?: string | null
+          brand?: string | null
+          cautions?: string | null
+          composition?: string | null
+          created_at?: string
+          dosage?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          k_percent?: number | null
+          manufacturer?: string | null
+          micro_nutrients?: string | null
+          n_percent?: number | null
+          name_ar?: string
+          name_en?: string | null
+          name_fr?: string | null
+          organization_id?: string
+          p_percent?: number | null
+          ph_effect?: string | null
+          product_id?: string | null
+          references_url?: string | null
+          suitable_crops?: string | null
+          suitable_stages?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_fertilizers_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agri_pest_images: {
         Row: {
           caption: string | null
@@ -223,6 +315,110 @@ export type Database = {
             columns: ["pest_id"]
             isOneToOne: false
             referencedRelation: "agri_pests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_pesticides: {
+        Row: {
+          active_ingredient: string
+          alternatives: string | null
+          application_method: string | null
+          category: string | null
+          cautions: string | null
+          concentration: string | null
+          created_at: string
+          dosage: string | null
+          formulation: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          manufacturer: string | null
+          mode_of_action: string | null
+          name_ar: string
+          name_en: string | null
+          name_fr: string | null
+          organization_id: string
+          pre_harvest_interval_days: number | null
+          product_id: string | null
+          re_entry_interval_hours: number | null
+          references_url: string | null
+          suitable_crops: string | null
+          target_diseases: string | null
+          target_pests: string | null
+          target_weeds: string | null
+          toxicity_class: string | null
+          trade_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          active_ingredient: string
+          alternatives?: string | null
+          application_method?: string | null
+          category?: string | null
+          cautions?: string | null
+          concentration?: string | null
+          created_at?: string
+          dosage?: string | null
+          formulation?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          manufacturer?: string | null
+          mode_of_action?: string | null
+          name_ar: string
+          name_en?: string | null
+          name_fr?: string | null
+          organization_id?: string
+          pre_harvest_interval_days?: number | null
+          product_id?: string | null
+          re_entry_interval_hours?: number | null
+          references_url?: string | null
+          suitable_crops?: string | null
+          target_diseases?: string | null
+          target_pests?: string | null
+          target_weeds?: string | null
+          toxicity_class?: string | null
+          trade_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active_ingredient?: string
+          alternatives?: string | null
+          application_method?: string | null
+          category?: string | null
+          cautions?: string | null
+          concentration?: string | null
+          created_at?: string
+          dosage?: string | null
+          formulation?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          manufacturer?: string | null
+          mode_of_action?: string | null
+          name_ar?: string
+          name_en?: string | null
+          name_fr?: string | null
+          organization_id?: string
+          pre_harvest_interval_days?: number | null
+          product_id?: string | null
+          re_entry_interval_hours?: number | null
+          references_url?: string | null
+          suitable_crops?: string | null
+          target_diseases?: string | null
+          target_pests?: string | null
+          target_weeds?: string | null
+          toxicity_class?: string | null
+          trade_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_pesticides_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
@@ -361,6 +557,66 @@ export type Database = {
           },
         ]
       }
+      agri_plant_fertilizers: {
+        Row: {
+          fertilizer_id: string
+          plant_id: string
+        }
+        Insert: {
+          fertilizer_id: string
+          plant_id: string
+        }
+        Update: {
+          fertilizer_id?: string
+          plant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_fertilizers_fertilizer_id_fkey"
+            columns: ["fertilizer_id"]
+            isOneToOne: false
+            referencedRelation: "agri_fertilizers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_plant_fertilizers_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_plant_pesticides: {
+        Row: {
+          pesticide_id: string
+          plant_id: string
+        }
+        Insert: {
+          pesticide_id: string
+          plant_id: string
+        }
+        Update: {
+          pesticide_id?: string
+          plant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_pesticides_pesticide_id_fkey"
+            columns: ["pesticide_id"]
+            isOneToOne: false
+            referencedRelation: "agri_pesticides"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_plant_pesticides_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agri_plant_pests: {
         Row: {
           pest_id: string
@@ -435,6 +691,36 @@ export type Database = {
           },
         ]
       }
+      agri_plant_weeds: {
+        Row: {
+          plant_id: string
+          weed_id: string
+        }
+        Insert: {
+          plant_id: string
+          weed_id: string
+        }
+        Update: {
+          plant_id?: string
+          weed_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_plant_weeds_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_plant_weeds_weed_id_fkey"
+            columns: ["weed_id"]
+            isOneToOne: false
+            referencedRelation: "agri_weeds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agri_plants: {
         Row: {
           category_id: string | null
@@ -505,6 +791,102 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "agri_plant_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agri_seeds: {
+        Row: {
+          climate_zones: string | null
+          company: string | null
+          country_of_origin: string | null
+          created_at: string
+          crop_name: string
+          cycle_days: number | null
+          density: string | null
+          description: string | null
+          disease_resistance: string | null
+          expected_yield: string | null
+          germination_rate_percent: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          organization_id: string
+          packaging_size: string | null
+          plant_id: string | null
+          planting_method: string | null
+          planting_season: string | null
+          product_id: string | null
+          purity_percent: number | null
+          seed_type: string | null
+          updated_at: string
+          variety_name: string
+        }
+        Insert: {
+          climate_zones?: string | null
+          company?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          crop_name: string
+          cycle_days?: number | null
+          density?: string | null
+          description?: string | null
+          disease_resistance?: string | null
+          expected_yield?: string | null
+          germination_rate_percent?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          organization_id?: string
+          packaging_size?: string | null
+          plant_id?: string | null
+          planting_method?: string | null
+          planting_season?: string | null
+          product_id?: string | null
+          purity_percent?: number | null
+          seed_type?: string | null
+          updated_at?: string
+          variety_name: string
+        }
+        Update: {
+          climate_zones?: string | null
+          company?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          crop_name?: string
+          cycle_days?: number | null
+          density?: string | null
+          description?: string | null
+          disease_resistance?: string | null
+          expected_yield?: string | null
+          germination_rate_percent?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          organization_id?: string
+          packaging_size?: string | null
+          plant_id?: string | null
+          planting_method?: string | null
+          planting_season?: string | null
+          product_id?: string | null
+          purity_percent?: number | null
+          seed_type?: string | null
+          updated_at?: string
+          variety_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agri_seeds_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "agri_plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agri_seeds_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
@@ -589,6 +971,152 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      agri_weeds: {
+        Row: {
+          affected_crops: string | null
+          control_biological: string | null
+          control_chemical: string | null
+          control_cultural: string | null
+          control_mechanical: string | null
+          created_at: string
+          damage: string | null
+          description: string | null
+          family: string | null
+          id: string
+          identification: string | null
+          image_url: string | null
+          is_active: boolean
+          life_cycle: string | null
+          name_ar: string
+          name_en: string | null
+          name_fr: string | null
+          organization_id: string
+          references_url: string | null
+          scientific_name: string | null
+          updated_at: string
+          weed_type: string | null
+        }
+        Insert: {
+          affected_crops?: string | null
+          control_biological?: string | null
+          control_chemical?: string | null
+          control_cultural?: string | null
+          control_mechanical?: string | null
+          created_at?: string
+          damage?: string | null
+          description?: string | null
+          family?: string | null
+          id?: string
+          identification?: string | null
+          image_url?: string | null
+          is_active?: boolean
+          life_cycle?: string | null
+          name_ar: string
+          name_en?: string | null
+          name_fr?: string | null
+          organization_id?: string
+          references_url?: string | null
+          scientific_name?: string | null
+          updated_at?: string
+          weed_type?: string | null
+        }
+        Update: {
+          affected_crops?: string | null
+          control_biological?: string | null
+          control_chemical?: string | null
+          control_cultural?: string | null
+          control_mechanical?: string | null
+          created_at?: string
+          damage?: string | null
+          description?: string | null
+          family?: string | null
+          id?: string
+          identification?: string | null
+          image_url?: string | null
+          is_active?: boolean
+          life_cycle?: string | null
+          name_ar?: string
+          name_en?: string | null
+          name_fr?: string | null
+          organization_id?: string
+          references_url?: string | null
+          scientific_name?: string | null
+          updated_at?: string
+          weed_type?: string | null
+        }
+        Relationships: []
+      }
+      ai_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          image_url: string | null
+          organization_id: string
+          role: string
+          suggestions: Json | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          organization_id?: string
+          role: string
+          suggestions?: Json | null
+          user_id?: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          organization_id?: string
+          role?: string
+          suggestions?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       app_settings: {
         Row: {
