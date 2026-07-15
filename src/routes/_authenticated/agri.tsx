@@ -23,6 +23,7 @@ function AgriHub() {
 
   const cards: Array<{ to: string; icon: any; label: string; color: string; tableKey: string | null; highlight?: boolean }> = [
     { to: "/agri/search", icon: Search, label: "البحث الموحّد", color: "text-primary", tableKey: null, highlight: true },
+    { to: "/agri/treatments-finder", icon: FlaskConical, label: "مستشار العلاج", color: "text-cyan-600", tableKey: null, highlight: true },
     { to: "/agri/plants", icon: Sprout, label: t("agri.plants"), color: "text-green-600", tableKey: "agri_plants" },
     { to: "/agri/diseases", icon: ShieldAlert, label: t("agri.diseases"), color: "text-red-600", tableKey: "agri_diseases" },
     { to: "/agri/pests", icon: Bug, label: t("agri.pests"), color: "text-orange-600", tableKey: "agri_pests" },
