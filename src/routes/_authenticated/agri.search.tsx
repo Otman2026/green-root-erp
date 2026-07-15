@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/agri/search")({ component: UnifiedSearch });
 
-interface Hit { id: string; kind: string; title: string; subtitle?: string; meta?: string; to: string; icon: any; color: string }
+type DetailKind = "plant" | "disease" | "pest";
+interface Hit { id: string; kind: string; title: string; subtitle?: string; meta?: string; detailKind: DetailKind | null; listTo: string; icon: any; color: string }
 
 function UnifiedSearch() {
   const [q, setQ] = useState("");
