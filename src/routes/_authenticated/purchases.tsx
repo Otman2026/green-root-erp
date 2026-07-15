@@ -2,7 +2,7 @@ import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger,
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Plus, ClipboardList, Trash2, CheckCircle2, PackageCheck, Eye } from "lucide-react";
+import { Plus, ClipboardList, Trash2, CheckCircle2, PackageCheck, Eye, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
@@ -74,10 +74,31 @@ function PurchasesPage() {
       po_id: po.id, supplier_id: po.supplier_id, warehouse_id: po.warehouse_id, received_by: user?.id ?? null,
     } as any).select().single();
     if (error || !r) return toast.error(error?.message ?? "Failed");
+    // Insert receipt items (trigger `trg_receipt_item_stock` handles stock_movements automatically)
     await supabase.from("purchase_receipt_items").insert(poItems.map((i: any) => ({
       receipt_id: r.id, product_id: i.product_id, qty: i.qty, unit_cost: i.unit_cost,
     })));
+    // Update received_qty on PO items so partial-receive UX is possible later
+    await Promise.all(poItems.map((i: any) =>
+      supabase.from("purchase_order_items").update({ received_qty: i.qty }).eq("id", i.id)
+    ));
     await supabase.from("purchase_orders").update({ status: "received" }).eq("id", po.id);
+    toast.success(t("auth.success")); load();
+  };
+
+  const cancelPO = async (po: any) => {
+    if (!confirm(t("common.confirmDelete"))) return;
+    const { error } = await supabase.from("purchase_orders").update({ status: "cancelled" }).eq("id", po.id);
+    if (error) return toast.error(error.message);
+    toast.success(t("auth.success")); load();
+  };
+
+  const deletePO = async (po: any) => {
+    if (!confirm(t("common.confirmDelete"))) return;
+    // Items cascade via FK; explicit delete for clarity
+    await supabase.from("purchase_order_items").delete().eq("po_id", po.id);
+    const { error } = await supabase.from("purchase_orders").delete().eq("id", po.id);
+    if (error) return toast.error(error.message);
     toast.success(t("auth.success")); load();
   };
 
