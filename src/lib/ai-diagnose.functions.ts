@@ -66,21 +66,21 @@ async function retrieveKnowledge(supabase: any, plant: string | undefined, descr
 
 const DiagnosisSchema = z.object({
   diagnosis: z.string(),
-  confidence: z.enum(["low", "medium", "high"]),
+  confidence: z.enum(["low", "medium", "high"]).default("low"),
   matched_ids: z.object({
-    disease_ids: z.array(z.string()).nullable(),
-    pest_ids: z.array(z.string()).nullable(),
-    weed_ids: z.array(z.string()).nullable(),
-    pesticide_ids: z.array(z.string()).nullable(),
-    fertilizer_ids: z.array(z.string()).nullable(),
-  }),
-  symptoms: z.array(z.string()),
-  causes: z.array(z.string()),
-  treatments_chemical: z.array(z.string()),
-  treatments_organic: z.array(z.string()),
-  treatments_cultural: z.array(z.string()),
-  prevention: z.array(z.string()),
-  alternatives: z.array(z.string()),
+    disease_ids: z.array(z.string()).nullable().default([]),
+    pest_ids: z.array(z.string()).nullable().default([]),
+    weed_ids: z.array(z.string()).nullable().default([]),
+    pesticide_ids: z.array(z.string()).nullable().default([]),
+    fertilizer_ids: z.array(z.string()).nullable().default([]),
+  }).default({ disease_ids: [], pest_ids: [], weed_ids: [], pesticide_ids: [], fertilizer_ids: [] }),
+  symptoms: z.array(z.string()).default([]),
+  causes: z.array(z.string()).default([]),
+  treatments_chemical: z.array(z.string()).default([]),
+  treatments_organic: z.array(z.string()).default([]),
+  treatments_cultural: z.array(z.string()).default([]),
+  prevention: z.array(z.string()).default([]),
+  alternatives: z.array(z.string()).default([]),
 });
 
 export const diagnosePlant = createServerFn({ method: "POST" })
