@@ -161,14 +161,14 @@ function Info({ k, v }: { k: string; v: any }) {
   return <div className="flex justify-between text-sm"><span className="text-muted-foreground">{k}</span><span>{v || "—"}</span></div>;
 }
 
-function LinkedSection({ title, icon, items, baseUrl }: { title: string; icon: React.ReactNode; items: any[]; baseUrl: string }) {
+function LinkedSection({ title, icon, items, baseUrl }: { title: string; icon: React.ReactNode; items: any[]; baseUrl: "/agri/diseases" | "/agri/pests" }) {
   if (!items.length) return null;
   return (
     <Card className="p-4">
       <h3 className="font-semibold mb-2 flex items-center gap-2">{icon}{title} ({items.length})</h3>
       <div className="grid gap-2 sm:grid-cols-2">
         {items.map((it) => (
-          <Link key={it.id} to={`${baseUrl}/$id` as any} params={{ id: it.id }} className="block">
+          <Link key={it.id} to={baseUrl === "/agri/diseases" ? "/agri/diseases/$id" : "/agri/pests/$id"} params={{ id: it.id }} className="block">
             <div className="p-2 border rounded hover:bg-accent text-sm">
               <div className="font-medium">{it.name_ar}</div>
               <div className="text-xs text-muted-foreground italic">{it.scientific_name}</div>
@@ -179,3 +179,4 @@ function LinkedSection({ title, icon, items, baseUrl }: { title: string; icon: R
     </Card>
   );
 }
+
