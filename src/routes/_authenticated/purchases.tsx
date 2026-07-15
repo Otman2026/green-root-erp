@@ -137,10 +137,12 @@ function PurchasesPage() {
       key: "actions", header: t("common.actions"), sortable: false, hideable: false, className: "text-end",
       accessor: (r) => (
         <div className="text-end">
-          <Button size="icon" variant="ghost" onClick={() => view(r)}><Eye className="h-4 w-4" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => view(r)} title={t("common.view") || "View"}><Eye className="h-4 w-4" /></Button>
           {r.status === "draft" && <Button size="icon" variant="ghost" onClick={() => approve(r)} title="Approve"><CheckCircle2 className="h-4 w-4 text-primary" /></Button>}
           {(r.status === "approved" || r.status === "ordered") && <Button size="icon" variant="ghost" onClick={() => receive(r)} title="Receive"><PackageCheck className="h-4 w-4 text-primary" /></Button>}
           {r.status === "received" && <Button size="sm" variant="outline" onClick={() => invoice(r)}>{t("purchases.invoice")}</Button>}
+          {(r.status === "draft" || r.status === "approved") && <Button size="icon" variant="ghost" onClick={() => cancelPO(r)} title={t("common.cancel")}><XCircle className="h-4 w-4 text-destructive" /></Button>}
+          {r.status === "draft" && <Button size="icon" variant="ghost" onClick={() => deletePO(r)} title={t("common.delete") || "Delete"}><Trash2 className="h-4 w-4 text-destructive" /></Button>}
         </div>
       ),
     },
