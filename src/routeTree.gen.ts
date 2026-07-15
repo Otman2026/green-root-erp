@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -59,6 +60,8 @@ import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedAgriRouteImport } from './routes/_authenticated/agri'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedSystemIndexRouteImport } from './routes/_authenticated/system.index'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as AuthenticatedSystemUsersRouteImport } from './routes/_authenticated/system.users'
@@ -98,6 +101,8 @@ import { Route as AuthenticatedAccountingPeriodsRouteImport } from './routes/_au
 import { Route as AuthenticatedAccountingLedgerRouteImport } from './routes/_authenticated/accounting.ledger'
 import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_authenticated/accounting.journal'
 import { Route as AuthenticatedAccountingChartRouteImport } from './routes/_authenticated/accounting.chart'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
@@ -107,6 +112,11 @@ const ShopRoute = ShopRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -354,6 +364,18 @@ const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedSystemIndexRoute =
   AuthenticatedSystemIndexRouteImport.update({
     id: '/',
@@ -581,13 +603,27 @@ const AuthenticatedAccountingChartRoute =
     path: '/chart',
     getParentRoute: () => AuthenticatedAccountingRoute,
   } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/mcp': typeof McpRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRouteWithChildren
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/activity': typeof AuthenticatedActivityRoute
   '/agri': typeof AuthenticatedAgriRouteWithChildren
@@ -632,6 +668,8 @@ export interface FileRoutesByFullPath {
   '/shop/cart': typeof ShopCartRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/': typeof ShopIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
@@ -676,7 +714,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/mcp': typeof McpRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/activity': typeof AuthenticatedActivityRoute
   '/agri': typeof AuthenticatedAgriRouteWithChildren
@@ -720,6 +761,8 @@ export interface FileRoutesByTo {
   '/shop/cart': typeof ShopCartRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop': typeof ShopIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
@@ -766,8 +809,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/mcp': typeof McpRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRouteWithChildren
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRouteWithChildren
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/agri': typeof AuthenticatedAgriRouteWithChildren
@@ -812,6 +858,8 @@ export interface FileRoutesById {
   '/shop/cart': typeof ShopCartRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/': typeof ShopIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/accounting/chart': typeof AuthenticatedAccountingChartRoute
   '/_authenticated/accounting/journal': typeof AuthenticatedAccountingJournalRoute
   '/_authenticated/accounting/ledger': typeof AuthenticatedAccountingLedgerRoute
@@ -858,8 +906,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/forgot-password'
+    | '/mcp'
     | '/reset-password'
     | '/shop'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/accounting'
     | '/activity'
     | '/agri'
@@ -904,6 +955,8 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/checkout'
     | '/shop/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
@@ -948,7 +1001,10 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/forgot-password'
+    | '/mcp'
     | '/reset-password'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/accounting'
     | '/activity'
     | '/agri'
@@ -992,6 +1048,8 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/checkout'
     | '/shop'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/accounting/chart'
     | '/accounting/journal'
     | '/accounting/ledger'
@@ -1037,8 +1095,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/forgot-password'
+    | '/mcp'
     | '/reset-password'
     | '/shop'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/accounting'
     | '/_authenticated/activity'
     | '/_authenticated/agri'
@@ -1083,6 +1144,8 @@ export interface FileRouteTypes {
     | '/shop/cart'
     | '/shop/checkout'
     | '/shop/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/accounting/chart'
     | '/_authenticated/accounting/journal'
     | '/_authenticated/accounting/ledger'
@@ -1129,8 +1192,13 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  McpRoute: typeof McpRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRouteWithChildren
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1147,6 +1215,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -1485,6 +1560,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/system/': {
       id: '/_authenticated/system/'
       path: '/'
@@ -1758,6 +1847,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingChartRouteImport
       parentRoute: typeof AuthenticatedAccountingRoute
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2020,8 +2123,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  McpRoute: McpRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRouteWithChildren,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

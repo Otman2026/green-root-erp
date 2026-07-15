@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -20,11 +20,21 @@ import {
   normalizeUsername, usernameToEmail,
 } from "@/lib/username-utils";
 
-export const Route = createFileRoute("/auth")({ component: AuthPage });
+export const Route = createFileRoute("/auth")({
+  component: AuthPage,
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") ? s.next : undefined,
+  }),
+});
+
+// Only same-origin relative paths are accepted as `next` — validated in validateSearch.
+function safeNext(next: string | undefined, fallback: string) {
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : fallback;
+}
 
 function AuthPage() {
   const { t, locale } = useI18n();
-  const navigate = useNavigate();
+  
   const { user, loading } = useAuth();
 
   // sign in
@@ -42,9 +52,12 @@ function AuthPage() {
   const [uStatus, setUStatus] = useState<"idle" | "checking" | "ok" | "taken">("idle");
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
+  const { next } = Route.useSearch();
+  const nextTarget = safeNext(next, "/dashboard");
+
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard" });
-  }, [user, loading, navigate]);
+    if (!loading && user) window.location.href = nextTarget;
+  }, [user, loading, nextTarget]);
 
   // Debounced username availability + suggestions
   useEffect(() => {
@@ -92,7 +105,7 @@ function AuthPage() {
     await supabase.rpc("log_auth_attempt" as any, { _username: uname, _success: !error, _ip: null });
     setBusy(false);
     if (error) toast.error(error.message);
-    else navigate({ to: "/dashboard" });
+    else window.location.href = nextTarget;
   };
 
 
@@ -107,7 +120,7 @@ function AuthPage() {
       email,
       password: upPassword,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}${nextTarget}`,
         data: {
           full_name: fullName || u,
           username: u,
@@ -118,13 +131,15 @@ function AuthPage() {
     });
     setBusy(false);
     if (error) toast.error(error.message);
-    else { toast.success(t("auth.success")); navigate({ to: "/dashboard" }); }
+    else { toast.success(t("auth.success")); window.location.href = nextTarget; }
   };
 
   const google = async () => {
-    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    const res = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${window.location.origin}/auth${next ? `?next=${encodeURIComponent(next)}` : ""}`,
+    });
     if (res.error) toast.error(res.error.message);
-    else if (!res.redirected) navigate({ to: "/dashboard" });
+    else if (!res.redirected) window.location.href = nextTarget;
   };
 
   return (
