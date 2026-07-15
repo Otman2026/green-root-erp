@@ -29,15 +29,34 @@ function LoyaltyPage() {
 
   const saveRule = async () => {
     if (!rule.name) return toast.error(t("common.name"));
-    const res = rule.id ? await supabase.from("loyalty_rules").update(rule).eq("id", rule.id) : await supabase.from("loyalty_rules").insert(rule);
+    const payload = {
+      name: rule.name,
+      points_per_amount: Number(rule.points_per_amount) || 0,
+      amount_unit: Number(rule.amount_unit) || 1,
+      redemption_value: Number(rule.redemption_value) || 0,
+      min_redeem_points: Number(rule.min_redeem_points) || 0,
+      is_active: rule.is_active ?? true,
+    };
+    const res = rule.id ? await supabase.from("loyalty_rules").update(payload).eq("id", rule.id) : await supabase.from("loyalty_rules").insert(payload);
     if (res.error) return toast.error(res.error.message);
-    toast.success(t("auth.success")); setRuleOpen(false); setRule({ name: "", points_per_amount: 1, amount_unit: 100, redemption_value: 1, min_redeem_points: 0 }); load();
+    toast.success(t("auth.success")); setRuleOpen(false); setRule({ name: "", points_per_amount: 1, amount_unit: 100, redemption_value: 1, min_redeem_points: 0, is_active: true }); load();
   };
   const delRule = async (id: string) => { if (!confirm(t("common.confirmDelete"))) return; await supabase.from("loyalty_rules").delete().eq("id", id); load(); };
 
   const saveCoupon = async () => {
     if (!coupon.code) return toast.error("code");
-    const res = coupon.id ? await supabase.from("coupons").update(coupon).eq("id", coupon.id) : await supabase.from("coupons").insert(coupon);
+    const payload = {
+      code: coupon.code,
+      discount_type: coupon.discount_type,
+      value: Number(coupon.value) || 0,
+      valid_from: coupon.valid_from || null,
+      valid_to: coupon.valid_to || null,
+      usage_limit: coupon.usage_limit ?? null,
+      min_total: coupon.min_total ?? null,
+      is_active: coupon.is_active ?? true,
+      description: coupon.description || null,
+    };
+    const res = coupon.id ? await supabase.from("coupons").update(payload).eq("id", coupon.id) : await supabase.from("coupons").insert(payload);
     if (res.error) return toast.error(res.error.message);
     toast.success(t("auth.success")); setCouponOpen(false); setCoupon({ code: "", discount_type: "percent", value: 10, is_active: true }); load();
   };
@@ -79,16 +98,20 @@ function LoyaltyPage() {
         <TabsContent value="rules">
           <div className="mb-3 flex justify-end"><Button onClick={() => setRuleOpen(true)} className="gap-2"><Plus className="h-4 w-4" /> {t("loyalty.newRule")}</Button></div>
           <Card><Table>
-            <TableHeader><TableRow><TableHead>{t("common.name")}</TableHead><TableHead>Points/Amount</TableHead><TableHead>Unit</TableHead><TableHead>Redemption</TableHead><TableHead className="text-end">{t("common.actions")}</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>{t("common.name")}</TableHead><TableHead>Points/Amount</TableHead><TableHead>Unit</TableHead><TableHead>Redemption</TableHead><TableHead>{t("common.status")}</TableHead><TableHead className="text-end">{t("common.actions")}</TableHead></TableRow></TableHeader>
             <TableBody>
-              {rules.length === 0 ? <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
+              {rules.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
               : rules.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell>{r.name}</TableCell>
                   <TableCell className="font-mono">{r.points_per_amount}</TableCell>
                   <TableCell className="font-mono">{r.amount_unit}</TableCell>
                   <TableCell className="font-mono">{r.redemption_value}</TableCell>
-                  <TableCell className="text-end"><Button size="icon" variant="ghost" onClick={() => delRule(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button></TableCell>
+                  <TableCell><Badge variant={r.is_active ? "default" : "secondary"}>{r.is_active ? t("common.active") : t("common.inactive")}</Badge></TableCell>
+                  <TableCell className="text-end">
+                    <Button size="icon" variant="ghost" onClick={() => { setRule(r); setRuleOpen(true); }}>✎</Button>
+                    <Button size="icon" variant="ghost" onClick={() => delRule(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -98,7 +121,7 @@ function LoyaltyPage() {
 
       <Dialog open={couponOpen} onOpenChange={setCouponOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>{t("loyalty.newCoupon")}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{coupon.id ? t("common.edit") : t("loyalty.newCoupon")}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Code *</Label><Input value={coupon.code ?? ""} onChange={(e) => setCoupon({ ...coupon, code: e.target.value.toUpperCase() })} /></div>
             <div className="grid grid-cols-2 gap-3">
@@ -113,6 +136,12 @@ function LoyaltyPage() {
               <div className="space-y-1.5"><Label>Valid to</Label><Input type="date" value={coupon.valid_to?.slice(0,10) ?? ""} onChange={(e) => setCoupon({ ...coupon, valid_to: e.target.value || null })} /></div>
               <div className="space-y-1.5"><Label>Usage limit</Label><Input type="number" value={coupon.usage_limit ?? ""} onChange={(e) => setCoupon({ ...coupon, usage_limit: e.target.value ? Number(e.target.value) : null })} /></div>
               <div className="space-y-1.5"><Label>Min total</Label><Input type="number" step="any" value={coupon.min_total ?? ""} onChange={(e) => setCoupon({ ...coupon, min_total: e.target.value ? Number(e.target.value) : null })} /></div>
+              <div className="space-y-1.5"><Label>{t("common.status")}</Label>
+                <Select value={(coupon.is_active ?? true) ? "active" : "inactive"} onValueChange={(v) => setCoupon({ ...coupon, is_active: v === "active" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent><SelectItem value="active">{t("common.active")}</SelectItem><SelectItem value="inactive">{t("common.inactive")}</SelectItem></SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setCouponOpen(false)}>{t("common.cancel")}</Button><Button onClick={saveCoupon}>{t("common.save")}</Button></DialogFooter>
@@ -121,7 +150,7 @@ function LoyaltyPage() {
 
       <Dialog open={ruleOpen} onOpenChange={setRuleOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>{t("loyalty.newRule")}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{rule.id ? t("common.edit") : t("loyalty.newRule")}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>{t("common.name")} *</Label><Input value={rule.name} onChange={(e) => setRule({ ...rule, name: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
@@ -129,6 +158,12 @@ function LoyaltyPage() {
               <div className="space-y-1.5"><Label>Per amount</Label><Input type="number" step="any" value={rule.amount_unit} onChange={(e) => setRule({ ...rule, amount_unit: Number(e.target.value) })} /></div>
               <div className="space-y-1.5"><Label>Redemption value</Label><Input type="number" step="any" value={rule.redemption_value} onChange={(e) => setRule({ ...rule, redemption_value: Number(e.target.value) })} /></div>
               <div className="space-y-1.5"><Label>Min redeem</Label><Input type="number" step="any" value={rule.min_redeem_points} onChange={(e) => setRule({ ...rule, min_redeem_points: Number(e.target.value) })} /></div>
+              <div className="space-y-1.5"><Label>{t("common.status")}</Label>
+                <Select value={(rule.is_active ?? true) ? "active" : "inactive"} onValueChange={(v) => setRule({ ...rule, is_active: v === "active" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent><SelectItem value="active">{t("common.active")}</SelectItem><SelectItem value="inactive">{t("common.inactive")}</SelectItem></SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setRuleOpen(false)}>{t("common.cancel")}</Button><Button onClick={saveRule}>{t("common.save")}</Button></DialogFooter>

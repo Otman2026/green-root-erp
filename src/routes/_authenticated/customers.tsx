@@ -30,6 +30,7 @@ function CustomersPage() {
   const [detail, setDetail] = useState<Customer | null>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [loyaltyTx, setLoyaltyTx] = useState<any[]>([]);
 
   const load = async () => {
     setLoading(true);
@@ -49,12 +50,19 @@ function CustomersPage() {
       farm_area: editing.farm_area ?? null,
       customer_type: editing.customer_type ?? "retail",
       credit_limit: editing.credit_limit ?? 0, notes: editing.notes || null,
+      is_active: editing.is_active ?? true,
     };
     const res = editing.id
       ? await supabase.from("customers").update(payload).eq("id", editing.id)
       : await supabase.from("customers").insert(payload);
     if (res.error) return toast.error(res.error.message);
     toast.success(t("auth.success")); setOpen(false); setEditing(empty); load();
+  };
+
+  const toggleActive = async (c: Customer) => {
+    const { error } = await supabase.from("customers").update({ is_active: !c.is_active }).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    load();
   };
 
   const del = async (id: string) => {
@@ -65,12 +73,14 @@ function CustomersPage() {
 
   const openDetail = async (c: Customer) => {
     setDetail(c);
-    const [inv, pay] = await Promise.all([
+    const [inv, pay, ly] = await Promise.all([
       supabase.from("sales").select("*").eq("customer_id", c.id).order("created_at", { ascending: false }),
       supabase.from("receipts").select("*").eq("party_type", "customer").eq("party_id", c.id).order("received_at", { ascending: false }),
+      supabase.from("loyalty_transactions").select("*").eq("customer_id", c.id).order("created_at", { ascending: false }),
     ]);
     setInvoices((inv.data ?? []) as any[]);
     setPayments((pay.data ?? []) as any[]);
+    setLoyaltyTx((ly.data ?? []) as any[]);
   };
 
   const columns: Column<Customer>[] = [
@@ -80,12 +90,14 @@ function CustomersPage() {
     { key: "type", header: t("common.type"), accessor: (r) => <Badge variant="secondary">{t(`customers.type.${r.customer_type}`)}</Badge>, sortValue: (r) => r.customer_type, exportValue: (r) => r.customer_type },
     { key: "balance", header: t("customers.balance"), accessor: (r) => <span className={Number(r.balance) > 0 ? "text-destructive font-mono" : "font-mono"}>{fmtMoney(r.balance)}</span>, sortValue: (r) => Number(r.balance), exportValue: (r) => Number(r.balance) },
     { key: "loyalty", header: t("customers.loyaltyPoints"), accessor: (r) => <span className="font-mono">{Number(r.loyalty_points).toFixed(0)}</span>, sortValue: (r) => Number(r.loyalty_points), exportValue: (r) => Number(r.loyalty_points) },
+    { key: "status", header: t("common.status"), accessor: (r) => <Badge variant={r.is_active ? "default" : "secondary"}>{r.is_active ? t("common.active") : t("common.inactive")}</Badge>, sortValue: (r) => (r.is_active ? 1 : 0), exportValue: (r) => (r.is_active ? "active" : "inactive") },
     {
       key: "actions", header: t("common.actions"), sortable: false, hideable: false, className: "text-end",
       accessor: (r) => (
         <div className="text-end" onClick={(e) => e.stopPropagation()}>
-          <Button size="icon" variant="ghost" onClick={() => { setEditing(r); setOpen(true); }}><Pencil className="h-4 w-4" /></Button>
-          <Button size="icon" variant="ghost" onClick={() => del(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => { setEditing(r); setOpen(true); }} title={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => toggleActive(r)} title={r.is_active ? t("common.deactivate") : t("common.activate")}>{r.is_active ? "⏸" : "▶"}</Button>
+          <Button size="icon" variant="ghost" onClick={() => del(r.id)} title={t("common.delete")}><Trash2 className="h-4 w-4 text-destructive" /></Button>
         </div>
       ),
     },
@@ -129,6 +141,16 @@ function CustomersPage() {
               <Input placeholder="tomato, wheat, olive" value={(editing.crops ?? []).join(", ")} onChange={(e) => setEditing({ ...editing, crops: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} />
             </div>
             <div className="space-y-1.5"><Label>{t("customers.creditLimit")}</Label><Input type="number" step="any" value={editing.credit_limit ?? 0} onChange={(e) => setEditing({ ...editing, credit_limit: Number(e.target.value) })} /></div>
+            <div className="space-y-1.5">
+              <Label>{t("common.status")}</Label>
+              <Select value={(editing.is_active ?? true) ? "active" : "inactive"} onValueChange={(v) => setEditing({ ...editing, is_active: v === "active" })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">{t("common.active")}</SelectItem>
+                  <SelectItem value="inactive">{t("common.inactive")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="col-span-2 space-y-1.5"><Label>{t("common.notes")}</Label><Textarea value={editing.notes ?? ""} onChange={(e) => setEditing({ ...editing, notes: e.target.value })} /></div>
           </div>
           <DialogFooter>
@@ -146,6 +168,7 @@ function CustomersPage() {
               <TabsList>
                 <TabsTrigger value="invoices">{t("customers.tabs.invoices")}</TabsTrigger>
                 <TabsTrigger value="payments">{t("customers.tabs.payments")}</TabsTrigger>
+                <TabsTrigger value="loyalty">{t("customers.loyaltyPoints")}</TabsTrigger>
                 <TabsTrigger value="info">{t("common.details")}</TabsTrigger>
               </TabsList>
               <TabsContent value="invoices">
@@ -190,6 +213,27 @@ function CustomersPage() {
                           <TableCell className="text-xs">{fmtDateTime(p.received_at)}</TableCell>
                           <TableCell><Badge>{t(`receipts.${p.direction}`)}</Badge></TableCell>
                           <TableCell className="font-mono">{fmtMoney(p.amount)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+              <TabsContent value="loyalty">
+                <div className="max-h-[400px] overflow-auto">
+                  <Table>
+                    <TableHeader><TableRow>
+                      <TableHead>{t("common.date")}</TableHead>
+                      <TableHead>{t("customers.loyaltyPoints")}</TableHead>
+                      <TableHead>{t("common.reason")}</TableHead>
+                    </TableRow></TableHeader>
+                    <TableBody>
+                      {loyaltyTx.length === 0 ? <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
+                      : loyaltyTx.map((l) => (
+                        <TableRow key={l.id}>
+                          <TableCell className="text-xs">{fmtDateTime(l.created_at)}</TableCell>
+                          <TableCell className={"font-mono " + (Number(l.points) < 0 ? "text-destructive" : "text-primary")}>{Number(l.points) > 0 ? "+" : ""}{Number(l.points).toFixed(0)}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">{l.reason ?? "—"}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
