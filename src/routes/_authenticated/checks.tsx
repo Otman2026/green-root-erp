@@ -93,7 +93,19 @@ function ChecksPage() {
         <Card className="p-4"><div className="text-xs text-muted-foreground">{t("common.total")}</div><div className="mt-1 text-xl font-bold">{stats.total}</div></Card>
       </div>
 
-      <Card className="flex flex-wrap gap-1 p-2">
+      <Card className="flex flex-wrap items-center gap-2 p-2">
+        <div className="relative min-w-[200px] flex-1">
+          <Search className="absolute top-2.5 start-2 h-4 w-4 opacity-60" />
+          <Input className="ps-8" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("common.search")} />
+        </div>
+        <Select value={dir} onValueChange={(v) => setDir(v as "all"|Dir)}>
+          <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("common.all")}</SelectItem>
+            <SelectItem value="in">{t("receipts.in")}</SelectItem>
+            <SelectItem value="out">{t("receipts.out")}</SelectItem>
+          </SelectContent>
+        </Select>
         {tabs.map((s) => (
           <Button key={s} size="sm" variant={tab === s ? "default" : "ghost"} onClick={() => setTab(s)}>
             {s === "all" ? t("common.all") : t(`acc.status.${s}`)}
