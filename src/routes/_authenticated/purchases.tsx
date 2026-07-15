@@ -48,15 +48,18 @@ function PurchasesPage() {
   const subtotal = form.lines.reduce((s, l) => s + l.qty * l.unit_cost, 0);
 
   const createPO = async () => {
-    if (!form.supplier_id || form.lines.length === 0) return toast.error("Missing data");
+    const validLines = form.lines.filter((l) => l.product_id && Number(l.qty) > 0);
+    if (!form.supplier_id || validLines.length === 0) return toast.error("Missing data");
+    const total = validLines.reduce((s, l) => s + Number(l.qty) * Number(l.unit_cost || 0), 0);
     const { data: po, error } = await supabase.from("purchase_orders").insert({
       supplier_id: form.supplier_id, warehouse_id: form.warehouse_id || null,
-      subtotal, total: subtotal, notes: form.notes || null, created_by: user?.id ?? null,
+      subtotal: total, total, notes: form.notes || null, created_by: user?.id ?? null,
     } as any).select().single();
     if (error || !po) return toast.error(error?.message ?? "Failed");
-    await supabase.from("purchase_order_items").insert(form.lines.filter((l) => l.product_id).map((l) => ({
-      po_id: po.id, product_id: l.product_id, qty: l.qty, unit_cost: l.unit_cost, total: l.qty * l.unit_cost,
+    const { error: e2 } = await supabase.from("purchase_order_items").insert(validLines.map((l) => ({
+      po_id: po.id, product_id: l.product_id, qty: Number(l.qty), unit_cost: Number(l.unit_cost || 0), total: Number(l.qty) * Number(l.unit_cost || 0),
     })));
+    if (e2) return toast.error(e2.message);
     toast.success(po.po_no);
     setOpen(false); setForm({ supplier_id: "", warehouse_id: "", notes: "", lines: [] }); load();
   };
