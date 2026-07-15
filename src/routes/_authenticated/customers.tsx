@@ -158,6 +158,7 @@ function CustomersPage() {
               <TabsList>
                 <TabsTrigger value="invoices">{t("customers.tabs.invoices")}</TabsTrigger>
                 <TabsTrigger value="payments">{t("customers.tabs.payments")}</TabsTrigger>
+                <TabsTrigger value="loyalty">{t("customers.loyaltyPoints")}</TabsTrigger>
                 <TabsTrigger value="info">{t("common.details")}</TabsTrigger>
               </TabsList>
               <TabsContent value="invoices">
