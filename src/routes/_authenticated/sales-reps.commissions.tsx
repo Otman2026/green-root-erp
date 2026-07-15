@@ -25,8 +25,12 @@ function CommissionsPage() {
   useEffect(() => { load(); }, [year, month]);
 
   async function generate() {
-    const { data: reps } = await supabase.from("sales_reps").select("id,commission_rate,monthly_target").eq("status", "active");
+    const [{ data: reps }, { data: existing }] = await Promise.all([
+      supabase.from("sales_reps").select("id,commission_rate,monthly_target").eq("status", "active"),
+      supabase.from("sales_commissions").select("rep_id,status").eq("period_year", year).eq("period_month", month),
+    ]);
     if (!reps?.length) { toast.error(t("reps.noReps")); return; }
+    const paidSet = new Set((existing ?? []).filter((r: any) => r.status === "paid").map((r: any) => r.rep_id));
     const from = `${year}-${String(month).padStart(2, "0")}-01`;
     const toD = new Date(year, month, 0, 23, 59, 59).toISOString();
 
@@ -41,21 +45,24 @@ function CommissionsPage() {
       totals[s.sales_rep_id] = (totals[s.sales_rep_id] ?? 0) + Number(s.total ?? 0);
     });
 
-    const rows = reps.map((r: any) => {
-      const st = totals[r.id] ?? 0;
-      const rate = Number(r.commission_rate ?? 0);
-      const target = Number(r.monthly_target ?? 0);
-      return {
-        rep_id: r.id, period_year: year, period_month: month,
-        sales_total: st,
-        commission_rate: rate,
-        commission_amount: st * rate / 100,
-        target,
-        achievement_pct: target > 0 ? Math.min(100, (st / target) * 100) : 0,
-        status: "draft",
-      };
-    });
+    const rows = reps
+      .filter((r: any) => !paidSet.has(r.id))
+      .map((r: any) => {
+        const st = totals[r.id] ?? 0;
+        const rate = Number(r.commission_rate ?? 0);
+        const target = Number(r.monthly_target ?? 0);
+        return {
+          rep_id: r.id, period_year: year, period_month: month,
+          sales_total: st,
+          commission_rate: rate,
+          commission_amount: st * rate / 100,
+          target,
+          achievement_pct: target > 0 ? Math.min(100, (st / target) * 100) : 0,
+          status: "draft",
+        };
+      });
 
+    if (rows.length === 0) { toast.success(t("common.saved")); load(); return; }
     const { error } = await supabase.from("sales_commissions").upsert(rows, { onConflict: "rep_id,period_year,period_month" });
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.saved")); load();
