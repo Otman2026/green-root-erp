@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import ReactMarkdown from "react-markdown";
-import { Sparkles, Upload, Loader2, X, MessageSquare, Stethoscope, Send, Trash2, Plus, Package, AlertTriangle, ShieldCheck, Leaf } from "lucide-react";
+import { Sparkles, Upload, Loader2, X, MessageSquare, Stethoscope, Send, Trash2, Plus, Package, AlertTriangle, ShieldCheck, Leaf, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { diagnosePlant } from "@/lib/ai-diagnose.functions";
 import { askAgriAI, listConversations, getConversation, deleteConversation } from "@/lib/ai-chat.functions";
@@ -114,12 +114,20 @@ function DiagnoseTab() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>النتيجة</span>
-            {result && (
-              <Badge variant={result.confidence === "high" ? "default" : result.confidence === "medium" ? "secondary" : "outline"}>
-                ثقة: {result.confidence === "high" ? "عالية" : result.confidence === "medium" ? "متوسطة" : "منخفضة"}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {result && (
+                <>
+                  <Badge variant={result.confidence === "high" ? "default" : result.confidence === "medium" ? "secondary" : "outline"}>
+                    ثقة: {result.confidence === "high" ? "عالية" : result.confidence === "medium" ? "متوسطة" : "منخفضة"}
+                  </Badge>
+                  <Button size="sm" variant="outline" onClick={() => printDiagnosis(result, { plant, description })}>
+                    <Printer className="h-4 w-4 me-1" />PDF
+                  </Button>
+                </>
+              )}
+            </div>
           </CardTitle>
+
         </CardHeader>
         <CardContent>
           {mut.isPending ? (
@@ -280,11 +288,17 @@ function ChatTab() {
       <Card className="flex h-[600px] flex-col">
         <CardContent ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
           {!conversationId && !messages.data?.length && (
-            <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
-              <MessageSquare className="mb-2 h-10 w-10" />
+            <div className="flex h-full flex-col items-center justify-center gap-3 text-center text-muted-foreground">
+              <MessageSquare className="h-10 w-10" />
               <p className="text-sm">اسأل عن أي شيء زراعي: زراعة، أمراض، جرعات، مواسم، مبيدات...</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {QUICK_PROMPTS.map((q) => (
+                  <Button key={q} size="sm" variant="outline" onClick={() => { setInput(q); }}>{q}</Button>
+                ))}
+              </div>
             </div>
           )}
+
           {messages.data?.map((m: any) => (
             <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
@@ -314,3 +328,47 @@ function ChatTab() {
     </div>
   );
 }
+
+const QUICK_PROMPTS = [
+  "متى موسم زراعة الطماطم؟",
+  "ما هي أفضل مبيدات المن على القمح؟",
+  "جرعة سماد NPK للزيتون",
+  "كيف أكافح الذبابة البيضاء عضوياً؟",
+];
+
+function esc(s: string) {
+  return String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c] as string));
+}
+
+function printDiagnosis(r: DiagnosisResult, ctx: { plant: string; description: string }) {
+  const list = (arr: string[]) => arr?.length ? `<ul>${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : "<p><em>—</em></p>";
+  const confLabel = r.confidence === "high" ? "عالية" : r.confidence === "medium" ? "متوسطة" : "منخفضة";
+  const html = `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>تقرير التشخيص - Haytam AGRI</title>
+<style>
+body{font-family:system-ui,'Segoe UI',Tahoma,Arial;padding:24px;color:#111;line-height:1.6}
+h1{color:#166534;margin:0 0 4px}h2{color:#166534;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px}
+.meta{color:#555;font-size:13px;margin-bottom:16px}.box{border:1px solid #ddd;border-radius:6px;padding:10px;margin:10px 0}
+table{width:100%;border-collapse:collapse;margin-top:8px}th,td{border:1px solid #ddd;padding:6px;text-align:start;font-size:13px}
+th{background:#f3f4f6}.badge{display:inline-block;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#166534;font-size:12px}
+@media print{button{display:none}}
+</style></head><body>
+<h1>🌱 تقرير التشخيص الزراعي</h1>
+<div class="meta">Haytam AGRI &middot; ${new Date().toLocaleString("ar")} &middot; <span class="badge">ثقة: ${confLabel}</span></div>
+<div class="box"><strong>النبات:</strong> ${esc(ctx.plant || "غير محدد")}<br><strong>الوصف:</strong> ${esc(ctx.description)}</div>
+<h2>التشخيص</h2><div>${esc(r.diagnosis).replace(/\n/g, "<br>")}</div>
+<h2>الأعراض</h2>${list(r.symptoms)}
+<h2>الأسباب</h2>${list(r.causes)}
+<h2>العلاج الكيميائي</h2>${list(r.treatments_chemical)}
+<h2>العلاج العضوي</h2>${list(r.treatments_organic)}
+<h2>الممارسات الزراعية</h2>${list(r.treatments_cultural)}
+<h2>الوقاية</h2>${list(r.prevention)}
+<h2>البدائل</h2>${list(r.alternatives)}
+${r.suggested_products?.length ? `<h2>منتجات متوفرة</h2><table><tr><th>المنتج</th><th>SKU</th><th>المخزون</th><th>السعر</th></tr>${r.suggested_products.map((p: any) => `<tr><td>${esc(p.name_ar)}</td><td>${esc(p.sku ?? "-")}</td><td>${p.stock_quantity ?? 0}</td><td>${p.sale_price ?? "-"}</td></tr>`).join("")}</table>` : ""}
+<script>window.onload=()=>{window.print()}</script>
+</body></html>`;
+  const w = window.open("", "_blank");
+  if (!w) return;
+  w.document.write(html);
+  w.document.close();
+}
+
