@@ -17,7 +17,7 @@ interface Product {
   active_ingredient?: string | null;
 }
 interface Customer { id: string; name: string; customer_type: string; loyalty_points: number; balance: number }
-type Method = "cash" | "card" | "transfer" | "check" | "credit" | "mixed";
+type Method = "cash" | "card" | "transfer" | "check" | "credit";
 type Mode = "retail" | "wholesale" | "semi_wholesale";
 
 interface CartLine { product: Product; qty: number; unit_price: number; discount: number }
@@ -129,7 +129,7 @@ function POSPage() {
 
     if (paidNum > 0) {
       await supabase.from("sale_payments").insert({
-        sale_id: sale.id, method: method === "mixed" ? "cash" : method,
+        sale_id: sale.id, method,
         amount: paidNum, user_id: user?.id ?? null,
       });
     }
@@ -281,7 +281,7 @@ function POSPage() {
               <Select value={method} onValueChange={(v) => setMethod(v as Method)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {(["cash","card","transfer","check","credit","mixed"] as const).map((m) => <SelectItem key={m} value={m}>{t(`pos.method.${m}`)}</SelectItem>)}
+                  {(["cash","card","transfer","check","credit"] as const).map((m) => <SelectItem key={m} value={m}>{t(`pos.method.${m}`)}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
