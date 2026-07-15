@@ -22,6 +22,8 @@ function ChecksPage() {
   const { t } = useI18n();
   const [rows, setRows] = useState<Chk[]>([]);
   const [tab, setTab] = useState<"all"|Status>("all");
+  const [dir, setDir] = useState<"all"|Dir>("all");
+  const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Chk>>(empty);
 
@@ -31,7 +33,15 @@ function ChecksPage() {
   };
   useEffect(() => { load(); }, []);
 
-  const filtered = useMemo(() => tab === "all" ? rows : rows.filter((r) => r.status === tab), [rows, tab]);
+  const filtered = useMemo(() => rows.filter((r) => {
+    if (tab !== "all" && r.status !== tab) return false;
+    if (dir !== "all" && r.direction !== dir) return false;
+    if (q) {
+      const s = q.toLowerCase();
+      if (!r.check_no.toLowerCase().includes(s) && !(r.party_name ?? "").toLowerCase().includes(s) && !(r.bank_name ?? "").toLowerCase().includes(s)) return false;
+    }
+    return true;
+  }), [rows, tab, dir, q]);
   const stats = useMemo(() => {
     const pend = rows.filter((r) => r.status === "pending");
     return {
