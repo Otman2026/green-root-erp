@@ -11,8 +11,10 @@ import { PageHeader } from "@/components/shared/page-header";
 
 export const Route = createFileRoute("/_authenticated/inventory")({ component: InventoryPage });
 
-const TYPES = ["purchase", "sale", "transfer", "return", "damage", "adjustment", "stocktake"] as const;
-type MType = typeof TYPES[number];
+// Manual entry excludes 'transfer' (use Stock Transfers page) — 'transfer' produces no stock delta in apply_stock_movement.
+const TYPES = ["purchase", "sale", "return", "damage", "adjustment", "stocktake"] as const;
+const ALL_TYPES = ["purchase", "sale", "transfer", "return", "damage", "adjustment", "stocktake"] as const;
+type MType = typeof ALL_TYPES[number];
 
 interface Movement {
   id: string; product_id: string; type: MType; quantity: number;
@@ -97,7 +99,7 @@ function InventoryPage() {
             <SelectTrigger className="h-8 w-48"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("common.all")}</SelectItem>
-              {TYPES.map((tp) => <SelectItem key={tp} value={tp}>{t(`inventory.type.${tp}`)}</SelectItem>)}
+              {ALL_TYPES.map((tp) => <SelectItem key={tp} value={tp}>{t(`inventory.type.${tp}`)}</SelectItem>)}
             </SelectContent>
           </Select>
         }
