@@ -50,12 +50,19 @@ function CustomersPage() {
       farm_area: editing.farm_area ?? null,
       customer_type: editing.customer_type ?? "retail",
       credit_limit: editing.credit_limit ?? 0, notes: editing.notes || null,
+      is_active: editing.is_active ?? true,
     };
     const res = editing.id
       ? await supabase.from("customers").update(payload).eq("id", editing.id)
       : await supabase.from("customers").insert(payload);
     if (res.error) return toast.error(res.error.message);
     toast.success(t("auth.success")); setOpen(false); setEditing(empty); load();
+  };
+
+  const toggleActive = async (c: Customer) => {
+    const { error } = await supabase.from("customers").update({ is_active: !c.is_active }).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    load();
   };
 
   const del = async (id: string) => {
