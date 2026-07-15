@@ -114,12 +114,20 @@ function DiagnoseTab() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>النتيجة</span>
-            {result && (
-              <Badge variant={result.confidence === "high" ? "default" : result.confidence === "medium" ? "secondary" : "outline"}>
-                ثقة: {result.confidence === "high" ? "عالية" : result.confidence === "medium" ? "متوسطة" : "منخفضة"}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {result && (
+                <>
+                  <Badge variant={result.confidence === "high" ? "default" : result.confidence === "medium" ? "secondary" : "outline"}>
+                    ثقة: {result.confidence === "high" ? "عالية" : result.confidence === "medium" ? "متوسطة" : "منخفضة"}
+                  </Badge>
+                  <Button size="sm" variant="outline" onClick={() => printDiagnosis(result, { plant, description })}>
+                    <Printer className="h-4 w-4 me-1" />PDF
+                  </Button>
+                </>
+              )}
+            </div>
           </CardTitle>
+
         </CardHeader>
         <CardContent>
           {mut.isPending ? (
