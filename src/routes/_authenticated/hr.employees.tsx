@@ -39,13 +39,16 @@ function EmployeesPage() {
   }
   function openEdit(r: any) {
     setEdit(r);
-    setForm({ ...r });
+    // strip joined relations that aren't columns on hr_employees
+    const { hr_departments, hr_positions, ...clean } = r;
+    setForm(clean);
     setOpen(true);
   }
 
   async function save() {
     if (!form.full_name) { toast.error(t("hr.emp.nameRequired")); return; }
-    const payload = { ...form, base_salary: Number(form.base_salary || 0) };
+    const { hr_departments, hr_positions, id, created_at, updated_at, ...rest } = form;
+    const payload = { ...rest, base_salary: Number(form.base_salary || 0) };
     if (edit) {
       const { error } = await supabase.from("hr_employees").update(payload).eq("id", edit.id);
       if (error) { toast.error(error.message); return; }
