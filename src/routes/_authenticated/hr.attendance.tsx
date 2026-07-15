@@ -86,8 +86,8 @@ function AttendancePage() {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell><Input type="time" value={r.check_in ? new Date(r.check_in).toISOString().slice(11,16) : ""} onChange={(ev) => set(e.id, { check_in: ev.target.value ? `${date}T${ev.target.value}:00Z` : null })} className="w-28" /></TableCell>
-                  <TableCell><Input type="time" value={r.check_out ? new Date(r.check_out).toISOString().slice(11,16) : ""} onChange={(ev) => set(e.id, { check_out: ev.target.value ? `${date}T${ev.target.value}:00Z` : null })} className="w-28" /></TableCell>
+                  <TableCell><Input type="time" value={r.check_in ? String(r.check_in).slice(11,16) : ""} onChange={(ev) => set(e.id, { check_in: ev.target.value ? `${date}T${ev.target.value}:00` : null })} className="w-28" /></TableCell>
+                  <TableCell><Input type="time" value={r.check_out ? String(r.check_out).slice(11,16) : ""} onChange={(ev) => set(e.id, { check_out: ev.target.value ? `${date}T${ev.target.value}:00` : null })} className="w-28" /></TableCell>
                   <TableCell><Input type="number" step="0.25" value={r.hours ?? ""} onChange={(ev) => set(e.id, { hours: ev.target.value })} className="w-20" /></TableCell>
                   <TableCell><Input type="number" step="0.25" value={r.overtime ?? 0} onChange={(ev) => set(e.id, { overtime: ev.target.value })} className="w-20" /></TableCell>
                   <TableCell><Input value={r.notes ?? ""} onChange={(ev) => set(e.id, { notes: ev.target.value })} /></TableCell>
