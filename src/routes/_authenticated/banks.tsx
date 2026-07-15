@@ -39,17 +39,24 @@ function BanksPage() {
     setOpenBank(false); setNewBank({ name: "", bank_name: "", account_number: "", rib: "", iban: "", currency: "MAD" }); loadBanks();
   };
   const saveTx = async () => {
-    if (!selected || !tx.amount) return;
-    const { error } = await supabase.from("bank_transactions").insert({ ...tx, bank_id: selected.id, amount: Number(tx.amount) });
+    if (!selected) return;
+    const amt = Number(tx.amount);
+    if (!amt || amt <= 0) return toast.error(t("acc.invalidAmount") || "Invalid amount");
+    if (tx.tx_type === "transfer" && !tx.counter_bank_id) return toast.error(t("acc.selectToBank") || "Select destination bank");
+    const payload: any = { bank_id: selected.id, tx_type: tx.tx_type, direction: tx.direction, amount: amt, tx_date: tx.tx_date, reference: tx.reference || null, description: tx.description || null };
+    if (tx.tx_type === "transfer") { payload.direction = "out"; payload.counter_bank_id = tx.counter_bank_id; }
+    const { error } = await supabase.from("bank_transactions").insert(payload);
     if (error) return toast.error(error.message);
-    toast.success("✓"); setOpenTx(false); setTx({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "" });
+    toast.success("✓"); setOpenTx(false); setTx({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "", counter_bank_id: "" });
     loadBanks(); loadTxs(selected.id);
     const b = (await supabase.from("bank_accounts").select("*").eq("id", selected.id).single()).data;
     if (b) setSelected(b);
   };
-  const toggleReconcile = async (id: string, cur: boolean) => {
-    await supabase.from("bank_transactions").update({ reconciled: !cur, reconciled_at: !cur ? new Date().toISOString() : null }).eq("id", id);
-    if (selected) loadTxs(selected.id);
+  const toggleBankActive = async (b: Bank) => {
+    const { error } = await supabase.from("bank_accounts").update({ is_active: !b.is_active }).eq("id", b.id);
+    if (error) return toast.error(error.message);
+    loadBanks();
+    if (selected?.id === b.id) setSelected({ ...b, is_active: !b.is_active });
   };
 
   return (
