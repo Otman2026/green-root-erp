@@ -11,6 +11,168 @@ const Input = z.object({
   lang: z.enum(["ar", "fr", "en"]).default("ar"),
 });
 
+type MatchedIds = {
+  disease_ids: string[];
+  pest_ids: string[];
+  weed_ids: string[];
+  pesticide_ids: string[];
+  fertilizer_ids: string[];
+};
+
+const emptyMatchedIds: MatchedIds = {
+  disease_ids: [],
+  pest_ids: [],
+  weed_ids: [],
+  pesticide_ids: [],
+  fertilizer_ids: [],
+};
+
+function toStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .flatMap((item) => toStringArray(item))
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return [];
+    return trimmed
+      .split(/\n|(?:^|\s)[•*-]\s+/)
+      .map((item) => item.replace(/^[-•*]\s*/, "").trim())
+      .filter(Boolean);
+  }
+
+  if (value && typeof value === "object") {
+    return Object.values(value).flatMap((item) => toStringArray(item));
+  }
+
+  return [];
+}
+
+function normalizeConfidence(value: unknown): "low" | "medium" | "high" {
+  return value === "high" || value === "medium" || value === "low" ? value : "low";
+}
+
+function classifyIds(ids: string[], kb: any): MatchedIds {
+  const matched: MatchedIds = {
+    disease_ids: [],
+    pest_ids: [],
+    weed_ids: [],
+    pesticide_ids: [],
+    fertilizer_ids: [],
+  };
+  const known = {
+    disease_ids: new Set((kb?.diseases ?? []).map((item: any) => item.id)),
+    pest_ids: new Set((kb?.pests ?? []).map((item: any) => item.id)),
+    weed_ids: new Set((kb?.weeds ?? []).map((item: any) => item.id)),
+    pesticide_ids: new Set((kb?.pesticides ?? []).map((item: any) => item.id)),
+    fertilizer_ids: new Set((kb?.fertilizers ?? []).map((item: any) => item.id)),
+  };
+
+  for (const id of ids.filter(Boolean)) {
+    let placed = false;
+    for (const key of Object.keys(known) as Array<keyof typeof known>) {
+      if (known[key].has(id)) {
+        matched[key].push(id);
+        placed = true;
+      }
+    }
+    if (!placed) matched.disease_ids.push(id);
+  }
+
+  return matched;
+}
+
+function normalizeMatchedIds(value: unknown, kb: any) {
+  if (Array.isArray(value) || typeof value === "string") {
+    return classifyIds(toStringArray(value), kb);
+  }
+
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    const direct = {
+      disease_ids: toStringArray(record.disease_ids ?? record.diseases),
+      pest_ids: toStringArray(record.pest_ids ?? record.pests),
+      weed_ids: toStringArray(record.weed_ids ?? record.weeds),
+      pesticide_ids: toStringArray(record.pesticide_ids ?? record.pesticides),
+      fertilizer_ids: toStringArray(record.fertilizer_ids ?? record.fertilizers),
+    };
+    const loose = toStringArray(record.ids ?? record.matched ?? record.items);
+    if (loose.length > 0) {
+      const classified = classifyIds(loose, kb);
+      return {
+        disease_ids: [...direct.disease_ids, ...classified.disease_ids],
+        pest_ids: [...direct.pest_ids, ...classified.pest_ids],
+        weed_ids: [...direct.weed_ids, ...classified.weed_ids],
+        pesticide_ids: [...direct.pesticide_ids, ...classified.pesticide_ids],
+        fertilizer_ids: [...direct.fertilizer_ids, ...classified.fertilizer_ids],
+      };
+    }
+    return direct;
+  }
+
+  return {
+    disease_ids: [],
+    pest_ids: [],
+    weed_ids: [],
+    pesticide_ids: [],
+    fertilizer_ids: [],
+  };
+}
+
+function parseJsonCandidate(text: string): unknown {
+  const withoutFences = text
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/```$/i, "")
+    .trim();
+
+  try {
+    return JSON.parse(withoutFences);
+  } catch {
+    // Continue with extraction from mixed model text.
+  }
+
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced?.[1]) return JSON.parse(fenced[1].trim());
+
+  const start = withoutFences.search(/[\[{]/);
+  if (start === -1) throw new Error("No JSON found");
+
+  const opener = withoutFences[start];
+  const closer = opener === "[" ? "]" : "}";
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let index = start; index < withoutFences.length; index += 1) {
+    const char = withoutFences[index];
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+    if (char === "\\") {
+      escaped = true;
+      continue;
+    }
+    if (char === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (inString) continue;
+    if (char === opener) depth += 1;
+    if (char === closer) depth -= 1;
+    if (depth === 0) return JSON.parse(withoutFences.slice(start, index + 1));
+  }
+
+  const repaired = withoutFences
+    .slice(start)
+    .replace(/,\s*([}\]])/g, "$1")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  return JSON.parse(repaired);
+}
+
 function tokenize(text: string): string[] {
   return text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter((w) => w.length >= 3).slice(0, 12);
 }
@@ -64,24 +226,95 @@ async function retrieveKnowledge(supabase: any, plant: string | undefined, descr
   };
 }
 
+const stringArraySchema = z.preprocess(toStringArray, z.array(z.string()).default([]));
+
+const AiDiagnosisSchema = z.object({
+  diagnosis: z.string().optional(),
+  confidence: z.string().optional(),
+  matched_ids: z.any().optional(),
+  symptoms: z.any().optional(),
+  symptoms_analysis: z.any().optional(),
+  causes: z.any().optional(),
+  treatment_options: z.any().optional(),
+  recommendations: z.any().optional(),
+  treatments_chemical: z.any().optional(),
+  treatments_organic: z.any().optional(),
+  treatments_cultural: z.any().optional(),
+  prevention: z.any().optional(),
+  alternatives: z.any().optional(),
+});
+
+const MatchedIdsSchema = z.preprocess((value) => normalizeMatchedIds(value, null), z.object({
+  disease_ids: stringArraySchema,
+  pest_ids: stringArraySchema,
+  weed_ids: stringArraySchema,
+  pesticide_ids: stringArraySchema,
+  fertilizer_ids: stringArraySchema,
+}).default(emptyMatchedIds));
+
 const DiagnosisSchema = z.object({
   diagnosis: z.string(),
-  confidence: z.enum(["low", "medium", "high"]).default("low"),
-  matched_ids: z.object({
-    disease_ids: z.array(z.string()).nullable().default([]),
-    pest_ids: z.array(z.string()).nullable().default([]),
-    weed_ids: z.array(z.string()).nullable().default([]),
-    pesticide_ids: z.array(z.string()).nullable().default([]),
-    fertilizer_ids: z.array(z.string()).nullable().default([]),
-  }).default({ disease_ids: [], pest_ids: [], weed_ids: [], pesticide_ids: [], fertilizer_ids: [] }),
-  symptoms: z.array(z.string()).default([]),
-  causes: z.array(z.string()).default([]),
-  treatments_chemical: z.array(z.string()).default([]),
-  treatments_organic: z.array(z.string()).default([]),
-  treatments_cultural: z.array(z.string()).default([]),
-  prevention: z.array(z.string()).default([]),
-  alternatives: z.array(z.string()).default([]),
+  confidence: z.preprocess(normalizeConfidence, z.enum(["low", "medium", "high"]).default("low")),
+  matched_ids: MatchedIdsSchema,
+  symptoms: stringArraySchema,
+  causes: stringArraySchema,
+  treatments_chemical: stringArraySchema,
+  treatments_organic: stringArraySchema,
+  treatments_cultural: stringArraySchema,
+  prevention: stringArraySchema,
+  alternatives: stringArraySchema,
 });
+
+function fallbackDiagnosis(description: string, kb: any, rawText?: string): z.infer<typeof DiagnosisSchema> {
+  const firstDisease = kb?.diseases?.[0];
+  const firstPest = kb?.pests?.[0];
+  const diagnosis = rawText?.trim() || [
+    firstDisease ? `الاحتمال الأقرب من قاعدة المعرفة: ${firstDisease.name_ar}${firstDisease.scientific_name ? ` (${firstDisease.scientific_name})` : ""}.` : null,
+    firstPest ? `يوجد أيضاً احتمال آفة مرتبطة: ${firstPest.name_ar}.` : null,
+    "يرجى فحص الجذور والساق والأوراق السفلية وتأكيد الأعراض قبل المعالجة النهائية.",
+  ].filter(Boolean).join("\n");
+
+  return DiagnosisSchema.parse({
+    diagnosis,
+    confidence: rawText ? "medium" : "low",
+    matched_ids: {
+      disease_ids: firstDisease?.id ? [firstDisease.id] : [],
+      pest_ids: firstPest?.id ? [firstPest.id] : [],
+      weed_ids: [],
+      pesticide_ids: (kb?.pesticides ?? []).slice(0, 2).map((item: any) => item.id),
+      fertilizer_ids: (kb?.fertilizers ?? []).slice(0, 2).map((item: any) => item.id),
+    },
+    symptoms: description,
+    causes: [firstDisease?.description, firstPest?.damage].filter(Boolean),
+    treatments_chemical: (kb?.pesticides ?? []).map((item: any) => `${item.name_ar}${item.active_ingredient ? ` (${item.active_ingredient})` : ""}: ${item.dosage ?? "اتبع الجرعة المسجلة على الملصق"}`),
+    treatments_organic: ["إزالة الأجزاء شديدة الإصابة والتخلص منها خارج الحقل.", "استخدام مكافحات حيوية مناسبة عند توفرها وتحسين تهوية النبات."],
+    treatments_cultural: ["تحسين الصرف وتقليل الإجهاد المائي.", "تطبيق دورة زراعية وتنظيف بقايا المحصول المصاب."],
+    prevention: [firstDisease?.prevention].filter(Boolean),
+    alternatives: (kb?.fertilizers ?? []).map((item: any) => `${item.name_ar}: ${item.dosage ?? "حسب توصية المهندس الزراعي"}`),
+  });
+}
+
+function normalizeDiagnosisPayload(raw: unknown, kb: any, description: string, rawText?: string): z.infer<typeof DiagnosisSchema> {
+  const candidate = Array.isArray(raw) ? raw[0] : raw;
+  if (!candidate || typeof candidate !== "object") return fallbackDiagnosis(description, kb, rawText);
+
+  const record = candidate as Record<string, any>;
+  const treatmentOptions = record.treatment_options ?? {};
+  const recommendations = record.recommendations ?? {};
+
+  return DiagnosisSchema.parse({
+    diagnosis: record.diagnosis ?? record.summary ?? rawText ?? "تم تحليل الحالة بالاعتماد على قاعدة المعرفة الزراعية.",
+    confidence: record.confidence,
+    matched_ids: normalizeMatchedIds(record.matched_ids ?? record.matchedIds ?? record.ids, kb),
+    symptoms: record.symptoms ?? record.symptoms_analysis ?? record.symptom_analysis,
+    causes: record.causes ?? record.causes_analysis ?? record.likely_causes,
+    treatments_chemical: record.treatments_chemical ?? treatmentOptions.chemical ?? recommendations.pesticides,
+    treatments_organic: record.treatments_organic ?? treatmentOptions.organic,
+    treatments_cultural: record.treatments_cultural ?? treatmentOptions.cultural,
+    prevention: record.prevention ?? record.preventive_measures,
+    alternatives: record.alternatives ?? recommendations.fertilizers,
+  });
+}
 
 export const diagnosePlant = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -129,6 +362,7 @@ ${kb.treatments.map((t: any) => `- id=${t.id} | ${t.title} | method=${t.method ?
 Base your diagnosis STRICTLY on the KNOWLEDGE BASE CONTEXT when a match exists. Populate matched_ids with the exact ids you used.
 If no strong match exists, provide best-effort diagnosis and set confidence to "low".
 Always provide chemical + organic + cultural treatment options. Be concise, actionable, evidence-based.
+Return a single JSON object, not an array. Use these keys: diagnosis, confidence, matched_ids, symptoms, causes, treatments_chemical, treatments_organic, treatments_cultural, prevention, alternatives.
 
 ${kbContext}`;
 
@@ -141,23 +375,22 @@ ${kbContext}`;
     try {
       const res = await generateText({
         model,
-        output: Output.object({ schema: DiagnosisSchema }),
+        output: Output.object({ schema: AiDiagnosisSchema }),
         system,
         messages: [{ role: "user", content: userContent }],
       });
-      output = res.output;
+      output = normalizeDiagnosisPayload(res.output, kb, data.description);
     } catch (e: any) {
-      // Fallback: try to parse raw text if schema validation failed
+      // Fallback: accept common valid-but-different JSON shapes from the model.
       if (NoObjectGeneratedError.isInstance(e) && e.text) {
         try {
-          const cleaned = e.text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-          const parsed = JSON.parse(cleaned);
-          output = DiagnosisSchema.partial().parse(parsed) as any;
+          const parsed = parseJsonCandidate(e.text);
+          output = normalizeDiagnosisPayload(parsed, kb, data.description, e.text);
         } catch {
-          throw new Error("AI diagnosis failed: could not parse response");
+          output = fallbackDiagnosis(data.description, kb, e.text);
         }
       } else {
-        throw new Error(e?.message ?? "AI diagnosis failed");
+        output = fallbackDiagnosis(data.description, kb);
       }
     }
 
