@@ -21,7 +21,7 @@ function AgriHub() {
     })();
   }, []);
 
-  const cards = [
+  const cards: Array<{ to: string; icon: any; label: string; color: string; tableKey: string | null; highlight?: boolean }> = [
     { to: "/agri/search", icon: Search, label: "البحث الموحّد", color: "text-primary", tableKey: null, highlight: true },
     { to: "/agri/plants", icon: Sprout, label: t("agri.plants"), color: "text-green-600", tableKey: "agri_plants" },
     { to: "/agri/diseases", icon: ShieldAlert, label: t("agri.diseases"), color: "text-red-600", tableKey: "agri_diseases" },
@@ -31,7 +31,7 @@ function AgriHub() {
     { to: "/agri/pesticides", icon: Beaker, label: "المبيدات", color: "text-purple-600", tableKey: "agri_pesticides" },
     { to: "/agri/seeds", icon: Leaf, label: "البذور والأصناف", color: "text-emerald-600", tableKey: "agri_seeds" },
     { to: "/agri/treatments", icon: FlaskConical, label: t("agri.treatments"), color: "text-cyan-600", tableKey: "agri_treatments" },
-  ] as const;
+  ];
 
   return (
     <div className="p-6 space-y-6">
