@@ -190,7 +190,7 @@ function PurchasesPage() {
               <div className="space-y-2">
                 {form.lines.map((l, i) => (
                   <div key={i} className="grid grid-cols-[1fr_80px_100px_100px_40px] gap-2 items-center">
-                    <Select value={l.product_id} onValueChange={(v) => { const p = products.find((x) => x.id === v); setLine(i, { product_id: v, unit_cost: p?.cost_price ?? l.unit_cost }); }}>
+                    <Select value={l.product_id} onValueChange={(v) => { const p = products.find((x) => x.id === v); setLine(i, { product_id: v, unit_cost: Number(p?.purchase_price ?? l.unit_cost) || 0 }); }}>
                       <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
                       <SelectContent>{products.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
                     </Select>
