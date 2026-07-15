@@ -121,10 +121,6 @@ function LoyaltyPage() {
 
       <Dialog open={couponOpen} onOpenChange={setCouponOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>{t("loyalty.newCoupon")}</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <div className="space-y-1.5"><Label>Code *</Label><Input value={coupon.code ?? ""} onChange={(e) => setCoupon({ ...coupon, code: e.target.value.toUpperCase() })} /></div>
-            <div className="grid grid-cols-2 gap-3">
           <DialogHeader><DialogTitle>{coupon.id ? t("common.edit") : t("loyalty.newCoupon")}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Code *</Label><Input value={coupon.code ?? ""} onChange={(e) => setCoupon({ ...coupon, code: e.target.value.toUpperCase() })} /></div>
