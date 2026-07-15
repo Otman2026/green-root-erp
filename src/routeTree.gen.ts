@@ -92,6 +92,7 @@ import { Route as AuthenticatedDashboardsFleetRouteImport } from './routes/_auth
 import { Route as AuthenticatedDashboardsFinanceRouteImport } from './routes/_authenticated/dashboards.finance'
 import { Route as AuthenticatedDashboardsExecutiveRouteImport } from './routes/_authenticated/dashboards.executive'
 import { Route as AuthenticatedAgriWeedsRouteImport } from './routes/_authenticated/agri.weeds'
+import { Route as AuthenticatedAgriTreatmentsFinderRouteImport } from './routes/_authenticated/agri.treatments-finder'
 import { Route as AuthenticatedAgriTreatmentsRouteImport } from './routes/_authenticated/agri.treatments'
 import { Route as AuthenticatedAgriSeedsRouteImport } from './routes/_authenticated/agri.seeds'
 import { Route as AuthenticatedAgriSearchRouteImport } from './routes/_authenticated/agri.search'
@@ -108,6 +109,9 @@ import { Route as AuthenticatedAccountingJournalRouteImport } from './routes/_au
 import { Route as AuthenticatedAccountingChartRouteImport } from './routes/_authenticated/accounting.chart'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as AuthenticatedAgriPlantsIdRouteImport } from './routes/_authenticated/agri.plants.$id'
+import { Route as AuthenticatedAgriPestsIdRouteImport } from './routes/_authenticated/agri.pests.$id'
+import { Route as AuthenticatedAgriDiseasesIdRouteImport } from './routes/_authenticated/agri.diseases.$id'
 
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
@@ -555,6 +559,12 @@ const AuthenticatedAgriWeedsRoute = AuthenticatedAgriWeedsRouteImport.update({
   path: '/weeds',
   getParentRoute: () => AuthenticatedAgriRoute,
 } as any)
+const AuthenticatedAgriTreatmentsFinderRoute =
+  AuthenticatedAgriTreatmentsFinderRouteImport.update({
+    id: '/treatments-finder',
+    path: '/treatments-finder',
+    getParentRoute: () => AuthenticatedAgriRoute,
+  } as any)
 const AuthenticatedAgriTreatmentsRoute =
   AuthenticatedAgriTreatmentsRouteImport.update({
     id: '/treatments',
@@ -646,6 +656,24 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAgriPlantsIdRoute =
+  AuthenticatedAgriPlantsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAgriPlantsRoute,
+  } as any)
+const AuthenticatedAgriPestsIdRoute =
+  AuthenticatedAgriPestsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAgriPestsRoute,
+  } as any)
+const AuthenticatedAgriDiseasesIdRoute =
+  AuthenticatedAgriDiseasesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAgriDiseasesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -708,14 +736,15 @@ export interface FileRoutesByFullPath {
   '/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
-  '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
+  '/agri/diseases': typeof AuthenticatedAgriDiseasesRouteWithChildren
   '/agri/fertilizers': typeof AuthenticatedAgriFertilizersRoute
   '/agri/pesticides': typeof AuthenticatedAgriPesticidesRoute
-  '/agri/pests': typeof AuthenticatedAgriPestsRoute
-  '/agri/plants': typeof AuthenticatedAgriPlantsRoute
+  '/agri/pests': typeof AuthenticatedAgriPestsRouteWithChildren
+  '/agri/plants': typeof AuthenticatedAgriPlantsRouteWithChildren
   '/agri/search': typeof AuthenticatedAgriSearchRoute
   '/agri/seeds': typeof AuthenticatedAgriSeedsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/agri/treatments-finder': typeof AuthenticatedAgriTreatmentsFinderRoute
   '/agri/weeds': typeof AuthenticatedAgriWeedsRoute
   '/dashboards/executive': typeof AuthenticatedDashboardsExecutiveRoute
   '/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
@@ -746,6 +775,9 @@ export interface FileRoutesByFullPath {
   '/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
   '/system/': typeof AuthenticatedSystemIndexRoute
+  '/agri/diseases/$id': typeof AuthenticatedAgriDiseasesIdRoute
+  '/agri/pests/$id': typeof AuthenticatedAgriPestsIdRoute
+  '/agri/plants/$id': typeof AuthenticatedAgriPlantsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -806,14 +838,15 @@ export interface FileRoutesByTo {
   '/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
-  '/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
+  '/agri/diseases': typeof AuthenticatedAgriDiseasesRouteWithChildren
   '/agri/fertilizers': typeof AuthenticatedAgriFertilizersRoute
   '/agri/pesticides': typeof AuthenticatedAgriPesticidesRoute
-  '/agri/pests': typeof AuthenticatedAgriPestsRoute
-  '/agri/plants': typeof AuthenticatedAgriPlantsRoute
+  '/agri/pests': typeof AuthenticatedAgriPestsRouteWithChildren
+  '/agri/plants': typeof AuthenticatedAgriPlantsRouteWithChildren
   '/agri/search': typeof AuthenticatedAgriSearchRoute
   '/agri/seeds': typeof AuthenticatedAgriSeedsRoute
   '/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/agri/treatments-finder': typeof AuthenticatedAgriTreatmentsFinderRoute
   '/agri/weeds': typeof AuthenticatedAgriWeedsRoute
   '/dashboards/executive': typeof AuthenticatedDashboardsExecutiveRoute
   '/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
@@ -844,6 +877,9 @@ export interface FileRoutesByTo {
   '/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
   '/system': typeof AuthenticatedSystemIndexRoute
+  '/agri/diseases/$id': typeof AuthenticatedAgriDiseasesIdRoute
+  '/agri/pests/$id': typeof AuthenticatedAgriPestsIdRoute
+  '/agri/plants/$id': typeof AuthenticatedAgriPlantsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -908,14 +944,15 @@ export interface FileRoutesById {
   '/_authenticated/accounting/periods': typeof AuthenticatedAccountingPeriodsRoute
   '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/_authenticated/accounting/taxes': typeof AuthenticatedAccountingTaxesRoute
-  '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRoute
+  '/_authenticated/agri/diseases': typeof AuthenticatedAgriDiseasesRouteWithChildren
   '/_authenticated/agri/fertilizers': typeof AuthenticatedAgriFertilizersRoute
   '/_authenticated/agri/pesticides': typeof AuthenticatedAgriPesticidesRoute
-  '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRoute
-  '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRoute
+  '/_authenticated/agri/pests': typeof AuthenticatedAgriPestsRouteWithChildren
+  '/_authenticated/agri/plants': typeof AuthenticatedAgriPlantsRouteWithChildren
   '/_authenticated/agri/search': typeof AuthenticatedAgriSearchRoute
   '/_authenticated/agri/seeds': typeof AuthenticatedAgriSeedsRoute
   '/_authenticated/agri/treatments': typeof AuthenticatedAgriTreatmentsRoute
+  '/_authenticated/agri/treatments-finder': typeof AuthenticatedAgriTreatmentsFinderRoute
   '/_authenticated/agri/weeds': typeof AuthenticatedAgriWeedsRoute
   '/_authenticated/dashboards/executive': typeof AuthenticatedDashboardsExecutiveRoute
   '/_authenticated/dashboards/finance': typeof AuthenticatedDashboardsFinanceRoute
@@ -946,6 +983,9 @@ export interface FileRoutesById {
   '/_authenticated/system/users': typeof AuthenticatedSystemUsersRoute
   '/shop/product/$id': typeof ShopProductIdRoute
   '/_authenticated/system/': typeof AuthenticatedSystemIndexRoute
+  '/_authenticated/agri/diseases/$id': typeof AuthenticatedAgriDiseasesIdRoute
+  '/_authenticated/agri/pests/$id': typeof AuthenticatedAgriPestsIdRoute
+  '/_authenticated/agri/plants/$id': typeof AuthenticatedAgriPlantsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1018,6 +1058,7 @@ export interface FileRouteTypes {
     | '/agri/search'
     | '/agri/seeds'
     | '/agri/treatments'
+    | '/agri/treatments-finder'
     | '/agri/weeds'
     | '/dashboards/executive'
     | '/dashboards/finance'
@@ -1048,6 +1089,9 @@ export interface FileRouteTypes {
     | '/system/users'
     | '/shop/product/$id'
     | '/system/'
+    | '/agri/diseases/$id'
+    | '/agri/pests/$id'
+    | '/agri/plants/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1116,6 +1160,7 @@ export interface FileRouteTypes {
     | '/agri/search'
     | '/agri/seeds'
     | '/agri/treatments'
+    | '/agri/treatments-finder'
     | '/agri/weeds'
     | '/dashboards/executive'
     | '/dashboards/finance'
@@ -1146,6 +1191,9 @@ export interface FileRouteTypes {
     | '/system/users'
     | '/shop/product/$id'
     | '/system'
+    | '/agri/diseases/$id'
+    | '/agri/pests/$id'
+    | '/agri/plants/$id'
   id:
     | '__root__'
     | '/'
@@ -1217,6 +1265,7 @@ export interface FileRouteTypes {
     | '/_authenticated/agri/search'
     | '/_authenticated/agri/seeds'
     | '/_authenticated/agri/treatments'
+    | '/_authenticated/agri/treatments-finder'
     | '/_authenticated/agri/weeds'
     | '/_authenticated/dashboards/executive'
     | '/_authenticated/dashboards/finance'
@@ -1247,6 +1296,9 @@ export interface FileRouteTypes {
     | '/_authenticated/system/users'
     | '/shop/product/$id'
     | '/_authenticated/system/'
+    | '/_authenticated/agri/diseases/$id'
+    | '/_authenticated/agri/pests/$id'
+    | '/_authenticated/agri/plants/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1846,6 +1898,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgriWeedsRouteImport
       parentRoute: typeof AuthenticatedAgriRoute
     }
+    '/_authenticated/agri/treatments-finder': {
+      id: '/_authenticated/agri/treatments-finder'
+      path: '/treatments-finder'
+      fullPath: '/agri/treatments-finder'
+      preLoaderRoute: typeof AuthenticatedAgriTreatmentsFinderRouteImport
+      parentRoute: typeof AuthenticatedAgriRoute
+    }
     '/_authenticated/agri/treatments': {
       id: '/_authenticated/agri/treatments'
       path: '/treatments'
@@ -1958,6 +2017,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/agri/plants/$id': {
+      id: '/_authenticated/agri/plants/$id'
+      path: '/$id'
+      fullPath: '/agri/plants/$id'
+      preLoaderRoute: typeof AuthenticatedAgriPlantsIdRouteImport
+      parentRoute: typeof AuthenticatedAgriPlantsRoute
+    }
+    '/_authenticated/agri/pests/$id': {
+      id: '/_authenticated/agri/pests/$id'
+      path: '/$id'
+      fullPath: '/agri/pests/$id'
+      preLoaderRoute: typeof AuthenticatedAgriPestsIdRouteImport
+      parentRoute: typeof AuthenticatedAgriPestsRoute
+    }
+    '/_authenticated/agri/diseases/$id': {
+      id: '/_authenticated/agri/diseases/$id'
+      path: '/$id'
+      fullPath: '/agri/diseases/$id'
+      preLoaderRoute: typeof AuthenticatedAgriDiseasesIdRouteImport
+      parentRoute: typeof AuthenticatedAgriDiseasesRoute
+    }
   }
 }
 
@@ -1985,27 +2065,72 @@ const AuthenticatedAccountingRouteWithChildren =
     AuthenticatedAccountingRouteChildren,
   )
 
+interface AuthenticatedAgriDiseasesRouteChildren {
+  AuthenticatedAgriDiseasesIdRoute: typeof AuthenticatedAgriDiseasesIdRoute
+}
+
+const AuthenticatedAgriDiseasesRouteChildren: AuthenticatedAgriDiseasesRouteChildren =
+  {
+    AuthenticatedAgriDiseasesIdRoute: AuthenticatedAgriDiseasesIdRoute,
+  }
+
+const AuthenticatedAgriDiseasesRouteWithChildren =
+  AuthenticatedAgriDiseasesRoute._addFileChildren(
+    AuthenticatedAgriDiseasesRouteChildren,
+  )
+
+interface AuthenticatedAgriPestsRouteChildren {
+  AuthenticatedAgriPestsIdRoute: typeof AuthenticatedAgriPestsIdRoute
+}
+
+const AuthenticatedAgriPestsRouteChildren: AuthenticatedAgriPestsRouteChildren =
+  {
+    AuthenticatedAgriPestsIdRoute: AuthenticatedAgriPestsIdRoute,
+  }
+
+const AuthenticatedAgriPestsRouteWithChildren =
+  AuthenticatedAgriPestsRoute._addFileChildren(
+    AuthenticatedAgriPestsRouteChildren,
+  )
+
+interface AuthenticatedAgriPlantsRouteChildren {
+  AuthenticatedAgriPlantsIdRoute: typeof AuthenticatedAgriPlantsIdRoute
+}
+
+const AuthenticatedAgriPlantsRouteChildren: AuthenticatedAgriPlantsRouteChildren =
+  {
+    AuthenticatedAgriPlantsIdRoute: AuthenticatedAgriPlantsIdRoute,
+  }
+
+const AuthenticatedAgriPlantsRouteWithChildren =
+  AuthenticatedAgriPlantsRoute._addFileChildren(
+    AuthenticatedAgriPlantsRouteChildren,
+  )
+
 interface AuthenticatedAgriRouteChildren {
-  AuthenticatedAgriDiseasesRoute: typeof AuthenticatedAgriDiseasesRoute
+  AuthenticatedAgriDiseasesRoute: typeof AuthenticatedAgriDiseasesRouteWithChildren
   AuthenticatedAgriFertilizersRoute: typeof AuthenticatedAgriFertilizersRoute
   AuthenticatedAgriPesticidesRoute: typeof AuthenticatedAgriPesticidesRoute
-  AuthenticatedAgriPestsRoute: typeof AuthenticatedAgriPestsRoute
-  AuthenticatedAgriPlantsRoute: typeof AuthenticatedAgriPlantsRoute
+  AuthenticatedAgriPestsRoute: typeof AuthenticatedAgriPestsRouteWithChildren
+  AuthenticatedAgriPlantsRoute: typeof AuthenticatedAgriPlantsRouteWithChildren
   AuthenticatedAgriSearchRoute: typeof AuthenticatedAgriSearchRoute
   AuthenticatedAgriSeedsRoute: typeof AuthenticatedAgriSeedsRoute
   AuthenticatedAgriTreatmentsRoute: typeof AuthenticatedAgriTreatmentsRoute
+  AuthenticatedAgriTreatmentsFinderRoute: typeof AuthenticatedAgriTreatmentsFinderRoute
   AuthenticatedAgriWeedsRoute: typeof AuthenticatedAgriWeedsRoute
 }
 
 const AuthenticatedAgriRouteChildren: AuthenticatedAgriRouteChildren = {
-  AuthenticatedAgriDiseasesRoute: AuthenticatedAgriDiseasesRoute,
+  AuthenticatedAgriDiseasesRoute: AuthenticatedAgriDiseasesRouteWithChildren,
   AuthenticatedAgriFertilizersRoute: AuthenticatedAgriFertilizersRoute,
   AuthenticatedAgriPesticidesRoute: AuthenticatedAgriPesticidesRoute,
-  AuthenticatedAgriPestsRoute: AuthenticatedAgriPestsRoute,
-  AuthenticatedAgriPlantsRoute: AuthenticatedAgriPlantsRoute,
+  AuthenticatedAgriPestsRoute: AuthenticatedAgriPestsRouteWithChildren,
+  AuthenticatedAgriPlantsRoute: AuthenticatedAgriPlantsRouteWithChildren,
   AuthenticatedAgriSearchRoute: AuthenticatedAgriSearchRoute,
   AuthenticatedAgriSeedsRoute: AuthenticatedAgriSeedsRoute,
   AuthenticatedAgriTreatmentsRoute: AuthenticatedAgriTreatmentsRoute,
+  AuthenticatedAgriTreatmentsFinderRoute:
+    AuthenticatedAgriTreatmentsFinderRoute,
   AuthenticatedAgriWeedsRoute: AuthenticatedAgriWeedsRoute,
 }
 
