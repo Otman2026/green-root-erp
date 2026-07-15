@@ -27,7 +27,9 @@ function RepsPage() {
 
   async function save() {
     if (!form.full_name) { toast.error(t("reps.nameRequired")); return; }
-    const payload = { ...form, commission_rate: Number(form.commission_rate || 0), monthly_target: Number(form.monthly_target || 0) };
+    const { id: _id, created_at, updated_at, organization_id, ...rest } = form;
+    void _id; void created_at; void updated_at; void organization_id;
+    const payload = { ...rest, commission_rate: Number(form.commission_rate || 0), monthly_target: Number(form.monthly_target || 0) };
     const q = edit
       ? supabase.from("sales_reps").update(payload).eq("id", edit.id)
       : supabase.from("sales_reps").insert(payload);
