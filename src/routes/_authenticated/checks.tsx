@@ -2,7 +2,7 @@ import { Button, Input, Card, Label, Badge, Dialog, DialogContent, DialogHeader,
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Receipt, Pencil, Trash2 } from "lucide-react";
+import { Plus, Receipt, Pencil, Trash2, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney, fmtDate, todayISO } from "@/lib/format";
