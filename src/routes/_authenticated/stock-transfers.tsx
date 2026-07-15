@@ -44,13 +44,18 @@ function StockTransfersPage() {
   const submit = async () => {
     if (!from || !to) return toast.error(t("xfer.from"));
     if (from === to) return toast.error(t("xfer.sameWh"));
-    if (items.length === 0 || items.some((i) => !i.product_id || !i.qty)) return toast.error(t("xfer.noItems"));
+    if (items.length === 0 || items.some((i) => !i.product_id || !i.qty || Number(i.qty) <= 0)) return toast.error(t("xfer.noItems"));
+    const dupCheck = new Set<string>();
+    for (const it of items) {
+      if (dupCheck.has(it.product_id)) return toast.error(t("xfer.noItems"));
+      dupCheck.add(it.product_id);
+    }
     const { data: u } = await supabase.auth.getUser();
     const { data: xf, error } = await supabase.from("stock_transfers").insert({
       from_warehouse_id: from, to_warehouse_id: to, notes: notes || null, code: code || null, created_by: u.user?.id,
     }).select().single();
     if (error || !xf) return toast.error(error?.message ?? "error");
-    const { error: e2 } = await supabase.from("stock_transfer_items").insert(items.map((i) => ({ transfer_id: xf.id, ...i })));
+    const { error: e2 } = await supabase.from("stock_transfer_items").insert(items.map((i) => ({ transfer_id: xf.id, product_id: i.product_id, qty: Number(i.qty), note: i.note ?? null })));
     if (e2) return toast.error(e2.message);
     logActivity({ action: "create", entity: "stock_transfer", entity_id: xf.id, summary: `${items.length} items` });
     toast.success(t("common.done"));
