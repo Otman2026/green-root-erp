@@ -76,7 +76,9 @@ function BanksPage() {
                 <div className="text-xs text-muted-foreground">{b.bank_name} • {b.currency}</div>
                 {b.rib && <div className="text-[10px] font-mono">{b.rib}</div>}
               </div>
-              <Badge variant={b.is_active ? "default" : "outline"}>{b.is_active ? t("common.active") : t("common.inactive")}</Badge>
+              <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); toggleBankActive(b); }}>
+                <Badge variant={b.is_active ? "default" : "outline"}>{b.is_active ? t("common.active") : t("common.inactive")}</Badge>
+              </Button>
             </div>
             <div className="mt-3 text-2xl font-bold">{fmtMoney(b.balance)}</div>
           </Card>
