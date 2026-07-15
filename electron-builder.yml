@@ -6,8 +6,12 @@ directories:
   buildResources: build
 files:
   - electron/**/*
+  - build/icon.ico
   - package.json
   - "!node_modules/**/*"
+asarUnpack:
+  - electron/splash.html
+  - electron/icon.png
 extraMetadata:
   main: electron/main.cjs
 win:
