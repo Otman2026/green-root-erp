@@ -109,7 +109,10 @@ function BanksPage() {
                   <TableCell>{m.reference} — <span className="text-muted-foreground">{m.description}</span></TableCell>
                   <TableCell className="font-semibold">{fmtMoney(m.amount)}</TableCell>
                   <TableCell>
-                    <Button size="sm" variant={m.reconciled ? "default" : "outline"} onClick={() => toggleReconcile(m.id, m.reconciled)}>
+                    <Button size="sm" variant={m.reconciled ? "default" : "outline"} onClick={async () => {
+                      await supabase.from("bank_transactions").update({ reconciled: !m.reconciled, reconciled_at: !m.reconciled ? new Date().toISOString() : null }).eq("id", m.id);
+                      if (selected) loadTxs(selected.id);
+                    }}>
                       <Check className="me-1 h-3 w-3" />{m.reconciled ? "✓" : "—"}
                     </Button>
                   </TableCell>
