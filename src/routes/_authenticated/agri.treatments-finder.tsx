@@ -37,10 +37,17 @@ function TreatmentFinder() {
     const targetList = targetKind === "disease" ? diseases : pests;
     const target = targetList.find((x) => x.id === targetId);
     if (!target) { setLoading(false); return; }
+    const plant = plants.find((p) => p.id === plantId);
+
+    let pestQ = supabase.from("agri_pesticides").select("*")
+      .ilike(targetKind === "disease" ? "target_diseases" : "target_pests", `%${target.name_ar}%`);
+    if (plant?.common_name_ar) {
+      pestQ = pestQ.or(`suitable_crops.is.null,suitable_crops.ilike.%${plant.common_name_ar}%`);
+    }
 
     const [ts, ps] = await Promise.all([
       supabase.from("agri_treatments").select("*").eq("target_type", targetKind).eq("target_id", targetId),
-      supabase.from("agri_pesticides").select("*").ilike(targetKind === "disease" ? "target_diseases" : "target_pests", `%${target.name_ar}%`),
+      pestQ,
     ]);
     setTreatments(ts.data ?? []);
     setPesticides(ps.data ?? []);
