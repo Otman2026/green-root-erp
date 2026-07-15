@@ -288,11 +288,17 @@ function ChatTab() {
       <Card className="flex h-[600px] flex-col">
         <CardContent ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
           {!conversationId && !messages.data?.length && (
-            <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
-              <MessageSquare className="mb-2 h-10 w-10" />
+            <div className="flex h-full flex-col items-center justify-center gap-3 text-center text-muted-foreground">
+              <MessageSquare className="h-10 w-10" />
               <p className="text-sm">اسأل عن أي شيء زراعي: زراعة، أمراض، جرعات، مواسم، مبيدات...</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {QUICK_PROMPTS.map((q) => (
+                  <Button key={q} size="sm" variant="outline" onClick={() => { setInput(q); }}>{q}</Button>
+                ))}
+              </div>
             </div>
           )}
+
           {messages.data?.map((m: any) => (
             <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
