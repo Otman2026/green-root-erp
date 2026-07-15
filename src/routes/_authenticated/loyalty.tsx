@@ -158,6 +158,12 @@ function LoyaltyPage() {
               <div className="space-y-1.5"><Label>Per amount</Label><Input type="number" step="any" value={rule.amount_unit} onChange={(e) => setRule({ ...rule, amount_unit: Number(e.target.value) })} /></div>
               <div className="space-y-1.5"><Label>Redemption value</Label><Input type="number" step="any" value={rule.redemption_value} onChange={(e) => setRule({ ...rule, redemption_value: Number(e.target.value) })} /></div>
               <div className="space-y-1.5"><Label>Min redeem</Label><Input type="number" step="any" value={rule.min_redeem_points} onChange={(e) => setRule({ ...rule, min_redeem_points: Number(e.target.value) })} /></div>
+              <div className="space-y-1.5"><Label>{t("common.status")}</Label>
+                <Select value={(rule.is_active ?? true) ? "active" : "inactive"} onValueChange={(v) => setRule({ ...rule, is_active: v === "active" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent><SelectItem value="active">{t("common.active")}</SelectItem><SelectItem value="inactive">{t("common.inactive")}</SelectItem></SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setRuleOpen(false)}>{t("common.cancel")}</Button><Button onClick={saveRule}>{t("common.save")}</Button></DialogFooter>
