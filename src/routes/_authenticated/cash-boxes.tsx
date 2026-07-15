@@ -39,14 +39,16 @@ function CashBoxesPage() {
     setOpenBox(false); setNewBox({ name: "", code: "", currency: "MAD" }); loadBoxes();
   };
   const saveMov = async () => {
-    if (!selected || !mov.amount) return;
-    const payload: any = { box_id: selected.id, direction: mov.direction, amount: Number(mov.amount), tx_date: mov.tx_date, reason: mov.reason || null };
-    if (mov.direction === "transfer" && mov.counter_box_id) { payload.direction = "out"; payload.counter_box_id = mov.counter_box_id; }
+    if (!selected) return;
+    const amt = Number(mov.amount);
+    if (!amt || amt <= 0) return toast.error(t("acc.invalidAmount") || "Invalid amount");
+    if (mov.direction === "transfer" && !mov.counter_box_id) return toast.error(t("acc.selectToBox") || "Select destination");
+    const payload: any = { box_id: selected.id, direction: mov.direction, amount: amt, tx_date: mov.tx_date, reason: mov.reason || null };
+    if (mov.direction === "transfer") { payload.direction = "out"; payload.counter_box_id = mov.counter_box_id; payload.reason = mov.reason || "transfer"; }
     const { error } = await supabase.from("cash_movements").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("✓"); setOpenMov(false); setMov({ direction: "in", amount: 0, tx_date: todayISO(), reason: "", counter_box_id: "" });
     loadBoxes(); loadMovs(selected.id);
-    // refresh selected balance
     const b = (await supabase.from("cash_boxes").select("*").eq("id", selected.id).single()).data;
     if (b) setSelected(b);
   };

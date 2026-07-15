@@ -19,7 +19,7 @@ function BanksPage() {
   const [openBank, setOpenBank] = useState(false);
   const [openTx, setOpenTx] = useState(false);
   const [newBank, setNewBank] = useState({ name: "", bank_name: "", account_number: "", rib: "", iban: "", currency: "MAD" });
-  const [tx, setTx] = useState<any>({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "" });
+  const [tx, setTx] = useState<any>({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "", counter_bank_id: "" });
 
   const loadBanks = async () => {
     const { data } = await supabase.from("bank_accounts").select("*").order("name");
@@ -39,17 +39,24 @@ function BanksPage() {
     setOpenBank(false); setNewBank({ name: "", bank_name: "", account_number: "", rib: "", iban: "", currency: "MAD" }); loadBanks();
   };
   const saveTx = async () => {
-    if (!selected || !tx.amount) return;
-    const { error } = await supabase.from("bank_transactions").insert({ ...tx, bank_id: selected.id, amount: Number(tx.amount) });
+    if (!selected) return;
+    const amt = Number(tx.amount);
+    if (!amt || amt <= 0) return toast.error(t("acc.invalidAmount") || "Invalid amount");
+    if (tx.tx_type === "transfer" && !tx.counter_bank_id) return toast.error(t("acc.selectToBank") || "Select destination bank");
+    const payload: any = { bank_id: selected.id, tx_type: tx.tx_type, direction: tx.direction, amount: amt, tx_date: tx.tx_date, reference: tx.reference || null, description: tx.description || null };
+    if (tx.tx_type === "transfer") { payload.direction = "out"; payload.counter_bank_id = tx.counter_bank_id; }
+    const { error } = await supabase.from("bank_transactions").insert(payload);
     if (error) return toast.error(error.message);
-    toast.success("✓"); setOpenTx(false); setTx({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "" });
+    toast.success("✓"); setOpenTx(false); setTx({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "", counter_bank_id: "" });
     loadBanks(); loadTxs(selected.id);
     const b = (await supabase.from("bank_accounts").select("*").eq("id", selected.id).single()).data;
     if (b) setSelected(b);
   };
-  const toggleReconcile = async (id: string, cur: boolean) => {
-    await supabase.from("bank_transactions").update({ reconciled: !cur, reconciled_at: !cur ? new Date().toISOString() : null }).eq("id", id);
-    if (selected) loadTxs(selected.id);
+  const toggleBankActive = async (b: Bank) => {
+    const { error } = await supabase.from("bank_accounts").update({ is_active: !b.is_active }).eq("id", b.id);
+    if (error) return toast.error(error.message);
+    loadBanks();
+    if (selected?.id === b.id) setSelected({ ...b, is_active: !b.is_active });
   };
 
   return (
@@ -69,7 +76,9 @@ function BanksPage() {
                 <div className="text-xs text-muted-foreground">{b.bank_name} • {b.currency}</div>
                 {b.rib && <div className="text-[10px] font-mono">{b.rib}</div>}
               </div>
-              <Badge variant={b.is_active ? "default" : "outline"}>{b.is_active ? t("common.active") : t("common.inactive")}</Badge>
+              <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); toggleBankActive(b); }}>
+                <Badge variant={b.is_active ? "default" : "outline"}>{b.is_active ? t("common.active") : t("common.inactive")}</Badge>
+              </Button>
             </div>
             <div className="mt-3 text-2xl font-bold">{fmtMoney(b.balance)}</div>
           </Card>
@@ -102,7 +111,10 @@ function BanksPage() {
                   <TableCell>{m.reference} — <span className="text-muted-foreground">{m.description}</span></TableCell>
                   <TableCell className="font-semibold">{fmtMoney(m.amount)}</TableCell>
                   <TableCell>
-                    <Button size="sm" variant={m.reconciled ? "default" : "outline"} onClick={() => toggleReconcile(m.id, m.reconciled)}>
+                    <Button size="sm" variant={m.reconciled ? "default" : "outline"} onClick={async () => {
+                      await supabase.from("bank_transactions").update({ reconciled: !m.reconciled, reconciled_at: !m.reconciled ? new Date().toISOString() : null }).eq("id", m.id);
+                      if (selected) loadTxs(selected.id);
+                    }}>
                       <Check className="me-1 h-3 w-3" />{m.reconciled ? "✓" : "—"}
                     </Button>
                   </TableCell>
@@ -149,6 +161,14 @@ function BanksPage() {
             </div>
             <div><Label>{t("receipts.amount")}</Label><Input type="number" step="0.01" value={tx.amount} onChange={(e) => setTx({ ...tx, amount: e.target.value })} /></div>
             <div><Label>{t("common.date")}</Label><Input type="date" value={tx.tx_date} onChange={(e) => setTx({ ...tx, tx_date: e.target.value })} /></div>
+            {tx.tx_type === "transfer" && (
+              <div className="col-span-2"><Label>{t("acc.toBank") || "To Bank"}</Label>
+                <Select value={tx.counter_bank_id || ""} onValueChange={(v) => setTx({ ...tx, counter_bank_id: v })}>
+                  <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                  <SelectContent>{banks.filter(b => b.id !== selected?.id).map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="col-span-2"><Label>{t("acc.reference")}</Label><Input value={tx.reference} onChange={(e) => setTx({ ...tx, reference: e.target.value })} /></div>
             <div className="col-span-2"><Label>{t("common.notes")}</Label><Textarea rows={2} value={tx.description} onChange={(e) => setTx({ ...tx, description: e.target.value })} /></div>
           </div>

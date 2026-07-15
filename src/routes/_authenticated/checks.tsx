@@ -2,7 +2,7 @@ import { Button, Input, Card, Label, Badge, Dialog, DialogContent, DialogHeader,
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Receipt, Pencil, Trash2 } from "lucide-react";
+import { Plus, Receipt, Pencil, Trash2, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { fmtMoney, fmtDate, todayISO } from "@/lib/format";
@@ -22,6 +22,8 @@ function ChecksPage() {
   const { t } = useI18n();
   const [rows, setRows] = useState<Chk[]>([]);
   const [tab, setTab] = useState<"all"|Status>("all");
+  const [dir, setDir] = useState<"all"|Dir>("all");
+  const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Chk>>(empty);
 
@@ -31,7 +33,15 @@ function ChecksPage() {
   };
   useEffect(() => { load(); }, []);
 
-  const filtered = useMemo(() => tab === "all" ? rows : rows.filter((r) => r.status === tab), [rows, tab]);
+  const filtered = useMemo(() => rows.filter((r) => {
+    if (tab !== "all" && r.status !== tab) return false;
+    if (dir !== "all" && r.direction !== dir) return false;
+    if (q) {
+      const s = q.toLowerCase();
+      if (!r.check_no.toLowerCase().includes(s) && !(r.party_name ?? "").toLowerCase().includes(s) && !(r.bank_name ?? "").toLowerCase().includes(s)) return false;
+    }
+    return true;
+  }), [rows, tab, dir, q]);
   const stats = useMemo(() => {
     const pend = rows.filter((r) => r.status === "pending");
     return {
@@ -83,7 +93,19 @@ function ChecksPage() {
         <Card className="p-4"><div className="text-xs text-muted-foreground">{t("common.total")}</div><div className="mt-1 text-xl font-bold">{stats.total}</div></Card>
       </div>
 
-      <Card className="flex flex-wrap gap-1 p-2">
+      <Card className="flex flex-wrap items-center gap-2 p-2">
+        <div className="relative min-w-[200px] flex-1">
+          <Search className="absolute top-2.5 start-2 h-4 w-4 opacity-60" />
+          <Input className="ps-8" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("common.search")} />
+        </div>
+        <Select value={dir} onValueChange={(v) => setDir(v as "all"|Dir)}>
+          <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("common.all")}</SelectItem>
+            <SelectItem value="in">{t("receipts.in")}</SelectItem>
+            <SelectItem value="out">{t("receipts.out")}</SelectItem>
+          </SelectContent>
+        </Select>
         {tabs.map((s) => (
           <Button key={s} size="sm" variant={tab === s ? "default" : "ghost"} onClick={() => setTab(s)}>
             {s === "all" ? t("common.all") : t(`acc.status.${s}`)}
