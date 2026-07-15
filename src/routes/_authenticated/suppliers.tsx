@@ -96,7 +96,7 @@ function SuppliersPage() {
   const savePayment = async () => {
     if (!detail) return;
     const amt = Number(payForm.amount);
-    if (!amt || amt <= 0) return toast.error(t("common.empty"));
+    if (!Number.isFinite(amt) || amt <= 0) return toast.error(t("common.empty"));
     const { error } = await supabase.from("supplier_payments").insert({
       supplier_id: detail.id,
       invoice_id: payForm.invoice_id || null,
@@ -108,14 +108,15 @@ function SuppliersPage() {
     } as any);
     if (error) return toast.error(error.message);
 
-    // decrement supplier balance
-    await supabase.from("suppliers").update({ balance: Number(detail.balance ?? 0) - amt }).eq("id", detail.id);
+    // decrement supplier balance (read fresh to reduce staleness)
+    const { data: freshSup } = await supabase.from("suppliers").select("balance").eq("id", detail.id).maybeSingle();
+    await supabase.from("suppliers").update({ balance: Number(freshSup?.balance ?? 0) - amt }).eq("id", detail.id);
 
     // decrement invoice balance if specified
     if (payForm.invoice_id) {
-      const inv = invoices.find((i) => i.id === payForm.invoice_id);
-      if (inv) {
-        const newBal = Math.max(0, Number(inv.balance ?? 0) - amt);
+      const { data: freshInv } = await supabase.from("supplier_invoices").select("balance").eq("id", payForm.invoice_id).maybeSingle();
+      if (freshInv) {
+        const newBal = Math.max(0, Number(freshInv.balance ?? 0) - amt);
         await supabase.from("supplier_invoices").update({
           balance: newBal,
           status: newBal <= 0 ? "paid" : "partial",

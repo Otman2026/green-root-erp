@@ -32,7 +32,7 @@ function PurchasesPage() {
     const [po, sp, pr, wh] = await Promise.all([
       supabase.from("purchase_orders").select("*").order("created_at", { ascending: false }).limit(300),
       supabase.from("suppliers").select("id,name"),
-      supabase.from("products").select("id,name,sku,cost_price"),
+      supabase.from("products").select("id,name,sku,purchase_price"),
       supabase.from("warehouses").select("id,name"),
     ]);
     setRows((po.data ?? []) as any); setSuppliers((sp.data ?? []) as any);
@@ -48,15 +48,18 @@ function PurchasesPage() {
   const subtotal = form.lines.reduce((s, l) => s + l.qty * l.unit_cost, 0);
 
   const createPO = async () => {
-    if (!form.supplier_id || form.lines.length === 0) return toast.error("Missing data");
+    const validLines = form.lines.filter((l) => l.product_id && Number(l.qty) > 0);
+    if (!form.supplier_id || validLines.length === 0) return toast.error("Missing data");
+    const total = validLines.reduce((s, l) => s + Number(l.qty) * Number(l.unit_cost || 0), 0);
     const { data: po, error } = await supabase.from("purchase_orders").insert({
       supplier_id: form.supplier_id, warehouse_id: form.warehouse_id || null,
-      subtotal, total: subtotal, notes: form.notes || null, created_by: user?.id ?? null,
+      subtotal: total, total, notes: form.notes || null, created_by: user?.id ?? null,
     } as any).select().single();
     if (error || !po) return toast.error(error?.message ?? "Failed");
-    await supabase.from("purchase_order_items").insert(form.lines.filter((l) => l.product_id).map((l) => ({
-      po_id: po.id, product_id: l.product_id, qty: l.qty, unit_cost: l.unit_cost, total: l.qty * l.unit_cost,
+    const { error: e2 } = await supabase.from("purchase_order_items").insert(validLines.map((l) => ({
+      po_id: po.id, product_id: l.product_id, qty: Number(l.qty), unit_cost: Number(l.unit_cost || 0), total: Number(l.qty) * Number(l.unit_cost || 0),
     })));
+    if (e2) return toast.error(e2.message);
     toast.success(po.po_no);
     setOpen(false); setForm({ supplier_id: "", warehouse_id: "", notes: "", lines: [] }); load();
   };
@@ -190,7 +193,7 @@ function PurchasesPage() {
               <div className="space-y-2">
                 {form.lines.map((l, i) => (
                   <div key={i} className="grid grid-cols-[1fr_80px_100px_100px_40px] gap-2 items-center">
-                    <Select value={l.product_id} onValueChange={(v) => { const p = products.find((x) => x.id === v); setLine(i, { product_id: v, unit_cost: p?.cost_price ?? l.unit_cost }); }}>
+                    <Select value={l.product_id} onValueChange={(v) => { const p = products.find((x) => x.id === v); setLine(i, { product_id: v, unit_cost: Number(p?.purchase_price ?? l.unit_cost) || 0 }); }}>
                       <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
                       <SelectContent>{products.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
                     </Select>
