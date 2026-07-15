@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -34,7 +34,7 @@ function safeNext(next: string | undefined, fallback: string) {
 
 function AuthPage() {
   const { t, locale } = useI18n();
-  const navigate = useNavigate();
+  
   const { user, loading } = useAuth();
 
   // sign in
