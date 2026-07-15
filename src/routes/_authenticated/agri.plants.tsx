@@ -1,5 +1,5 @@
 import { Button, Input, Card, Label, Textarea, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Badge } from "@/ds";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Plus, Search, Pencil, Trash2, Sprout } from "lucide-react";
@@ -111,7 +111,7 @@ function PlantsPage() {
           <TableBody>
             {filtered.map((r) => (
               <TableRow key={r.id}>
-                <TableCell className="font-medium">{r.common_name_ar}</TableCell>
+                <TableCell className="font-medium"><Link to="/agri/plants/$id" params={{ id: r.id }} className="hover:underline text-primary">{r.common_name_ar}</Link></TableCell>
                 <TableCell>{r.common_name_fr}</TableCell>
                 <TableCell className="italic">{r.scientific_name}</TableCell>
                 <TableCell>{r.family}</TableCell>
