@@ -19,7 +19,7 @@ function BanksPage() {
   const [openBank, setOpenBank] = useState(false);
   const [openTx, setOpenTx] = useState(false);
   const [newBank, setNewBank] = useState({ name: "", bank_name: "", account_number: "", rib: "", iban: "", currency: "MAD" });
-  const [tx, setTx] = useState<any>({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "" });
+  const [tx, setTx] = useState<any>({ tx_type: "deposit", direction: "in", amount: 0, tx_date: todayISO(), reference: "", description: "", counter_bank_id: "" });
 
   const loadBanks = async () => {
     const { data } = await supabase.from("bank_accounts").select("*").order("name");
