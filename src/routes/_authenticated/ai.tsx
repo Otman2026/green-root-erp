@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import ReactMarkdown from "react-markdown";
-import { Sparkles, Upload, Loader2, X, MessageSquare, Stethoscope, Send, Trash2, Plus, Package, AlertTriangle, ShieldCheck, Leaf } from "lucide-react";
+import { Sparkles, Upload, Loader2, X, MessageSquare, Stethoscope, Send, Trash2, Plus, Package, AlertTriangle, ShieldCheck, Leaf, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { diagnosePlant } from "@/lib/ai-diagnose.functions";
 import { askAgriAI, listConversations, getConversation, deleteConversation } from "@/lib/ai-chat.functions";
