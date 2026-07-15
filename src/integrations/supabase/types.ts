@@ -5285,6 +5285,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      void_sale: { Args: { _sale_id: string }; Returns: undefined }
     }
     Enums: {
       account_type: "asset" | "liability" | "equity" | "revenue" | "expense"

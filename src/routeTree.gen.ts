@@ -70,6 +70,7 @@ import { Route as AuthenticatedSystemPermissionsRouteImport } from './routes/_au
 import { Route as AuthenticatedSystemOrganizationsRouteImport } from './routes/_authenticated/system.organizations'
 import { Route as AuthenticatedSystemLicensesRouteImport } from './routes/_authenticated/system.licenses'
 import { Route as AuthenticatedSystemAuditRouteImport } from './routes/_authenticated/system.audit'
+import { Route as AuthenticatedSalesIdRouteImport } from './routes/_authenticated/sales.$id'
 import { Route as AuthenticatedSalesRepsVisitsRouteImport } from './routes/_authenticated/sales-reps.visits'
 import { Route as AuthenticatedSalesRepsListRouteImport } from './routes/_authenticated/sales-reps.list'
 import { Route as AuthenticatedSalesRepsCommissionsRouteImport } from './routes/_authenticated/sales-reps.commissions'
@@ -432,6 +433,11 @@ const AuthenticatedSystemAuditRoute =
     path: '/audit',
     getParentRoute: () => AuthenticatedSystemRoute,
   } as any)
+const AuthenticatedSalesIdRoute = AuthenticatedSalesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedSalesRoute,
+} as any)
 const AuthenticatedSalesRepsVisitsRoute =
   AuthenticatedSalesRepsVisitsRouteImport.update({
     id: '/visits',
@@ -714,7 +720,7 @@ export interface FileRoutesByFullPath {
   '/quotes': typeof AuthenticatedQuotesRoute
   '/receipts': typeof AuthenticatedReceiptsRoute
   '/reports': typeof AuthenticatedReportsRouteWithChildren
-  '/sales': typeof AuthenticatedSalesRoute
+  '/sales': typeof AuthenticatedSalesRouteWithChildren
   '/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -767,6 +773,7 @@ export interface FileRoutesByFullPath {
   '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/sales/$id': typeof AuthenticatedSalesIdRoute
   '/system/audit': typeof AuthenticatedSystemAuditRoute
   '/system/licenses': typeof AuthenticatedSystemLicensesRoute
   '/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
@@ -817,7 +824,7 @@ export interface FileRoutesByTo {
   '/quotes': typeof AuthenticatedQuotesRoute
   '/receipts': typeof AuthenticatedReceiptsRoute
   '/reports': typeof AuthenticatedReportsRouteWithChildren
-  '/sales': typeof AuthenticatedSalesRoute
+  '/sales': typeof AuthenticatedSalesRouteWithChildren
   '/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/seeds': typeof AuthenticatedSeedsRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -869,6 +876,7 @@ export interface FileRoutesByTo {
   '/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/sales/$id': typeof AuthenticatedSalesIdRoute
   '/system/audit': typeof AuthenticatedSystemAuditRoute
   '/system/licenses': typeof AuthenticatedSystemLicensesRoute
   '/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
@@ -922,7 +930,7 @@ export interface FileRoutesById {
   '/_authenticated/quotes': typeof AuthenticatedQuotesRoute
   '/_authenticated/receipts': typeof AuthenticatedReceiptsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
-  '/_authenticated/sales': typeof AuthenticatedSalesRoute
+  '/_authenticated/sales': typeof AuthenticatedSalesRouteWithChildren
   '/_authenticated/sales-reps': typeof AuthenticatedSalesRepsRouteWithChildren
   '/_authenticated/seeds': typeof AuthenticatedSeedsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -975,6 +983,7 @@ export interface FileRoutesById {
   '/_authenticated/sales-reps/commissions': typeof AuthenticatedSalesRepsCommissionsRoute
   '/_authenticated/sales-reps/list': typeof AuthenticatedSalesRepsListRoute
   '/_authenticated/sales-reps/visits': typeof AuthenticatedSalesRepsVisitsRoute
+  '/_authenticated/sales/$id': typeof AuthenticatedSalesIdRoute
   '/_authenticated/system/audit': typeof AuthenticatedSystemAuditRoute
   '/_authenticated/system/licenses': typeof AuthenticatedSystemLicensesRoute
   '/_authenticated/system/organizations': typeof AuthenticatedSystemOrganizationsRoute
@@ -1081,6 +1090,7 @@ export interface FileRouteTypes {
     | '/sales-reps/commissions'
     | '/sales-reps/list'
     | '/sales-reps/visits'
+    | '/sales/$id'
     | '/system/audit'
     | '/system/licenses'
     | '/system/organizations'
@@ -1183,6 +1193,7 @@ export interface FileRouteTypes {
     | '/sales-reps/commissions'
     | '/sales-reps/list'
     | '/sales-reps/visits'
+    | '/sales/$id'
     | '/system/audit'
     | '/system/licenses'
     | '/system/organizations'
@@ -1288,6 +1299,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sales-reps/commissions'
     | '/_authenticated/sales-reps/list'
     | '/_authenticated/sales-reps/visits'
+    | '/_authenticated/sales/$id'
     | '/_authenticated/system/audit'
     | '/_authenticated/system/licenses'
     | '/_authenticated/system/organizations'
@@ -1744,6 +1756,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSystemAuditRouteImport
       parentRoute: typeof AuthenticatedSystemRoute
     }
+    '/_authenticated/sales/$id': {
+      id: '/_authenticated/sales/$id'
+      path: '/$id'
+      fullPath: '/sales/$id'
+      preLoaderRoute: typeof AuthenticatedSalesIdRouteImport
+      parentRoute: typeof AuthenticatedSalesRoute
+    }
     '/_authenticated/sales-reps/visits': {
       id: '/_authenticated/sales-reps/visits'
       path: '/visits'
@@ -2189,6 +2208,17 @@ const AuthenticatedReportsRouteChildren: AuthenticatedReportsRouteChildren = {
 const AuthenticatedReportsRouteWithChildren =
   AuthenticatedReportsRoute._addFileChildren(AuthenticatedReportsRouteChildren)
 
+interface AuthenticatedSalesRouteChildren {
+  AuthenticatedSalesIdRoute: typeof AuthenticatedSalesIdRoute
+}
+
+const AuthenticatedSalesRouteChildren: AuthenticatedSalesRouteChildren = {
+  AuthenticatedSalesIdRoute: AuthenticatedSalesIdRoute,
+}
+
+const AuthenticatedSalesRouteWithChildren =
+  AuthenticatedSalesRoute._addFileChildren(AuthenticatedSalesRouteChildren)
+
 interface AuthenticatedSalesRepsRouteChildren {
   AuthenticatedSalesRepsCommissionsRoute: typeof AuthenticatedSalesRepsCommissionsRoute
   AuthenticatedSalesRepsListRoute: typeof AuthenticatedSalesRepsListRoute
@@ -2262,7 +2292,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedQuotesRoute: typeof AuthenticatedQuotesRoute
   AuthenticatedReceiptsRoute: typeof AuthenticatedReceiptsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
-  AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
+  AuthenticatedSalesRoute: typeof AuthenticatedSalesRouteWithChildren
   AuthenticatedSalesRepsRoute: typeof AuthenticatedSalesRepsRouteWithChildren
   AuthenticatedSeedsRoute: typeof AuthenticatedSeedsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -2312,7 +2342,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedQuotesRoute: AuthenticatedQuotesRoute,
   AuthenticatedReceiptsRoute: AuthenticatedReceiptsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
-  AuthenticatedSalesRoute: AuthenticatedSalesRoute,
+  AuthenticatedSalesRoute: AuthenticatedSalesRouteWithChildren,
   AuthenticatedSalesRepsRoute: AuthenticatedSalesRepsRouteWithChildren,
   AuthenticatedSeedsRoute: AuthenticatedSeedsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
