@@ -30,10 +30,13 @@ function PayrollPage() {
     const from = `${year}-${String(month).padStart(2, "0")}-01`;
     const toD = new Date(year, month, 0).toISOString().slice(0, 10);
 
-    const [{ data: bonuses }, { data: att }] = await Promise.all([
+    const [{ data: bonuses }, { data: att }, { data: existing }] = await Promise.all([
       supabase.from("hr_bonuses").select("employee_id,type,amount").gte("date", from).lte("date", toD),
       supabase.from("hr_attendance").select("employee_id,overtime").gte("date", from).lte("date", toD),
+      supabase.from("hr_payroll").select("employee_id,status").eq("period_year", year).eq("period_month", month),
     ]);
+
+    const paidSet = new Set((existing ?? []).filter((r: any) => r.status === "paid").map((r: any) => r.employee_id));
 
     const bonusMap: Record<string, number> = {};
     const dedMap: Record<string, number> = {};
@@ -44,21 +47,24 @@ function PayrollPage() {
     const otMap: Record<string, number> = {};
     (att ?? []).forEach((a: any) => { otMap[a.employee_id] = (otMap[a.employee_id] ?? 0) + Number(a.overtime ?? 0); });
 
-    const rows = emps.map((e: any) => {
-      const base = Number(e.base_salary ?? 0);
-      const bonus = bonusMap[e.id] ?? 0;
-      const ded = dedMap[e.id] ?? 0;
-      const ot = otMap[e.id] ?? 0;
-      const otPay = (base / 200) * ot;
-      const net = base + bonus + otPay - ded;
-      return {
-        employee_id: e.id, period_year: year, period_month: month,
-        base_salary: base, bonuses: bonus, overtime: otPay,
-        allowances: 0, deductions: ded, advances: 0, tax: 0, social: 0,
-        net_pay: net, status: "draft",
-      };
-    });
+    const rows = emps
+      .filter((e: any) => !paidSet.has(e.id))
+      .map((e: any) => {
+        const base = Number(e.base_salary ?? 0);
+        const bonus = bonusMap[e.id] ?? 0;
+        const ded = dedMap[e.id] ?? 0;
+        const ot = otMap[e.id] ?? 0;
+        const otPay = (base / 200) * ot;
+        const net = base + bonus + otPay - ded;
+        return {
+          employee_id: e.id, period_year: year, period_month: month,
+          base_salary: base, bonuses: bonus, overtime: otPay,
+          allowances: 0, deductions: ded, advances: 0, tax: 0, social: 0,
+          net_pay: net, status: "draft",
+        };
+      });
 
+    if (!rows.length) { toast.info(t("hr.pay.allPaid") || "All paid"); return; }
     const { error } = await supabase.from("hr_payroll").upsert(rows, { onConflict: "employee_id,period_year,period_month" });
     if (error) { toast.error(error.message); return; }
     toast.success(t("common.saved")); load();
