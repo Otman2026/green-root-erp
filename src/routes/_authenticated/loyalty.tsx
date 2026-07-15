@@ -98,16 +98,20 @@ function LoyaltyPage() {
         <TabsContent value="rules">
           <div className="mb-3 flex justify-end"><Button onClick={() => setRuleOpen(true)} className="gap-2"><Plus className="h-4 w-4" /> {t("loyalty.newRule")}</Button></div>
           <Card><Table>
-            <TableHeader><TableRow><TableHead>{t("common.name")}</TableHead><TableHead>Points/Amount</TableHead><TableHead>Unit</TableHead><TableHead>Redemption</TableHead><TableHead className="text-end">{t("common.actions")}</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>{t("common.name")}</TableHead><TableHead>Points/Amount</TableHead><TableHead>Unit</TableHead><TableHead>Redemption</TableHead><TableHead>{t("common.status")}</TableHead><TableHead className="text-end">{t("common.actions")}</TableHead></TableRow></TableHeader>
             <TableBody>
-              {rules.length === 0 ? <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
+              {rules.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
               : rules.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell>{r.name}</TableCell>
                   <TableCell className="font-mono">{r.points_per_amount}</TableCell>
                   <TableCell className="font-mono">{r.amount_unit}</TableCell>
                   <TableCell className="font-mono">{r.redemption_value}</TableCell>
-                  <TableCell className="text-end"><Button size="icon" variant="ghost" onClick={() => delRule(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button></TableCell>
+                  <TableCell><Badge variant={r.is_active ? "default" : "secondary"}>{r.is_active ? t("common.active") : t("common.inactive")}</Badge></TableCell>
+                  <TableCell className="text-end">
+                    <Button size="icon" variant="ghost" onClick={() => { setRule(r); setRuleOpen(true); }}>✎</Button>
+                    <Button size="icon" variant="ghost" onClick={() => delRule(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
