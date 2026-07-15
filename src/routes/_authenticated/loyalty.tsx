@@ -125,6 +125,10 @@ function LoyaltyPage() {
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Code *</Label><Input value={coupon.code ?? ""} onChange={(e) => setCoupon({ ...coupon, code: e.target.value.toUpperCase() })} /></div>
             <div className="grid grid-cols-2 gap-3">
+          <DialogHeader><DialogTitle>{coupon.id ? t("common.edit") : t("loyalty.newCoupon")}</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1.5"><Label>Code *</Label><Input value={coupon.code ?? ""} onChange={(e) => setCoupon({ ...coupon, code: e.target.value.toUpperCase() })} /></div>
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5"><Label>{t("common.type")}</Label>
                 <Select value={coupon.discount_type} onValueChange={(v) => setCoupon({ ...coupon, discount_type: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
@@ -136,6 +140,12 @@ function LoyaltyPage() {
               <div className="space-y-1.5"><Label>Valid to</Label><Input type="date" value={coupon.valid_to?.slice(0,10) ?? ""} onChange={(e) => setCoupon({ ...coupon, valid_to: e.target.value || null })} /></div>
               <div className="space-y-1.5"><Label>Usage limit</Label><Input type="number" value={coupon.usage_limit ?? ""} onChange={(e) => setCoupon({ ...coupon, usage_limit: e.target.value ? Number(e.target.value) : null })} /></div>
               <div className="space-y-1.5"><Label>Min total</Label><Input type="number" step="any" value={coupon.min_total ?? ""} onChange={(e) => setCoupon({ ...coupon, min_total: e.target.value ? Number(e.target.value) : null })} /></div>
+              <div className="space-y-1.5"><Label>{t("common.status")}</Label>
+                <Select value={(coupon.is_active ?? true) ? "active" : "inactive"} onValueChange={(v) => setCoupon({ ...coupon, is_active: v === "active" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent><SelectItem value="active">{t("common.active")}</SelectItem><SelectItem value="inactive">{t("common.inactive")}</SelectItem></SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setCouponOpen(false)}>{t("common.cancel")}</Button><Button onClick={saveCoupon}>{t("common.save")}</Button></DialogFooter>
@@ -144,7 +154,7 @@ function LoyaltyPage() {
 
       <Dialog open={ruleOpen} onOpenChange={setRuleOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>{t("loyalty.newRule")}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{rule.id ? t("common.edit") : t("loyalty.newRule")}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>{t("common.name")} *</Label><Input value={rule.name} onChange={(e) => setRule({ ...rule, name: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
