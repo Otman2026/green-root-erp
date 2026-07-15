@@ -209,6 +209,27 @@ function CustomersPage() {
                   </Table>
                 </div>
               </TabsContent>
+              <TabsContent value="loyalty">
+                <div className="max-h-[400px] overflow-auto">
+                  <Table>
+                    <TableHeader><TableRow>
+                      <TableHead>{t("common.date")}</TableHead>
+                      <TableHead>{t("customers.loyaltyPoints")}</TableHead>
+                      <TableHead>{t("common.reason")}</TableHead>
+                    </TableRow></TableHeader>
+                    <TableBody>
+                      {loyaltyTx.length === 0 ? <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow>
+                      : loyaltyTx.map((l) => (
+                        <TableRow key={l.id}>
+                          <TableCell className="text-xs">{fmtDateTime(l.created_at)}</TableCell>
+                          <TableCell className={"font-mono " + (Number(l.points) < 0 ? "text-destructive" : "text-primary")}>{Number(l.points) > 0 ? "+" : ""}{Number(l.points).toFixed(0)}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">{l.reason ?? "—"}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
               <TabsContent value="info">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div><span className="text-muted-foreground">{t("common.phone")}:</span> <span dir="ltr">{detail.phone ?? "—"}</span></div>
