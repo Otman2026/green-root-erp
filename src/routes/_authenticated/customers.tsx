@@ -30,6 +30,7 @@ function CustomersPage() {
   const [detail, setDetail] = useState<Customer | null>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [loyaltyTx, setLoyaltyTx] = useState<any[]>([]);
 
   const load = async () => {
     setLoading(true);
