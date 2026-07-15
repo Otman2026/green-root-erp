@@ -161,6 +161,14 @@ function BanksPage() {
             </div>
             <div><Label>{t("receipts.amount")}</Label><Input type="number" step="0.01" value={tx.amount} onChange={(e) => setTx({ ...tx, amount: e.target.value })} /></div>
             <div><Label>{t("common.date")}</Label><Input type="date" value={tx.tx_date} onChange={(e) => setTx({ ...tx, tx_date: e.target.value })} /></div>
+            {tx.tx_type === "transfer" && (
+              <div className="col-span-2"><Label>{t("acc.toBank") || "To Bank"}</Label>
+                <Select value={tx.counter_bank_id || ""} onValueChange={(v) => setTx({ ...tx, counter_bank_id: v })}>
+                  <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                  <SelectContent>{banks.filter(b => b.id !== selected?.id).map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="col-span-2"><Label>{t("acc.reference")}</Label><Input value={tx.reference} onChange={(e) => setTx({ ...tx, reference: e.target.value })} /></div>
             <div className="col-span-2"><Label>{t("common.notes")}</Label><Textarea rows={2} value={tx.description} onChange={(e) => setTx({ ...tx, description: e.target.value })} /></div>
           </div>
