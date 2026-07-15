@@ -80,8 +80,8 @@ function UnifiedSearch() {
             <span className="text-sm text-muted-foreground">{hits.length}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {hits.map((h) => (
-              <Link key={`${h.kind}-${h.id}`} to={h.to} className="block">
+            {hits.map((h) => {
+              const inner = (
                 <Card className="p-3 hover:shadow transition flex gap-3 items-start">
                   <h.icon className={`w-5 h-5 mt-0.5 ${h.color}`} />
                   <div className="min-w-0 flex-1">
@@ -90,8 +90,13 @@ function UnifiedSearch() {
                     {h.meta && <div className="text-xs text-muted-foreground truncate">{h.meta}</div>}
                   </div>
                 </Card>
-              </Link>
-            ))}
+              );
+              const key = `${h.kind}-${h.id}`;
+              if (h.detailKind === "plant") return <Link key={key} to="/agri/plants/$id" params={{ id: h.id }} className="block">{inner}</Link>;
+              if (h.detailKind === "disease") return <Link key={key} to="/agri/diseases/$id" params={{ id: h.id }} className="block">{inner}</Link>;
+              if (h.detailKind === "pest") return <Link key={key} to="/agri/pests/$id" params={{ id: h.id }} className="block">{inner}</Link>;
+              return <Link key={key} to={h.listTo as any} className="block">{inner}</Link>;
+            })}
           </div>
         </Card>
       ))}
