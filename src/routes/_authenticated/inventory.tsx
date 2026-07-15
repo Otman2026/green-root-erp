@@ -99,7 +99,7 @@ function InventoryPage() {
             <SelectTrigger className="h-8 w-48"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("common.all")}</SelectItem>
-              {TYPES.map((tp) => <SelectItem key={tp} value={tp}>{t(`inventory.type.${tp}`)}</SelectItem>)}
+              {ALL_TYPES.map((tp) => <SelectItem key={tp} value={tp}>{t(`inventory.type.${tp}`)}</SelectItem>)}
             </SelectContent>
           </Select>
         }
