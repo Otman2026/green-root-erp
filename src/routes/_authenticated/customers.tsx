@@ -90,12 +90,14 @@ function CustomersPage() {
     { key: "type", header: t("common.type"), accessor: (r) => <Badge variant="secondary">{t(`customers.type.${r.customer_type}`)}</Badge>, sortValue: (r) => r.customer_type, exportValue: (r) => r.customer_type },
     { key: "balance", header: t("customers.balance"), accessor: (r) => <span className={Number(r.balance) > 0 ? "text-destructive font-mono" : "font-mono"}>{fmtMoney(r.balance)}</span>, sortValue: (r) => Number(r.balance), exportValue: (r) => Number(r.balance) },
     { key: "loyalty", header: t("customers.loyaltyPoints"), accessor: (r) => <span className="font-mono">{Number(r.loyalty_points).toFixed(0)}</span>, sortValue: (r) => Number(r.loyalty_points), exportValue: (r) => Number(r.loyalty_points) },
+    { key: "status", header: t("common.status"), accessor: (r) => <Badge variant={r.is_active ? "default" : "secondary"}>{r.is_active ? t("common.active") : t("common.inactive")}</Badge>, sortValue: (r) => (r.is_active ? 1 : 0), exportValue: (r) => (r.is_active ? "active" : "inactive") },
     {
       key: "actions", header: t("common.actions"), sortable: false, hideable: false, className: "text-end",
       accessor: (r) => (
         <div className="text-end" onClick={(e) => e.stopPropagation()}>
-          <Button size="icon" variant="ghost" onClick={() => { setEditing(r); setOpen(true); }}><Pencil className="h-4 w-4" /></Button>
-          <Button size="icon" variant="ghost" onClick={() => del(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => { setEditing(r); setOpen(true); }} title={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => toggleActive(r)} title={r.is_active ? t("common.deactivate") : t("common.activate")}>{r.is_active ? "⏸" : "▶"}</Button>
+          <Button size="icon" variant="ghost" onClick={() => del(r.id)} title={t("common.delete")}><Trash2 className="h-4 w-4 text-destructive" /></Button>
         </div>
       ),
     },
