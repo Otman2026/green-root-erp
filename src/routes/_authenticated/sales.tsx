@@ -1,4 +1,4 @@
-import { Button, Card, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Badge, Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ds";
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Badge } from "@/ds";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -24,9 +24,6 @@ function SalesPage() {
   const [loading, setLoading] = useState(true);
   const [customers, setCustomers] = useState<Record<string, string>>({});
   const [status, setStatus] = useState("all");
-  const [detail, setDetail] = useState<Sale | null>(null);
-  const [items, setItems] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
 
   const load = async () => {
     setLoading(true);
@@ -43,22 +40,17 @@ function SalesPage() {
 
   const filtered = useMemo(() => rows.filter((r) => status === "all" || r.status === status), [rows, status]);
 
-  const view = async (s: Sale) => {
-    setDetail(s);
-    const [i, p] = await Promise.all([
-      supabase.from("sale_items").select("*, products(name,sku)").eq("sale_id", s.id),
-      supabase.from("sale_payments").select("*").eq("sale_id", s.id).order("paid_at"),
-    ]);
-    setItems((i.data ?? []) as any); setPayments((p.data ?? []) as any);
-  };
-
   const voidSale = async (s: Sale) => {
+    if (s.status === "void") return;
     if (!confirm(t("common.confirmDelete"))) return;
-    const { error } = await supabase.from("sales").update({ status: "void" }).eq("id", s.id);
-    if (error) return toast.error(error.message); toast.success(t("auth.success")); load();
+    const { error } = await supabase.rpc("void_sale", { _sale_id: s.id });
+    if (error) return toast.error(error.message);
+    toast.success(t("auth.success"));
+    load();
   };
 
   const doReturn = async (s: Sale) => {
+    if (s.type === "return" || s.status === "void") return;
     if (!confirm(t("sales.confirmReturn"))) return;
     const { data: origItems } = await supabase.from("sale_items").select("*").eq("sale_id", s.id);
     const { data: ret, error } = await supabase.from("sales").insert({
@@ -72,7 +64,8 @@ function SalesPage() {
         unit_price: it.unit_price, discount: 0, tax: 0, total: it.total,
       })));
     }
-    toast.success("Return created"); load();
+    toast.success(t("auth.success"));
+    load();
   };
 
   const printInvoice = async (s: Sale) => {
@@ -107,7 +100,7 @@ function SalesPage() {
   };
 
   const columns: Column<Sale>[] = [
-    { key: "invoice", header: t("sales.invoiceNo"), accessor: (r) => <span className="font-mono">{r.invoice_no}</span>, sortValue: (r) => r.invoice_no, exportValue: (r) => r.invoice_no },
+    { key: "invoice", header: t("sales.invoiceNo"), accessor: (r) => <Link to="/sales/$id" params={{ id: r.id }} className="font-mono text-primary hover:underline">{r.invoice_no}</Link>, sortValue: (r) => r.invoice_no, exportValue: (r) => r.invoice_no },
     { key: "date", header: t("common.date"), accessor: (r) => <span className="text-xs">{fmtDateTime(r.created_at)}</span>, sortValue: (r) => r.created_at, exportValue: (r) => r.created_at },
     { key: "customer", header: t("common.customer"), accessor: (r) => customers[r.customer_id ?? ""] ?? "—", sortValue: (r) => customers[r.customer_id ?? ""] ?? "", exportValue: (r) => customers[r.customer_id ?? ""] ?? "" },
     { key: "type", header: t("common.type"), accessor: (r) => <Badge variant="secondary">{t(`sales.type.${r.type}`)}</Badge>, sortValue: (r) => r.type, exportValue: (r) => r.type },
@@ -118,11 +111,11 @@ function SalesPage() {
       key: "actions", header: t("common.actions"), sortable: false, hideable: false, className: "text-end",
       accessor: (r) => (
         <div className="text-end">
-          <Button size="icon" variant="ghost" onClick={() => view(r)}><Eye className="h-4 w-4" /></Button>
-          <Button size="icon" variant="ghost" onClick={() => printInvoice(r)}><Printer className="h-4 w-4" /></Button>
-          <Button size="icon" variant="ghost" onClick={() => shareWhatsapp(r)} title="WhatsApp">📱</Button>
-          <Button size="icon" variant="ghost" onClick={() => doReturn(r)} title="Return"><Undo2 className="h-4 w-4" /></Button>
-          <Button size="icon" variant="ghost" onClick={() => voidSale(r)} title="Void"><Ban className="h-4 w-4 text-destructive" /></Button>
+          <Button asChild size="icon" variant="ghost" title={t("common.view") || "View"}><Link to="/sales/$id" params={{ id: r.id }}><Eye className="h-4 w-4" /></Link></Button>
+          <Button size="icon" variant="ghost" onClick={() => printInvoice(r)} title={t("common.print") || "Print"}><Printer className="h-4 w-4" /></Button>
+          <Button size="icon" variant="ghost" onClick={() => shareWhatsapp(r)} title="WhatsApp"><span aria-hidden="true">📱</span></Button>
+          {r.type !== "return" && r.status !== "void" && <Button size="icon" variant="ghost" onClick={() => doReturn(r)} title={t("sales.return")}><Undo2 className="h-4 w-4" /></Button>}
+          {r.status !== "void" && <Button size="icon" variant="ghost" onClick={() => voidSale(r)} title={t("sales.status.void")}><Ban className="h-4 w-4 text-destructive" /></Button>}
         </div>
       ),
     },
@@ -150,36 +143,6 @@ function SalesPage() {
           </Select>
         }
       />
-
-      <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader><DialogTitle>{detail?.invoice_no}</DialogTitle></DialogHeader>
-          {detail && (
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div><span className="text-muted-foreground">{t("common.customer")}:</span> {customers[detail.customer_id ?? ""] ?? "—"}</div>
-                <div><span className="text-muted-foreground">{t("common.date")}:</span> {fmtDateTime(detail.created_at)}</div>
-                <div><span className="text-muted-foreground">{t("common.total")}:</span> <b>{fmtMoney(detail.total)}</b></div>
-                <div><span className="text-muted-foreground">{t("common.balance")}:</span> <b>{fmtMoney(detail.balance)}</b></div>
-              </div>
-              <Card>
-                <Table><TableHeader><TableRow><TableHead>Product</TableHead><TableHead>{t("common.quantity")}</TableHead><TableHead>{t("common.price")}</TableHead><TableHead>{t("common.total")}</TableHead></TableRow></TableHeader>
-                  <TableBody>
-                    {items.map((i) => <TableRow key={i.id}><TableCell>{i.products?.name ?? "—"}</TableCell><TableCell className="font-mono">{i.qty}</TableCell><TableCell className="font-mono">{fmtMoney(i.unit_price)}</TableCell><TableCell className="font-mono">{fmtMoney(i.total)}</TableCell></TableRow>)}
-                  </TableBody></Table>
-              </Card>
-              {payments.length > 0 && (
-                <div>
-                  <h4 className="mb-2 font-semibold">{t("customers.tabs.payments")}</h4>
-                  <Table><TableHeader><TableRow><TableHead>{t("common.date")}</TableHead><TableHead>{t("pos.method")}</TableHead><TableHead>{t("receipts.amount")}</TableHead></TableRow></TableHeader>
-                    <TableBody>{payments.map((p) => <TableRow key={p.id}><TableCell className="text-xs">{fmtDateTime(p.paid_at)}</TableCell><TableCell>{t(`pos.method.${p.method}`)}</TableCell><TableCell className="font-mono">{fmtMoney(p.amount)}</TableCell></TableRow>)}</TableBody>
-                  </Table>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
