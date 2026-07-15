@@ -32,7 +32,7 @@ function PurchasesPage() {
     const [po, sp, pr, wh] = await Promise.all([
       supabase.from("purchase_orders").select("*").order("created_at", { ascending: false }).limit(300),
       supabase.from("suppliers").select("id,name"),
-      supabase.from("products").select("id,name,sku,cost_price"),
+      supabase.from("products").select("id,name,sku,purchase_price"),
       supabase.from("warehouses").select("id,name"),
     ]);
     setRows((po.data ?? []) as any); setSuppliers((sp.data ?? []) as any);
