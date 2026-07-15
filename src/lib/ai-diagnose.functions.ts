@@ -137,36 +137,47 @@ ${kbContext}`;
     ];
     if (data.imageDataUrl) userContent.push({ type: "image", image: data.imageDataUrl });
 
+    let output: z.infer<typeof DiagnosisSchema>;
     try {
-      const { output } = await generateText({
+      const res = await generateText({
         model,
         output: Output.object({ schema: DiagnosisSchema }),
         system,
-        messages: [
-          { role: "user", content: userContent },
-        ],
+        messages: [{ role: "user", content: userContent }],
       });
-
-      const pesticideIds = output.matched_ids?.pesticide_ids ?? [];
-      const fertilizerIds = output.matched_ids?.fertilizer_ids ?? [];
-      const suggestedProducts = kb.products.filter((p: any) =>
-        kb.pesticides.some((t: any) => pesticideIds.includes(t.id) && t.product_id === p.id) ||
-        kb.fertilizers.some((t: any) => fertilizerIds.includes(t.id) && t.product_id === p.id),
-      );
-
-      return {
-        ...output,
-        knowledge_base: {
-          diseases: kb.diseases,
-          pests: kb.pests,
-          weeds: kb.weeds,
-          pesticides: kb.pesticides,
-          fertilizers: kb.fertilizers,
-          treatments: kb.treatments,
-        },
-        suggested_products: suggestedProducts.length > 0 ? suggestedProducts : kb.products,
-      };
+      output = res.output;
     } catch (e: any) {
-      throw new Error(e?.message ?? "AI diagnosis failed");
+      // Fallback: try to parse raw text if schema validation failed
+      if (NoObjectGeneratedError.isInstance(e) && e.text) {
+        try {
+          const cleaned = e.text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+          const parsed = JSON.parse(cleaned);
+          output = DiagnosisSchema.partial().parse(parsed) as any;
+        } catch {
+          throw new Error("AI diagnosis failed: could not parse response");
+        }
+      } else {
+        throw new Error(e?.message ?? "AI diagnosis failed");
+      }
     }
+
+    const pesticideIds = output.matched_ids?.pesticide_ids ?? [];
+    const fertilizerIds = output.matched_ids?.fertilizer_ids ?? [];
+    const suggestedProducts = kb.products.filter((p: any) =>
+      kb.pesticides.some((t: any) => pesticideIds.includes(t.id) && t.product_id === p.id) ||
+      kb.fertilizers.some((t: any) => fertilizerIds.includes(t.id) && t.product_id === p.id),
+    );
+
+    return {
+      ...output,
+      knowledge_base: {
+        diseases: kb.diseases,
+        pests: kb.pests,
+        weeds: kb.weeds,
+        pesticides: kb.pesticides,
+        fertilizers: kb.fertilizers,
+        treatments: kb.treatments,
+      },
+      suggested_products: suggestedProducts.length > 0 ? suggestedProducts : kb.products,
+    };
   });
