@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authenticated/system")({
   ssr: false,
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/auth" });
+    if (!data.user) throw redirect({ to: "/auth", search: {} });
     const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
     const isOwner = (roles ?? []).some((r: any) => r.role === "system_owner");
     if (!isOwner) throw redirect({ to: "/dashboard" });
