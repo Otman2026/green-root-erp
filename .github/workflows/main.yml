@@ -49,10 +49,15 @@ jobs:
           if (-Not (Test-Path "build/icon.ico")) {
             Write-Host "Generating build/icon.ico from public/icon-512.png"
             npm i -g png-to-ico
-            png-to-ico public/icon-512.png > build/icon.ico
+            # Use Node to write binary output — PowerShell '>' corrupts binary via UTF-16 pipe
+            node -e "require('png-to-ico')('public/icon-512.png').then(buf => require('fs').writeFileSync('build/icon.ico', buf))"
           } else {
             Write-Host "build/icon.ico already present"
           }
+          if (-Not (Test-Path "build/icon.ico")) { Write-Error "icon.ico missing"; exit 1 }
+          $size = (Get-Item "build/icon.ico").Length
+          Write-Host "icon.ico size: $size bytes"
+          if ($size -lt 1000) { Write-Error "icon.ico too small — likely corrupted"; exit 1 }
 
       - name: Build Windows installer (NSIS)
         run: npx electron-builder --win nsis --x64 --publish never
