@@ -52,7 +52,7 @@ function AccountButton() {
     </Button>
   ) : (
     <Button asChild variant="outline" size="sm" className="gap-2">
-      <Link to="/auth" search={{}}>
+      <Link to="/auth" search={{ next: undefined }}>
         <LogIn className="h-4 w-4" />
         <span className="hidden sm:inline">{t("auth.signIn") ?? "تسجيل الدخول"}</span>
       </Link>

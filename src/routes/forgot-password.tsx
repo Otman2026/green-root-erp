@@ -42,7 +42,7 @@ function ForgotPage() {
           {sent ? (
             <div className="space-y-3 text-center">
               <p className="text-sm">تحقق من بريدك الإلكتروني لإكمال إعادة تعيين كلمة المرور.</p>
-              <Link to="/auth" search={{}} className="text-sm text-primary underline">العودة لتسجيل الدخول</Link>
+              <Link to="/auth" search={{ next: undefined }} className="text-sm text-primary underline">العودة لتسجيل الدخول</Link>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-3">
@@ -52,7 +52,7 @@ function ForgotPage() {
               </div>
               <Button type="submit" className="w-full" disabled={busy}>إرسال رابط الاسترجاع</Button>
               <div className="text-center">
-                <Link to="/auth" search={{}} className="text-xs text-muted-foreground hover:underline">العودة لتسجيل الدخول</Link>
+                <Link to="/auth" search={{ next: undefined }} className="text-xs text-muted-foreground hover:underline">العودة لتسجيل الدخول</Link>
               </div>
             </form>
           )}
