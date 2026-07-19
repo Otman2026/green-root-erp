@@ -57,7 +57,7 @@ jobs:
               exit 1
             }
             # Use Node to write binary output — PowerShell '>' corrupts binary via UTF-16 pipe
-            node -e "require('png-to-ico')('public/icon-512.png').then(buf => require('fs').writeFileSync('build/icon.ico', buf))"
+            node -e "const ico = require('png-to-ico'); const convert = ico.default || ico; convert('public/icon-512.png').then(buf => require('fs').writeFileSync('build/icon.ico', buf)).catch(err => { console.error(err); process.exit(1); })"
           } else {
             Write-Host "build/icon.ico already present"
           }
