@@ -25,7 +25,6 @@ win:
         - x64
   icon: build/icon.ico
   artifactName: "Haytam-AGRI-Setup-${version}.${ext}"
-  signAndEditExecutable: false
   signtoolOptions: null
 nsis:
   oneClick: false
