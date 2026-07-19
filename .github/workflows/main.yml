@@ -47,8 +47,15 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path build | Out-Null
           if (-Not (Test-Path "build/icon.ico")) {
-            Write-Host "Generating build/icon.ico from public/icon-512.png"
-            npm i -g png-to-ico
+            Write-Host "Generating build/icon.ico from public/icon-512.png using local png-to-ico dependency"
+            if (-Not (Test-Path "node_modules/png-to-ico")) {
+              Write-Error "png-to-ico dependency is missing after bun install"
+              exit 1
+            }
+            if (-Not (Test-Path "public/icon-512.png")) {
+              Write-Error "public/icon-512.png is missing — cannot generate Windows icon"
+              exit 1
+            }
             # Use Node to write binary output — PowerShell '>' corrupts binary via UTF-16 pipe
             node -e "require('png-to-ico')('public/icon-512.png').then(buf => require('fs').writeFileSync('build/icon.ico', buf))"
           } else {
