@@ -12,6 +12,10 @@ files:
 asarUnpack:
   - electron/splash.html
   - electron/icon.png
+  - build/icon.ico
+extraResources:
+  - from: build/icon.ico
+    to: build/icon.ico
 extraMetadata:
   main: electron/main.cjs
 win:
