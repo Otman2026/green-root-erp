@@ -77,6 +77,15 @@
         if (isError) { r.style.display = 'inline-block'; sp.style.display = 'none'; }
       });
     }
+    document.getElementById('retry').addEventListener('click', function() {
+      if (window.electronAPI && window.electronAPI.retry) {
+        document.getElementById('spinner').style.display = 'block';
+        document.getElementById('retry').style.display = 'none';
+        document.getElementById('status').className = 'status';
+        document.getElementById('status').textContent = 'جارٍ إعادة المحاولة…';
+        window.electronAPI.retry();
+      }
+    });
   </script>
 </body>
 </html>
